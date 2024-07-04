@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
+  const [username, setUsername] = useState('');
+
+  const handleLogin = () => {
+    // Aquí puedes agregar la lógica de autenticación
+    if (username) {
+      navigation.navigate('Main');
+    } else {
+      alert('Por favor, ingrese su usuario');
+    }
+  };
+
   return (
     <View>
       <Text>Iniciar sesión</Text>
-      <TextInput placeholder="Usuario" />
-      <Button title="Entrar" onPress={() => navigation.navigate('Home')} />
+      <TextInput
+        placeholder="Usuario"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <Button title="Entrar" onPress={handleLogin} />
     </View>
   );
 }
