@@ -1,34 +1,48 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen() {
+
+  const filters = [
+    { name: 'Mejor valorados' },
+    { name: 'Precio' },
+    { name: 'Más trabajos realizados' },
+    { name: 'Cerca tuyo' },
+  ];
+
+  const categories = [
+    { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
+    { name: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
+    { name: 'Jardinería', imageUri: require('../assets/jardienria.png') },
+    { name: 'Manicura', imageUri: require('../assets/manicura.png') },
+    { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
+    { name: 'Clases', imageUri: require('../assets/clases.png') },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>ServiFinds</Text>
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
-      <View style={styles.filterContainer}>
-        <TouchableOpacity style={styles.filterButton}><Text style={styles.filterText}>Más trabajos realizados</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}><Text style={styles.filterText}>Precio</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}><Text style={styles.filterText}>Mejor valorados</Text></TouchableOpacity>
-      </View>
+
+      <ScrollView horizontal style={styles.filtersContainer} showsHorizontalScrollIndicator={false}>
+        {filters.map((filter, index) => (
+          <TouchableOpacity key={index} style={styles.filter}>
+            <Text style={styles.filterText}>{filter.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
       <Text style={styles.sectionTitle}>Categorías</Text>
       <View style={styles.categoriesContainer}>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Limpieza</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Arreglos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Jardinería</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Manicura</Text>
-        </TouchableOpacity>
+        {categories.map((category, index) => (
+          <TouchableOpacity key={index} style={styles.category}>
+            <Image source={category.imageUri} style={styles.categoryImage} />
+            <Text style={styles.categoryText}>{category.name}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -59,50 +73,44 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#000',
   },
-
-
-
-  filterContainer: {
+  filtersContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 15,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    paddingTop: 10,
   },
-  filterButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 10,
-    flex: 1,
-    marginHorizontal: 5,
+  filter: {
+    alignItems: 'center',
+    marginRight: 16,
   },
   filterText: {
+    paddingVertical: 4,
     color: '#000',
-    textAlign: 'center',
+  },
+  categoriesContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 25,
+    paddingBottom: 150,
+  },
+  category: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  categoryImage: {
+    width: 25,
+    height: 25,
+    marginRight: 16,
+  },
+  categoryText: {
+    fontSize: 16,
+    color: '#000',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
     color: '#000',
-    width: '100%',
-  },
-  categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  categoryButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: '48%',
-    alignItems: 'center',
-  },
-  categoryText: {
-    color: '#000',
-    fontWeight: 'bold',
+    textAlign: 'right',
+    marginRight: 270,
   },
 });

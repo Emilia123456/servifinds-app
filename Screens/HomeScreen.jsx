@@ -5,30 +5,29 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const categories = [
-    { name: 'Limpieza', imageUri: require('../assets/icon.jpg') },
-    { name: 'Arreglos', imageUri: require('../assets/icon.jpg') },
-    { name: 'Jardinería', imageUri: require('../assets/icon.jpg') },
-    { name: 'Manicura', imageUri: require('../assets/icon.jpg') },
-    { name: 'Plomería', imageUri: require('../assets/icon.jpg') },
-    { name: 'Cuidado', imageUri: require('../assets/icon.jpg') },
-    { name: 'Otros', imageUri: require('../assets/icon.jpg') },
+    { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
+    { name: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
+    { name: 'Jardinería', imageUri: require('../assets/jardienria.png') },
+    { name: 'Manicura', imageUri: require('../assets/manicura.png') },
+    { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
+    { name: 'Clases', imageUri: require('../assets/clases.png') },
   ];
 
   const recommendations = [
     {
       title: 'Jardinería',
       description: 'Soy Romina y me gustan las flores re coloridas',
-      imageUri: require('../assets/icon.jpg'),
+      imageUri: require('../assets/jardineria-recomendaciones.jpg'),
     },
     {
       title: 'Plomería',
       description: 'Hola me llamo Luis y me gustan las conejitas',
-      imageUri: require('../assets/icon.jpg'),
+      imageUri: require('../assets/plomeria-recomendaciones.jpg'),
     },
     {
       title: 'Manicura',
       description: 'Hola me llamo Angela y hago nail art y esas cosas',
-      imageUri: require('../assets/icon.jpg'),
+      imageUri: require('../assets/manicura-recomendaciones.jpg'),
     },
   ];
 
@@ -38,7 +37,6 @@ export default function HomeScreen() {
         <Text style={styles.logo}>ServiFinds</Text>
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
-      <Image source={require('../assets/icon.jpg')} style={styles.imagePlaceholder} />
 
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         {categories.map((category, index) => (
@@ -48,6 +46,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      <Image source={require('../assets/propaganda.png')} style={styles.imagePlaceholder} />
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
         {recommendations.map((recommendation, index) => (
@@ -102,17 +101,17 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingBottom: 20,
+    paddingTop: 10,
   },
   category: {
     alignItems: 'center',
     marginRight: 16,
   },
   categoryImage: {
-    width: 50,
-    height: 50,
+    width: 25,
+    height: 25,
     marginBottom: 8,
-    borderRadius: 8,
   },
   categoryText: {
     paddingVertical: 4,

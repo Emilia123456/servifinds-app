@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#1B2E35',
     marginBottom: 20,
   },
   input: {
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#000',
+    backgroundColor: '#1B2E35',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
