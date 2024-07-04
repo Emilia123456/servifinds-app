@@ -1,89 +1,107 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
-  const [username, setUsername] = useState('');
-
-  const handleLogin = () => {
-    // Aquí puedes agregar la lógica de autenticación
-    if (username) {
-      navigation.navigate('Main');
-    } else {
-      alert('Por favor, ingrese su usuario');
-    }
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
-    <View>
-      <Text>Iniciar sesión</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Hola de nuevo :)</Text>
       <TextInput
-        placeholder="Usuario"
-        value={username}
-        onChangeText={setUsername}
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#777"
+        value={email}
+        onChangeText={setEmail}
       />
-      <Button title="Entrar" onPress={handleLogin} />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#777"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.forgotPassword}>
+        <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')}>
+        <Text style={styles.buttonText}>Continuar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.signUpText}>¿Aun no tenes cuenta? ¡Registrate!</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
-
-
-
-// import React from 'react';
-// import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-
-// const { width } = Dimensions.get('window');
-
-// export default function LoginScreen({ navigation }) {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.logo}>ServiFinds</Text>
-//       <TextInput style={styles.input} placeholder="Correo electrónico" keyboardType="email-address" />
-//       <TextInput style={styles.input} placeholder="Contraseña" secureTextEntry />
-//       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-//         <Text style={styles.buttonText}>Iniciar sesión</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-//         <Text style={styles.link}>¿No tienes una cuenta? Regístrate</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 16,
-//     backgroundColor: '#fff',
-//   },
-//   logo: {
-//     fontSize: 32,
-//     fontWeight: 'bold',
-//     marginBottom: 32,
-//   },
-//   input: {
-//     width: width - 32,
-//     padding: 12,
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 8,
-//     marginBottom: 16,
-//   },
-//   button: {
-//     width: width - 32,
-//     padding: 12,
-//     backgroundColor: '#2196F3',
-//     borderRadius: 8,
-//     alignItems: 'center',
-//     marginBottom: 16,
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     fontWeight: 'bold',
-//   },
-//   link: {
-//     color: '#2196F3',
-//   },
-// });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#f0f0f0',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    color: '#000',
+  },
+  forgotPassword: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginVertical: 10,
+  },
+  forgotPasswordText: {
+    color: '#777',
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#000',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  or: {
+    color: '#777',
+    marginVertical: 10,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  socialButton: {
+    padding: 15,
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+  },
+  socialButtonText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  signUpText: {
+    color: '#777',
+    marginTop: 20,
+  },
+});

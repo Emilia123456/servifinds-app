@@ -36,14 +36,14 @@ export default function HomeScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>ServiFinds</Text>
-        <TextInput style={styles.searchInput} placeholder="Buscar" />
+        <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
       <Image source={require('../assets/icon.jpg')} style={styles.imagePlaceholder} />
 
-      <ScrollView horizontal style={styles.categoriesContainer}>
+      <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         {categories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.category}>
-            <Image source={require('../assets/icon.jpg')} style={styles.categoryImage} />
+            <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
@@ -52,7 +52,7 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
         {recommendations.map((recommendation, index) => (
           <TouchableOpacity key={index} style={styles.recommendation}>
-            <Image source={require('../assets/icon.jpg')} style={styles.recommendationImage} />
+            <Image source={recommendation.imageUri} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>4.9 (234)</Text>
@@ -79,18 +79,22 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'left',
+    padding: 5,
   },
   searchInput: {
     width: width - 32,
-    padding: 8,
+    padding: 12,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     marginTop: 8,
+    color: '#000',
   },
   imagePlaceholder: {
     width: width - 32,
-    height: 100,
+    height: 150,
     marginHorizontal: 16,
     marginVertical: 16,
     borderRadius: 8,
@@ -108,9 +112,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginBottom: 8,
+    borderRadius: 8,
   },
   categoryText: {
     paddingVertical: 4,
+    color: '#000',
   },
   recommendationsContainer: {
     paddingHorizontal: 16,
@@ -120,6 +126,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     paddingVertical: 4,
+    color: '#000',
   },
   recommendation: {
     flexDirection: 'row',
@@ -146,9 +153,11 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 4,
+    color: '#000',
   },
   recommendationTitle: {
     fontWeight: 'bold',
+    color: '#000',
     marginBottom: 4,
   },
   recommendationSubtitle: {
