@@ -1,29 +1,45 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../HomeScreen';
-import { View, Text } from 'react-native';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import RootNavigator from "./navigation/RootNavigator";
+import Footer from "./Footer";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
-const Tab = createBottomTabNavigator();
+SplashScreen.preventAutoHideAsync();
 
-function PlaceholderScreen() {
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: "../assets/fonts/SpaceMono-Regular.ttf",
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Pantalla de ejemplo</Text>
+    <View style={styles.container}>
+      <View style={styles.mainContent}>
+        <RootNavigator />
+      </View>
+      <Footer />
     </View>
   );
 }
 
-export default function RootNavigator() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Búsqueda" component={PlaceholderScreen} />
-        <Tab.Screen name="Reservas" component={PlaceholderScreen} />
-        <Tab.Screen name="Favoritos" component={PlaceholderScreen} />
-        <Tab.Screen name="Perfil" component={PlaceholderScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  mainContent: {
+    flex: 1,
+  },
+});

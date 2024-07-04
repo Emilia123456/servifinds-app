@@ -1,31 +1,36 @@
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import RootNavigator from "./navigation/RootNavigator";
+import Footer from "./Footer";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import RootNavigator from "./navigation/RootNavigator";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [fontsLoaded] = useFonts({
-    SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
+  const [loaded] = useFonts({
+    SpaceMono: "../assets/fonts/SpaceMono-Regular.ttf",
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
+    if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [loaded]);
 
-  if (!fontsLoaded) {
+  if (!loaded) {
     return null;
   }
 
   return (
     <View style={styles.container}>
-      <RootNavigator />
+      <View style={styles.mainContent}>
+        <RootNavigator />
+      </View>
+      <Footer />
     </View>
   );
 }
@@ -33,5 +38,10 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative', 
+  },
+  mainContent: {
+    flex: 1,
+    paddingBottom: 60,  
   },
 });
