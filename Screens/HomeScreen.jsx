@@ -41,12 +41,16 @@ export default function HomeScreen() {
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         {categories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.category}>
-            <Image source={category.imageUri} style={styles.categoryImage} />
+              <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <Image source={require('../assets/propaganda.png')} style={styles.imagePlaceholder} />
+      
+      <View style={styles.imageContainer}>
+        <Image source={require('../assets/propaganda.png')} style={styles.imagePlaceholder} />
+      </View>
+      
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
         {recommendations.map((recommendation, index) => (
@@ -91,13 +95,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#000',
   },
-  imagePlaceholder: {
-    width: width - 32,
-    height: 150,
-    marginHorizontal: 16,
-    marginVertical: 16,
-    borderRadius: 8,
-  },
   categoriesContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
@@ -116,6 +113,16 @@ const styles = StyleSheet.create({
   categoryText: {
     paddingVertical: 4,
     color: '#000',
+  },
+  imageContainer: {
+    position: 'relative',
+    marginHorizontal: 16,
+    marginVertical: 16,
+  },
+  imagePlaceholder: {
+    width: width - 32,
+    height: 150,
+    borderRadius: 8,
   },
   recommendationsContainer: {
     paddingHorizontal: 16,

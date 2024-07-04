@@ -2,29 +2,21 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 export default function StartScreen({ navigation }) {
-
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-      <Image
-          source={require('../assets/icon.jpg')} // Cambia la URL por la ruta de tu imagen
-          style={styles.image}
-        />
-        <Text style={styles.title}>ServiFinds</Text>
-        <Text style={styles.subtitle}>
-          La solución a tu puerta
-        </Text>
-      </View>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonText}>Registrarse</Text>
-        </TouchableOpacity>
-      </View>
       <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Omitir')}>
         <Text style={styles.skipButtonText}>Omitir</Text>
+      </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.title}>ServiFinds</Text>
+        <Text style={styles.subtitle}>La solución a tu puerta. Servicios a domicilio</Text>
+      </View>
+      <Image
+        source={require('../assets/icon.jpg')} // Cambia la ruta a la imagen subida
+        style={styles.image}
+      />
+      <TouchableOpacity style={styles.startButton} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.startButtonText}>Empezar</Text>
       </TouchableOpacity>
     </View>
   );
@@ -33,58 +25,51 @@ export default function StartScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 20,
+    position: 'relative',
   },
   header: {
-    marginTop: 60,
     alignItems: 'center',
+    marginBottom: 30,
   },
   image: {
-    width: 300,
-    height: 300,
-    marginBottom: 20,
-    marginTop: 100,
+    width: 200,
+    height: 200,
+    marginBottom: 30,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#1B2E35',
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 16,
     textAlign: 'center',
-    color: '#777',
+    color: '#666',
     marginTop: 10,
-    paddingHorizontal: 20,
   },
-  footer: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 80,
-  },
-  button: {
-    width: '100%',
-    backgroundColor: '#1B2E35', 
+  startButton: {
+    backgroundColor: '#1B2E35',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    width: '80%',
   },
-  buttonText: {
+  startButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   skipButton: {
     position: 'absolute',
-    bottom: 55,
-    right: 40,
+    top: 50,
+    right: 20,
   },
   skipButtonText: {
-    color: '#000',
-    fontSize: 17,
+    color: '#1B2E35',
+    fontSize: 16,
   },
 });
