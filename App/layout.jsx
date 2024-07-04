@@ -1,11 +1,12 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import RootNavigator from "./navigation/RootNavigator";
-import Footer from "./Footer";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { View, StyleSheet } from "react-native";
+import "react-native-reanimated";
+import RootNavigator from "./navigation/RootNavigator";
+
 import { useColorScheme } from "@/hooks/useColorScheme";
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,21 +28,15 @@ export default function RootLayout() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <RootNavigator />
-      </View>
-      <Footer />
+          <RootNavigator />
     </View>
   );
+
+
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative', 
-  },
-  mainContent: {
-    flex: 1,
-    paddingBottom: 60,  
   },
 });

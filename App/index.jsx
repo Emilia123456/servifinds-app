@@ -1,6 +1,13 @@
 import React from 'react';
 import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+
+import { registerRootComponent } from 'expo';
+import App from './App';
+
+registerRootComponent(App);
+
 const { width } = Dimensions.get('window');
+
 
 export default function HomeScreen() {
   const categories = [
