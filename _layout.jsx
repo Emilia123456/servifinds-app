@@ -7,13 +7,18 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+module.exports = {
+  assets: ['../assets/Poppins/Poppins-Medium.ttf'],
+};
+
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Poppins: require('../assets/Poppins/Poppins-Medium.ttf'),
   });
 
   useEffect(() => {

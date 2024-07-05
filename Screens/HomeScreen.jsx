@@ -8,7 +8,7 @@ export default function HomeScreen() {
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
     { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
     { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
-    { name: 'Manicura', imageUri: require('../assets/manicura.png') },
+    { name: 'Belleza', imageUri: require('../assets/manicura.png') },
     { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
     { name: 'Clases', imageUri: require('../assets/clases.png') },
   ];
@@ -28,7 +28,11 @@ export default function HomeScreen() {
       title: 'Manicura',
       description: 'Hola me llamo Angela y hago nail art y esas cosas',
       imageUri: require('../assets/manicura-recomendaciones.jpg'),
-    },
+    },{
+      title: 'Particular Matematica',
+      description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
+      imageUri: require('../assets/clases-recomendaciones.jpg'),
+    }
   ];
 
   return (
@@ -77,13 +81,6 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
   },
-  logo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'left',
-    padding: 5,
-  },
   searchInput: {
     width: width - 32,
     padding: 12,
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     marginTop: 8,
-    color: '#000',
+    color: '#1B2E35',
   },
   categoriesContainer: {
     flexDirection: 'row',
@@ -110,7 +107,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     paddingVertical: 4,
-    color: '#000',
+    color: '#1B2E35',
   },
   imageContainer: {
     position: 'relative',
@@ -130,7 +127,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     paddingVertical: 4,
-    color: '#000',
+    color: '#1B2E35',
   },
   recommendation: {
     flexDirection: 'row',
@@ -157,15 +154,15 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 4,
-    color: '#000',
+    color: '#1B2E35',
   },
   recommendationTitle: {
     fontWeight: 'bold',
-    color: '#000',
+    color: '#1B2E35',
     marginBottom: 4,
   },
   recommendationSubtitle: {
-    color: '#666',
+    color: '#1B2E35',
     marginBottom: 4,
   },
 });

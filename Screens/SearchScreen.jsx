@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
+
+
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen() {
@@ -16,7 +18,7 @@ export default function SearchScreen() {
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
     { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
     { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
-    { name: 'Manicura', imageUri: require('../assets/manicura.png') },
+    { name: 'Belleza', imageUri: require('../assets/manicura.png') },
     { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
     { name: 'Clases', imageUri: require('../assets/clases.png') },
   ];
@@ -48,6 +50,7 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -55,13 +58,7 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
   },
-  logo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'left',
-    padding: 5,
-  },
+
   searchInput: {
     width: width - 32,
     padding: 12,
@@ -69,7 +66,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     marginTop: 8,
-    color: '#000',
+    color: '#1B2E35',
   },
   filtersContainer: {
     flexDirection: 'row',
@@ -83,12 +80,13 @@ const styles = StyleSheet.create({
   },
   filterText: {
     paddingVertical: 4,
-    color: '#000',
+    color: '#1B2E35',
+    fontFamily: 'Roboto-Regular',
   },
   categoriesContainer: {
     paddingHorizontal: 16,
     paddingTop: 25,
-    paddingBottom: 120,
+    paddingBottom: 230,
   },
   category: {
     flexDirection: 'row',
@@ -102,12 +100,12 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    color: '#000',
+    color: '#1B2E35',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#1B2E35',
     textAlign: 'right',
     marginRight: 270,
   },

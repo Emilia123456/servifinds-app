@@ -12,19 +12,19 @@ const TopOverlay = () => {
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: 60,
+    left: 15,
     right: 0,
-    height: 65, // Ajusta la altura según sea necesario
-    backgroundColor: '#fff', // Ajusta el color de fondo según sea necesario
-    zIndex: 1000, // Asegúrate de que esté en la parte superior
-    borderBottomWidth: 0, // Eliminar la línea de separación si existe
-    elevation: 0, // Eliminar sombra en Android
+    height: 55,
+    backgroundColor: '#fff', 
+    zIndex: 1000, 
+    borderBottomWidth: 0, 
+    elevation: 0, 
   },
   logo: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#1B2E35',
     textAlign: 'left',
     padding: 5,
   },
