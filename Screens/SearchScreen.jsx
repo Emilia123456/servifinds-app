@@ -14,8 +14,8 @@ export default function SearchScreen() {
 
   const categories = [
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
-    { name: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
-    { name: 'Jardinería', imageUri: require('../assets/jardienria.png') },
+    { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
+    { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
     { name: 'Manicura', imageUri: require('../assets/manicura.png') },
     { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
     { name: 'Clases', imageUri: require('../assets/clases.png') },
@@ -24,7 +24,6 @@ export default function SearchScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logo}>ServiFinds</Text>
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
 
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
-    marginTop: 40,
   },
   logo: {
     fontSize: 24,
@@ -90,7 +88,7 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     paddingHorizontal: 16,
     paddingTop: 25,
-    paddingBottom: 150,
+    paddingBottom: 120,
   },
   category: {
     flexDirection: 'row',

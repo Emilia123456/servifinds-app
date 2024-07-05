@@ -4,7 +4,7 @@ import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-n
 export default function StartScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Omitir')}>
+      <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.skipButtonText}>Omitir</Text>
       </TouchableOpacity>
       <View style={styles.header}>

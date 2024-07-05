@@ -14,7 +14,6 @@ export default function MainStackNavigator() {
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Omitir" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={BottomTabNavigator} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
