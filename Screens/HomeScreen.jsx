@@ -5,12 +5,12 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const categories = [
-    { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
     { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
-    { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
-    { name: 'Belleza', imageUri: require('../assets/manicura.png') },
-    { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
+    { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
+    { name: 'Estética', imageUri: require('../assets/manicura.png') },
     { name: 'Clases', imageUri: require('../assets/clases.png') },
+    { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
+    { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
   ];
 
   const recommendations = [
