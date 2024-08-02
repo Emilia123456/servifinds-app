@@ -21,16 +21,10 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
 
-      <ScrollView horizontal style={styles.filtersContainer} showsHorizontalScrollIndicator={false}>
-        {filters.map((filter, index) => (
-          <TouchableOpacity key={index} style={styles.filter}>
-            <Text style={styles.filterText}>{filter.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+
 
       <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView style={styles.categoriesContainer}>
+      <View style={styles.categoriesContainer}>
         {categories.map((category, index) => (
           <TouchableOpacity 
             key={index} 
@@ -43,7 +37,7 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 }
