@@ -15,9 +15,6 @@ export default function MainStackNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={BottomTabNavigator} options={{ headerShown: false }} />
-    {/* <Stack.Screen name="Profile" component={BottomTabNavigator} options={{ headerShown: false }} /> */}
-    {/* <Stack.Screen name="Reservations" component={BottomTabNavigator} options={{ headerShown: false }} /> */}
-    {/* <Stack.Screen name="Favorites" component={BottomTabNavigator} options={{ headerShown: false }} /> */}
     </Stack.Navigator>
   );
 }

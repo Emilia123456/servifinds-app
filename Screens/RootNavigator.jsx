@@ -5,6 +5,7 @@ import HomeScreen from './HomeScreen';
 import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-web';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Octicons from '@expo/vector-icons/Octicons';
 const Tab = createBottomTabNavigator();
 
 function PlaceholderScreen() {
@@ -25,19 +26,19 @@ export default function RootNavigator() {
           tabBarIcon: ({ color, size }) => {
             let iconName;
             if (route.name === 'Home') {
-              iconName = 'home-outline';
+              iconName = 'home';
             } else if (route.name === 'Búsqueda') {
-              iconName = 'search-outline';
+              iconName = 'search';
             } else if (route.name === 'Reservas') {
-              iconName = 'calendar-outline';
+              iconName = 'calendar';
             } else if (route.name === 'Favoritos') {
-              iconName = 'heart-outline';
+              iconName = 'heart';
             } else if (route.name === 'Perfil') {
-              iconName = 'person-outline';
+              iconName = 'person';
             }
 
             // Puedes devolver cualquier componente que desees aquí.
-            return <Icon name={iconName} size={size} color={color} />;
+            return <Octicons name={iconName} size={24} color="black" />;
           },
           tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
           tabBarStyle: { paddingBottom: 5, height: 60 }

@@ -1,9 +1,10 @@
+// HomeScreen.js
 import React from 'react';
 import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const categories = [
     { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
@@ -28,7 +29,8 @@ export default function HomeScreen() {
       title: 'Manicura',
       description: 'Hola me llamo Angela y hago nail art y esas cosas',
       imageUri: require('../assets/manicura-recomendaciones.jpg'),
-    },{
+    },
+    {
       title: 'Particular Matematica',
       description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
       imageUri: require('../assets/clases-recomendaciones.jpg'),
@@ -44,7 +46,7 @@ export default function HomeScreen() {
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         {categories.map((category, index) => (
           <TouchableOpacity key={index} style={styles.category}>
-              <Image source={category.imageUri} style={styles.categoryImage} />
+            <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
@@ -57,7 +59,15 @@ export default function HomeScreen() {
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
         {recommendations.map((recommendation, index) => (
-          <TouchableOpacity key={index} style={styles.recommendation}>
+          <TouchableOpacity
+            key={index}
+            style={styles.recommendation}
+            onPress={() => navigation.navigate('Detail', {
+              title: recommendation.title,
+              description: recommendation.description,
+              imageUri: recommendation.imageUri,
+            })}
+          >
             <Image source={recommendation.imageUri} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>

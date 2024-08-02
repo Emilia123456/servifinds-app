@@ -5,9 +5,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../Screens/HomeScreen';
 import SearchScreen from '../Screens/SearchScreen';
 import BookingScreen from '../Screens/BookingScreen';
-import TopOverlay from '../components/TopOverlay'; // Ajusta la ruta según sea necesario
+import TopOverlay from '../components/TopOverlay';
 import FavoriteScreen from '../Screens/FavoriteScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
+import DetailScreen from '../Screens/DetailScreen';
+import CategoryScreen from '../Screens/CategoryScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -20,10 +22,11 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator
       screenOptions={{
-        headerShown: false, // Ocultar el encabezado predeterminado
+        headerShown: false,
       }}
     >
       <HomeStack.Screen name="ServiFinds" component={HomeScreen} />
+      <HomeStack.Screen name="Detail" component={DetailScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -32,51 +35,50 @@ function SearchStackScreen() {
   return (
     <SearchStack.Navigator
       screenOptions={{
-        headerShown: false, // Ocultar el encabezado predeterminado
+        headerShown: false,
       }}
     >
       <SearchStack.Screen name="Búsqueda" component={SearchScreen} />
+      <SearchStack.Screen name="Categoría" component={CategoryScreen} />
     </SearchStack.Navigator>
   );
 }
 
 function BookingStackScreen() {
   return (
-    <SearchStack.Navigator
+    <BookingStack.Navigator
       screenOptions={{
-        headerShown: false, 
+        headerShown: false,
       }}
     >
-      <SearchStack.Screen name="Reservas" component={BookingScreen} />
-    </SearchStack.Navigator>
+      <BookingStack.Screen name="Reservas" component={BookingScreen} />
+    </BookingStack.Navigator>
   );
 }
 
 function FavoriteStackScreen() {
   return (
-    <SearchStack.Navigator
+    <FavoriteStack.Navigator
       screenOptions={{
-        headerShown: false, 
+        headerShown: false,
       }}
     >
-      <SearchStack.Screen name="Reservas" component={FavoriteScreen} />
-    </SearchStack.Navigator>
+      <FavoriteStack.Screen name="Favoritos" component={FavoriteScreen} />
+    </FavoriteStack.Navigator>
   );
 }
 
 function ProfileStackScreen() {
   return (
-    <SearchStack.Navigator
+    <ProfileStack.Navigator
       screenOptions={{
-        headerShown: false, 
+        headerShown: false,
       }}
     >
-      <SearchStack.Screen name="Perfil" component={ProfileScreen} />
-    </SearchStack.Navigator>
+      <ProfileStack.Screen name="Perfil" component={ProfileScreen} />
+    </ProfileStack.Navigator>
   );
 }
-
-
 
 export default function BottomTabNavigator() {
   return (

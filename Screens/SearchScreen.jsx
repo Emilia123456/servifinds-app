@@ -1,18 +1,10 @@
 import React from 'react';
 import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
-
-
 const { width } = Dimensions.get('window');
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {  // Recibe navigation como prop
 
-  const filters = [
-    { name: 'Mejor valorados' },
-    { name: 'Precio' },
-    { name: 'Más trabajos realizados' },
-    { name: 'Cerca tuyo' },
-  ];
 
   const categories = [
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
@@ -36,21 +28,27 @@ export default function SearchScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
       <Text style={styles.sectionTitle}>Categorías</Text>
-      <View style={styles.categoriesContainer}>
+      <ScrollView style={styles.categoriesContainer}>
         {categories.map((category, index) => (
-          <TouchableOpacity key={index} style={styles.category}>
+          <TouchableOpacity 
+            key={index} 
+            style={styles.category}
+            onPress={() => navigation.navigate('Categoría', { 
+              title: category.name,
+              imageUri: category.imageUri,
+            })}>
             <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -58,7 +56,6 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
   },
-
   searchInput: {
     width: width - 32,
     padding: 12,
