@@ -4,7 +4,7 @@
     "slug": "servifinds-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "",
+    "icon": "icon.jpg",
     "userInterfaceStyle": "light",
     "splash": {
      
@@ -17,7 +17,6 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },

@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SafeAreaView} from 'react-native';
 
 export default function StartScreen({ navigation }) {
   return (
+  
     <View style={styles.container}>
       <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.skipButtonText}>Omitir</Text>
@@ -19,6 +20,7 @@ export default function StartScreen({ navigation }) {
         <Text style={styles.startButtonText}>Empezar</Text>
       </TouchableOpacity>
     </View>
+
   );
 }
 
