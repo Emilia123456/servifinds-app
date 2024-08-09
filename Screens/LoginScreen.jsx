@@ -5,6 +5,16 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLogin = () => {
+    // Aquí iría la lógica de autenticación
+
+    // Si el login es exitoso, reseteamos el stack de navegación
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }], // 'Main' es el nombre de tu stack principal
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hola de nuevo :)</Text>

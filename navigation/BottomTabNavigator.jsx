@@ -18,11 +18,15 @@ const BookingStack = createStackNavigator();
 const FavoriteStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 
+
+
+
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="ServiFinds" component={HomeScreen} />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
+      <HomeStack.Screen name="Categoría" component={CategoryScreen} />
     </HomeStack.Navigator>
   );
 }

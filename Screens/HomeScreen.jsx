@@ -1,6 +1,7 @@
 // HomeScreen.js
 import React from 'react';
-import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler  } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import TopOverlay from '../components/TopOverlay';
 
 const { width } = Dimensions.get('window');
@@ -38,10 +39,24 @@ export default function HomeScreen({ navigation }) {
     }
   ];
 
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
+
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.overlay}>
-        <Text style={styles.logo}> ServiFinds </Text>
+        <Text style={styles.logo}>ServiFinds</Text>
       </View>
       <View style={styles.header}>
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
@@ -49,7 +64,14 @@ export default function HomeScreen({ navigation }) {
 
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
         {categories.map((category, index) => (
-          <TouchableOpacity key={index} style={styles.category}>
+          <TouchableOpacity
+            key={index}
+            style={styles.category}
+            onPress={() => navigation.navigate('Categoría', { 
+              title: category.name,
+              imageUri: category.imageUri
+            })}
+          >
             <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
@@ -184,10 +206,10 @@ const styles = StyleSheet.create({
     top: -20,
     left: 1,
     right: 0,
-    backgroundColor: '#fff', 
-    zIndex: 1000, 
-    borderBottomWidth: 0, 
-    elevation: 0, 
+    backgroundColor: '#fff',
+    zIndex: 1000,
+    borderBottomWidth: 0,
+    elevation: 0,
   },
   logo: {
     fontSize: 24,

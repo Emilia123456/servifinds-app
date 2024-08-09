@@ -14,7 +14,7 @@ export default function FavoriteScreen({ route, navigation }) {
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
-  // Puedes reemplazar esto con una llamada a Axios para obtener datos reales
+  // Reemplazar esto con Axios
   const recommendations = [
     {
       title: 'Jardinería',

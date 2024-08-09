@@ -15,7 +15,7 @@ export default function CategoryScreen({ route, navigation }) {
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
-  // Puedes reemplazar esto con una llamada a Axios para obtener datos reales
+
   const recommendations = [
     {
       title: 'Jardinería',
