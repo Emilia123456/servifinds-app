@@ -1,11 +1,20 @@
-// HomeScreen.js
-import React from 'react';
-import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-export default function HomeScreen({ navigation }) {
+export default function FavoriteScreen({ route, navigation }) {
+  useEffect(() => {
+    if (!route.params) {
+      navigation.goBack(); 
+    }
+  }, [route.params]);
 
+  const { title = 'Default Title', description = 'Default Description', imageUri = null } = route.params || {};
+
+  const [selectedFilter, setSelectedFilter] = useState(null);
+
+  // Puedes reemplazar esto con una llamada a Axios para obtener datos reales
   const recommendations = [
     {
       title: 'Jardinería',
@@ -29,8 +38,21 @@ export default function HomeScreen({ navigation }) {
     }
   ];
 
+  const filteredRecommendations = recommendations.filter(
+    recommendation => recommendation.filter === selectedFilter
+  );
+
+  const handleFilterPress = (filterName) => {
+    if (selectedFilter === filterName) {
+      setSelectedFilter(null); 
+    } else {
+      setSelectedFilter(filterName);
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView style={styles.recommendationsContainer}>
         {recommendations.map((recommendation, index) => (
           <TouchableOpacity
             key={index}
@@ -51,7 +73,8 @@ export default function HomeScreen({ navigation }) {
             </View>
           </TouchableOpacity>
         ))}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -63,45 +86,42 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
   },
-
-  categoriesContainer: {
+  searchInput: {
+    width: width - 32,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginTop: 8,
+    color: '#1B2E35',
+  },
+  filtersContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingBottom: 20,
     paddingTop: 10,
   },
-  category: {
+  filter: {
+    height: 38,
     alignItems: 'center',
     marginRight: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    minWidth: 100, 
   },
-  categoryImage: {
-    width: 25,
-    height: 25,
-    marginBottom: 8,
+  selectedFilter: {
+    backgroundColor: '#D5F8E4',
+    borderColor: '#446C64',
   },
-  categoryText: {
-    paddingVertical: 4,
+  filterText: {
     color: '#1B2E35',
-  },
-  imageContainer: {
-    position: 'relative',
-    marginHorizontal: 16,
-    marginVertical: 16,
-  },
-  imagePlaceholder: {
-    width: width - 32,
-    height: 150,
-    borderRadius: 8,
+    fontFamily: 'Roboto-Regular',
   },
   recommendationsContainer: {
     paddingHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    paddingVertical: 4,
-    color: '#1B2E35',
   },
   recommendation: {
     flexDirection: 'row',
