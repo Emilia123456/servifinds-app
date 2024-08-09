@@ -6,7 +6,7 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
   const categories = [
-    { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
+    { name: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
     { name: 'Estética', imageUri: require('../assets/manicura.png') },
     { name: 'Clases', imageUri: require('../assets/clases.png') },

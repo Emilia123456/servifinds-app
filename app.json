@@ -1,27 +1,27 @@
-{
-  "expo": {
-    "name": "servifinds-app",
-    "slug": "servifinds-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "icon.jpg",
-    "userInterfaceStyle": "light",
-    "splash": {
-     
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "entryPoint": "./index.js",
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
+  {
+    "expo": {
+      "name": "servifinds-app",
+      "slug": "servifinds-app",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/LogoServifinds.png",
+      "userInterfaceStyle": "light",
+      "splash": {
+        "image": "./assets/LogoServifinds.png",
+        "resizeMode": "container",
         "backgroundColor": "#ffffff"
+      },
+      "entryPoint": "./index.js",
+      "ios": {
+        "supportsTablet": true
+      },
+      "android": {
+        "adaptiveIcon": {
+          "backgroundColor": "#ffffff"
+        }
+      },
+      "web": {
+        "favicon": ""
       }
-    },
-    "web": {
-      "favicon": ""
     }
   }
-}

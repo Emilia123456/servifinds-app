@@ -8,7 +8,7 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
 
   const categories = [
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
-    { name: 'Arreglos', imageUri: require('../assets/arreglos.png') },
+    { name: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
     { name: 'Jardinería', imageUri: require('../assets/jardineria.png') },
     { name: 'Belleza', imageUri: require('../assets/manicura.png') },
     { name: 'Cuidado', imageUri: require('../assets/cuidado.png') },
