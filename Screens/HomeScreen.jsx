@@ -1,6 +1,7 @@
 // HomeScreen.js
 import React from 'react';
 import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import TopOverlay from '../components/TopOverlay';
 
 const { width } = Dimensions.get('window');
 
@@ -39,6 +40,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.overlay}>
+        <Text style={styles.logo}> ServiFinds </Text>
+      </View>
       <View style={styles.header}>
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
@@ -174,5 +178,23 @@ const styles = StyleSheet.create({
   recommendationSubtitle: {
     color: '#1B2E35',
     marginBottom: 4,
+  },
+  overlay: {
+    position: 'absolute',
+    top: -20,
+    left: 1,
+    right: 0,
+    backgroundColor: '#fff', 
+    zIndex: 1000, 
+    borderBottomWidth: 0, 
+    elevation: 0, 
+  },
+  logo: {
+    fontSize: 24,
+    left: 15,
+    fontWeight: 'bold',
+    color: '#1B2E35',
+    textAlign: 'left',
+    padding: 5,
   },
 });

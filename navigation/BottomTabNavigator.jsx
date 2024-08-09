@@ -48,6 +48,7 @@ function FavoriteStackScreen() {
   return (
     <FavoriteStack.Navigator screenOptions={{ headerShown: false }}>
       <FavoriteStack.Screen name="Favoritos" component={FavoriteScreen} />
+      <FavoriteStack.Screen name="Detail" component={DetailScreen} />
     </FavoriteStack.Navigator>
   );
 }

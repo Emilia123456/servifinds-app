@@ -7,9 +7,9 @@
       "icon": "./assets/LogoServifinds.png",
       "userInterfaceStyle": "light",
       "splash": {
-        "image": "./assets/LogoServifinds.png",
-        "resizeMode": "container",
-        "backgroundColor": "#ffffff"
+        "image": "./assets/splash.png",
+        "resizeMode": "native",
+        "backgroundColor": "#D5F8E4"
       },
       "entryPoint": "./index.js",
       "ios": {
@@ -17,7 +17,7 @@
       },
       "android": {
         "adaptiveIcon": {
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#D5F8E4"
         }
       },
       "web": {

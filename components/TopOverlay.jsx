@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TopOverlay = () => {
   return (
-
+    
       <View style={styles.overlay}>
-        <Text style={styles.logo}>ServiFinds</Text>
+        <Text style={styles.logo}> </Text>
       </View>
 
 
@@ -16,10 +16,9 @@ const TopOverlay = () => {
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    top: 60,
+    top: 50,
     left: 1,
     right: 0,
-    height: 55,
     backgroundColor: '#fff', 
     zIndex: 1000, 
     borderBottomWidth: 0, 

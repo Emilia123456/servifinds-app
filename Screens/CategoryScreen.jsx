@@ -3,7 +3,7 @@ import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, Touch
 
 const { width } = Dimensions.get('window');
 
-export default function CategoryScreen({ route }) {
+export default function CategoryScreen({ route, navigation }) {
   const { title, description, imageUri } = route.params;
 
   const filters = [
@@ -15,12 +15,28 @@ export default function CategoryScreen({ route }) {
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
+  // Puedes reemplazar esto con una llamada a Axios para obtener datos reales
   const recommendations = [
-    // Añade tus recomendaciones aquí
-    // Ejemplo:
-    { filter: 'Mejor valorados', name: 'Recomendación 1', description: 'Descripción 1' },
-    { filter: 'Precio', name: 'Recomendación 2', description: 'Descripción 2' },
-    // ...
+    {
+      title: 'Jardinería',
+      description: 'Soy Romina y me gustan las flores re coloridas',
+      imageUri: require('../assets/jardineria-recomendaciones.jpg'),
+    },
+    {
+      title: 'Plomería',
+      description: 'Hola me llamo Luis y me gustan las conejitas',
+      imageUri: require('../assets/plomeria-recomendaciones.jpg'),
+    },
+    {
+      title: 'Manicura',
+      description: 'Hola me llamo Angela y hago nail art y esas cosas',
+      imageUri: require('../assets/manicura-recomendaciones.jpg'),
+    },
+    {
+      title: 'Particular Matematica',
+      description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
+      imageUri: require('../assets/clases-recomendaciones.jpg'),
+    }
   ];
 
   const filteredRecommendations = recommendations.filter(
@@ -29,7 +45,7 @@ export default function CategoryScreen({ route }) {
 
   const handleFilterPress = (filterName) => {
     if (selectedFilter === filterName) {
-      setSelectedFilter(null); // Deseleccionar si ya está seleccionado
+      setSelectedFilter(null); 
     } else {
       setSelectedFilter(filterName);
     }
@@ -53,17 +69,27 @@ export default function CategoryScreen({ route }) {
         ))}
       </ScrollView>
 
-      <ScrollView>
- 
-
-        <View style={styles.recommendationsContainer}>
-          {filteredRecommendations.map((recommendation, index) => (
-            <View key={index} style={styles.recommendation}>
-              <Text style={styles.recommendationName}>{recommendation.name}</Text>
-              <Text style={styles.recommendationDescription}>{recommendation.description}</Text>
+      <ScrollView style={styles.recommendationsContainer}>
+        {recommendations.map((recommendation, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.recommendation}
+            onPress={() => navigation.navigate('Detail', {
+              title: recommendation.title,
+              description: recommendation.description,
+              imageUri: recommendation.imageUri,
+            })}
+          >
+            <Image source={recommendation.imageUri} style={styles.recommendationImage} />
+            <View style={styles.recommendationText}>
+              <View style={styles.rating}>
+                <Text style={styles.ratingText}>4.9 (234)</Text>
+              </View>
+              <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
+              <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
             </View>
-          ))}
-        </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -89,12 +115,11 @@ const styles = StyleSheet.create({
   filtersContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    
     paddingBottom: 20,
     paddingTop: 10,
   },
   filter: {
-    height:38,
+    height: 38,
     alignItems: 'center',
     marginRight: 16,
     paddingVertical: 8,
@@ -102,49 +127,53 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#ccc',
-    minWidth: 100, // Ajuste de tamaño mínimo
+    minWidth: 100, 
   },
   selectedFilter: {
-    backgroundColor: '#a3c9a8', // Cambia el color según tus necesidades
-    borderColor: '#1B2E35',
+    backgroundColor: '#D5F8E4',
+    borderColor: '#446C64',
   },
   filterText: {
     color: '#1B2E35',
     fontFamily: 'Roboto-Regular',
   },
-  categoryContainer: {
-    alignItems: 'center',
-    padding: 16,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1B2E35',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 16,
-    color: '#777',
-    textAlign: 'center',
-  },
   recommendationsContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
   },
   recommendation: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
+    backgroundColor: '#f9f9f9',
+    padding: 8,
+    borderRadius: 8,
   },
-  recommendationName: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  recommendationImage: {
+    width: 140,
+    height: 90,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  recommendationText: {
+    flex: 1,
+    paddingVertical: 4,
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  ratingText: {
+    marginLeft: 4,
     color: '#1B2E35',
   },
-  recommendationDescription: {
-    fontSize: 14,
-    color: '#777',
+  recommendationTitle: {
+    fontWeight: 'bold',
+    color: '#1B2E35',
+    marginBottom: 4,
+  },
+  recommendationSubtitle: {
+    color: '#1B2E35',
+    marginBottom: 4,
   },
 });
