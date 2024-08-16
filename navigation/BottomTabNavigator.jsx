@@ -26,9 +26,7 @@ function HomeStackScreen() {
         component={HomeScreen} 
         options={{
           header: () => <TopOverlay showText={true} />,
-          headerTransparent:true,
-          //headerVisible: false,
-          //headerTitle: "",
+          headerTransparent: true,
           headerShown: false
         }} 
       />
@@ -83,7 +81,7 @@ export default function BottomTabNavigator() {
 
             switch (route.name) {
               case 'ServiFinds':
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/home.png');
                 break;
               case 'Búsqueda':
                 iconSource = require('../assets/limpieza.png');
@@ -100,29 +98,25 @@ export default function BottomTabNavigator() {
               default:
                 iconSource = require('../assets/limpieza.png');
             }
-
             return (
               <Image
                 source={iconSource}
                 style={[
                   styles.iconos,
-                  { tintColor: focused ? '#000' : '#808080'}
-
+                  { tintColor: focused ? '#000' : '#808080' }
                 ]}
               />
             );
           },
-          tabBarLabelStyle: styles.tabBarLabelStyle,
+          tabBarShowLabel: false, // Ocultar etiquetas
           tabBarStyle: styles.tabBarStyle,
-          tabBarActiveTintColor: styles.tabBarActiveTintColor,
-          tabBarInactiveTintColor: styles.tabBarInactiveTintColor,
         })}
       >
-        <Tab.Screen name="Home" component={HomeStackScreen} options={{headerShown: false}}/>
-        <Tab.Screen name="Búsqueda" component={SearchStackScreen} options={{headerShown: false}} />
-        <Tab.Screen name="Reservas" component={BookingStackScreen} options={{headerShown: false}} />
-        <Tab.Screen name="Favoritos" component={FavoriteStackScreen} options={{headerShown: false}} />
-        <Tab.Screen name="Perfil" component={ProfileStackScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Búsqueda" component={SearchStackScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Reservas" component={BookingStackScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Favoritos" component={FavoriteStackScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Perfil" component={ProfileStackScreen} options={{ headerShown: false }} />
       </Tab.Navigator>
     </View>
   );
@@ -134,30 +128,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   iconos: {
-    width: 30, 
-    height: 30,
-    marginTop: 8, 
-    marginBottom: 8, 
-    marginHorizontal: 20, 
-  },
-  tabBarLabelStyle: {
-    fontSize: 12, 
-    fontWeight: 'normal', 
-    marginTop: 0, 
-    marginBottom: 8, 
+    width: 24, // Ajusta el tamaño del ícono
+    height: 24,
+    marginHorizontal: 10,
+    tintColor: '#1B2E35',
   },
   tabBarStyle: {
-    backgroundColor: '#F7F7F7', 
-    height: 70, 
-    borderTopWidth: 0, 
+    backgroundColor: '#F7F7F7',
+    height: 80, // Hace más grande el contenedor del tabBar
+    borderTopWidth: 0,
     elevation: 0,
-    paddingTop: 10, 
-    paddingBottom: 10, 
-  },
-  tabBarActiveTintColor: '#000', 
-  tabBarInactiveTintColor: '#808080', 
-  topBar: {
-    backgroundColor: '#777',
-    fontSize: 80,
+    paddingBottom: 10, // Más espacio abajo
   },
 });
