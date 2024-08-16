@@ -51,6 +51,8 @@ export default function FavoriteScreen({ route, navigation }) {
   };
 
   return (
+    <>
+    <View style={styles.header}></View>
     <View style={styles.container}>
       <ScrollView style={styles.recommendationsContainer}>
         {recommendations.map((recommendation, index) => (
@@ -75,6 +77,7 @@ export default function FavoriteScreen({ route, navigation }) {
         ))}
       </ScrollView>
     </View>
+    </>
   );
 }
 
@@ -85,6 +88,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
+    marginTop: 92,
   },
   searchInput: {
     width: width - 32,

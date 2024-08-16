@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
+    marginTop: 92,
   },
   searchInput: {
     width: width - 32,

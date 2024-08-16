@@ -7,7 +7,7 @@ export default function BookingScreen() {
 
   return (
     <ScrollView style={styles.container}>   
-      <View style={styles.recommendationsContainer}>
+      <View style={styles.header}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
       </View>
     </ScrollView>
@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
       },
       header: {
         padding: 16,
+        marginTop: 92,
       },
       sectionTitle:{
         paddingTop: 15,

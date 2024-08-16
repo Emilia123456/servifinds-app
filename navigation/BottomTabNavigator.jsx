@@ -18,13 +18,20 @@ const BookingStack = createStackNavigator();
 const FavoriteStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 
-
-
-
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="ServiFinds" component={HomeScreen} />
+      <HomeStack.Screen 
+        name="ServiFinds" 
+        component={HomeScreen} 
+        options={{
+          header: () => <TopOverlay showText={true} />,
+          headerTransparent:true,
+          //headerVisible: false,
+          //headerTitle: "",
+          headerShown: false
+        }} 
+      />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
       <HomeStack.Screen name="Categoría" component={CategoryScreen} />
     </HomeStack.Navigator>
@@ -69,7 +76,6 @@ function ProfileStackScreen() {
 export default function BottomTabNavigator() {
   return (
     <View style={styles.container}>
-      <TopOverlay />
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused }) => {
@@ -100,7 +106,8 @@ export default function BottomTabNavigator() {
                 source={iconSource}
                 style={[
                   styles.iconos,
-                  { tintColor: focused ? '#000' : '#808080' }
+                  { tintColor: focused ? '#000' : '#808080'}
+
                 ]}
               />
             );
@@ -111,11 +118,11 @@ export default function BottomTabNavigator() {
           tabBarInactiveTintColor: styles.tabBarInactiveTintColor,
         })}
       >
-        <Tab.Screen name="ServiFinds" component={HomeStackScreen} />
-        <Tab.Screen name="Búsqueda" component={SearchStackScreen} />
-        <Tab.Screen name="Reservas" component={BookingStackScreen} />
-        <Tab.Screen name="Favoritos" component={FavoriteStackScreen} />
-        <Tab.Screen name="Perfil" component={ProfileStackScreen} />
+        <Tab.Screen name="Home" component={HomeStackScreen} options={{headerShown: false}}/>
+        <Tab.Screen name="Búsqueda" component={SearchStackScreen} options={{headerShown: false}} />
+        <Tab.Screen name="Reservas" component={BookingStackScreen} options={{headerShown: false}} />
+        <Tab.Screen name="Favoritos" component={FavoriteStackScreen} options={{headerShown: false}} />
+        <Tab.Screen name="Perfil" component={ProfileStackScreen} options={{headerShown: false}}/>
       </Tab.Navigator>
     </View>
   );
@@ -149,4 +156,8 @@ const styles = StyleSheet.create({
   },
   tabBarActiveTintColor: '#000', 
   tabBarInactiveTintColor: '#808080', 
+  topBar: {
+    backgroundColor: '#777',
+    fontSize: 80,
+  },
 });
