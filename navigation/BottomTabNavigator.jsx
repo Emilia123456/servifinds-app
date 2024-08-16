@@ -84,19 +84,19 @@ export default function BottomTabNavigator() {
                 iconSource = require('../assets/home.png');
                 break;
               case 'Búsqueda':
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/busqueda.png');
                 break;
               case 'Reservas':
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/lineas-de-calendario.png');
                 break;
               case 'Favoritos':
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/corazon.png');
                 break;
               case 'Perfil':
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/usuario.png');
                 break;
               default:
-                iconSource = require('../assets/limpieza.png');
+                iconSource = require('../assets/home.png');
             }
             return (
               <Image

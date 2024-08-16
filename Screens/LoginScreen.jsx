@@ -7,7 +7,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = () => {
     // Aquí iría la lógica de autenticación
-
+    navigation.navigate('Main')
     // Si el login es exitoso, reseteamos el stack de navegación
     navigation.reset({
       index: 0,
@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity style={styles.forgotPassword}>
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
