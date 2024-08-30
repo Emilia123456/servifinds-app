@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {email, password} from './Screens/LoginScreen.jsx'
 
-const api = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api/user/login',  // Corrección de la URL base
+const loginApi = axios.create({
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-frelaer/login',  // Corrección de la URL base
   headers: {
     'Content-Type': 'application/json',
   },

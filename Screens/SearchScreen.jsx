@@ -1,10 +1,39 @@
 import React from 'react';
-import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-
+import { useEffect, useState } from 'react';
+import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity,  FlatList, Button, Alert } from 'react-native';
+import { searchOffers } from '../service/offersService.js';
 const { width } = Dimensions.get('window');
+
+const EventoItem = ({ evento, onPress }) => (
+  <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
+    <Image source={{ uri: evento.Poster }} style={styles.imagen} />
+    <View style={styles.textContainer}>
+      <Text style={styles.name}>{evento.Title}</Text>
+      <Text style={styles.description}>{evento.Type}</Text>
+      <Text style={styles.start_date}>{evento.Year}</Text>
+    </View>
+  </TouchableOpacity>
+);
 
 export default function SearchScreen({ navigation }) {  // Recibe navigation como prop
 
+  const [search, setSearch] = useState(''); 
+  const [offers, setOffers] = useState([]);
+
+  const fetchOffers = async () => {
+    try {
+      const response = await searchOffers(search);
+      if (response.Search) {
+        setOffers(response.Search);  
+      } else {
+        Alert.alert('No se encontraron resultados');
+        setOffers([]);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      Alert.alert('Error al buscar ofrecidos');
+    }
+  };
 
   const categories = [
     { name: 'Limpieza', imageUri: require('../assets/limpieza.png') },
@@ -18,12 +47,17 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
+        <TextInput
+        value={search}
+        placeholder="Buscar"
+        placeholderTextColor="#777"
+        onChangeText={text => setSearch(text)}
+        style={styles.searchInput}
+        />
+        <Button title="Buscar" onPress={fetchOffers} />
       </View>
-
-
-
-      <Text style={styles.sectionTitle}>Categorías</Text>
+      
+ 
       <View style={styles.categoriesContainer}>
         {categories.map((category, index) => (
           <TouchableOpacity 
@@ -32,12 +66,26 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
             onPress={() => navigation.navigate('Categoría', { 
               title: category.name,
               imageUri: category.imageUri,
-            })}>
+            })}
+          >
             <Image source={category.imageUri} style={styles.categoryImage} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
       </View>
+
+      <FlatList 
+          data={offers}
+          renderItem={({ item }) => (
+            <EventoItem
+              evento={item}
+              onPress={() => navigation.navigate('Detail', { evento: item })}
+            />
+          )}
+          keyExtractor={item => (item.imdbID ? item.imdbID.toString() : Math.random().toString())}
+      />
+
+
     </View>
   );
 }
@@ -49,7 +97,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
-    marginTop: 92,
+    marginTop: 52,
   },
   searchInput: {
     width: width - 32,
@@ -60,46 +108,39 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#1B2E35',
   },
-  filtersContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  filter: {
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  filterText: {
-    paddingVertical: 4,
-    color: '#1B2E35',
-    fontFamily: 'Roboto-Regular',
-  },
   categoriesContainer: {
-    paddingHorizontal: 30,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 230,
   },
   category: {
-    flexDirection: 'row',
+    width: (width - 64) / 2,  // Dos categorías por fila
+    height: (width - 64) / 2, // Hacer los contenedores cuadrados
+    backgroundColor: '#f9f9f9',  // Mismo color que los contenedores de las recomendaciones
     alignItems: 'center',
-    marginBottom: 14,
+    justifyContent: 'center',
+    borderRadius: 8,  // Bordeado similar al resto de los contenedores
+    marginBottom: 16,
   },
   categoryImage: {
-    width: 25,
-    height: 25,
-    marginRight: 16,
+    width: 50,  // Ajustar tamaño de la imagen
+    height: 50, // Ajustar tamaño de la imagen
+    marginBottom: 8,
   },
   categoryText: {
     fontSize: 16,
     color: '#1B2E35',
+    textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1B2E35',
-    textAlign: 'right',
-    marginRight: 260,
+    paddingHorizontal: 16,
     paddingTop: 10,
+    marginBottom: 10,
   },
 });
