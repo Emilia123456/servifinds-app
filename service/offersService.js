@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 const ofrecidosApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-frelaer/',  // Corrección de la URL base
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/',  // Corrección de la URL base
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +10,7 @@ const ofrecidosApi = axios.create({
 
 export const searchOffers = async (inputValue) => {
   try {
-    const response = await api.get('api/ofrecimientos/filtros', {
+    const response = await api.get('api/Ofrecimientos/filtros', {
       params: {
         busqueda: inputValue,
       },

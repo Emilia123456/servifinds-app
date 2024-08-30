@@ -1,8 +1,7 @@
 import axios from 'axios';
-import {email, password} from './Screens/LoginScreen.jsx'
 
 const loginApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-frelaer/login',  // Corrección de la URL base
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api/users/login',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,27 +9,17 @@ const loginApi = axios.create({
 
 export const login = async (email, password) => {
   try {
-    axios.post('/user', {
-        email: {email},
-        contrasena: {password}
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    return response.data;
+    const response = await loginApi.post('/user', {
+      email: email,
+      contrasena: password,  // Asegúrate de que el backend esté esperando "contrasena"
+    });
+
+    console.log('LLEGO ACA');
+    console.log(response.data);
+
+    return response.data;  // Devolver los datos si el login es exitoso
   } catch (error) {
     console.error('Error fetching data:', error);
-    throw error;
+    throw error;  // Propaga el error para manejarlo en el componente
   }
-  axios({
-    method: 'post',
-    url: baseUrl + 'applications/' + appName + '/dataexport/plantypes' + plan,
-    headers: {}, 
-    data: {
-      foo: 'bar', // This is the body part
-    }
-  });
-}; 
+};

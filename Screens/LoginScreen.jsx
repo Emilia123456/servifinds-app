@@ -1,29 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { login } from '../service/loginService.js';  // Corrige la importación
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Aquí iría la lógica de autenticación
-    navigation.navigate('Main')
-    // Si el login es exitoso, reseteamos el stack de navegación
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Main' }], // 'Main' es el nombre de tu stack principal
-    });
+  const handleLogin = async () => {
+    try {
+      const result = await login(email, password);
+
+      if (result.success) {  // Asegúrate de que el backend devuelve un campo "success"
+        navigation.navigate('Main');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
+      } else {
+        Alert.alert("Error", "Usuario o contraseña incorrecta, vuelve a ingresar los datos.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Hubo un problema al iniciar sesión. Inténtalo de nuevo más tarde.");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hola de nuevo :)</Text>
+      <Text style={styles.title}>¡Hola de nuevo!</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#777"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -36,11 +47,11 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity style={styles.forgotPassword}>
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.signUpText}>¿Aun no tenes cuenta? ¡Registrate!</Text>
+        <Text style={styles.signUpText}>¿Aún no tienes cuenta? ¡Regístrate!</Text>
       </TouchableOpacity>
     </View>
   );
@@ -88,27 +99,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  or: {
-    color: '#777',
-    marginVertical: 10,
-  },
-  socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  socialButton: {
-    padding: 15,
-    borderRadius: 10,
-    marginHorizontal: 5,
-  },
-  googleButton: {
-    backgroundColor: '#4285F4',
-  },
-  socialButtonText: {
-    color: '#fff',
-    fontSize: 18,
   },
   signUpText: {
     color: '#777',
