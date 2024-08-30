@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
   },
   categoriesContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 25,
+    paddingHorizontal: 30,
+    paddingTop: 16,
     paddingBottom: 230,
   },
   category: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   categoryImage: {
     width: 25,
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1B2E35',
     textAlign: 'right',
-    marginRight: 270,
+    marginRight: 260,
+    paddingTop: 10,
   },
 });

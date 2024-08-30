@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
@@ -37,14 +37,16 @@ export default function HomeScreen({ navigation }) {
     }
   ];
 
+  const propagandaImages = [
+    require('../assets/jardineria-recomendaciones.jpg'),
+    require('../assets/jardineria-recomendaciones.jpg'),
+    require('../assets/jardineria-recomendaciones.jpg'),
+  ];
+
   useFocusEffect(
     React.useCallback(() => {
-      const onBackPress = () => {
-        return true;
-      };
-
+      const onBackPress = () => true;
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, [])
   );
@@ -52,8 +54,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logo} >ServiFinds</Text>
-        <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
+        <Text style={styles.logo}>ServiFinds</Text>
       </View>
 
       <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
@@ -71,11 +72,15 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      
-      <View style={styles.imageContainer}>
-        <Image source={require('../assets/propaganda.png')} style={styles.imagePlaceholder} />
-      </View>
-      
+
+      <ScrollView horizontal style={styles.propagandaContainer} showsHorizontalScrollIndicator={false}>
+        {propagandaImages.map((imageUri, index) => (
+          <View key={index} style={styles.imageWrapper}>
+            <Image source={imageUri} style={styles.propagandaImage} />
+          </View>
+        ))}
+      </ScrollView>
+
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
         {recommendations.map((recommendation, index) => (
@@ -119,19 +124,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 5,
   },
-  searchInput: {
-    width: width - 32,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginTop: 8,
-    color: '#1B2E35',
-  },
   categoriesContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingTop: 10,
   },
   category: {
@@ -147,13 +143,15 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     color: '#1B2E35',
   },
-  imageContainer: {
-    position: 'relative',
-    marginHorizontal: 16,
+  propagandaContainer: {
+    paddingHorizontal: 16,  // Eliminar márgenes laterales
     marginVertical: 16,
   },
-  imagePlaceholder: {
-    width: width - 32,
+  imageWrapper: {
+    marginRight: 8,  // Reducir margen entre imágenes
+  },
+  propagandaImage: {
+    width: width - 80,  // Ajustar ancho de las imágenes para que lleguen al borde
     height: 150,
     borderRadius: 8,
   },
