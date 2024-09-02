@@ -26,4 +26,12 @@ export const searchOffers = async (pubicacion, pcalificacion, pprecio) => {
 };
 
 
- 
+export const getCategories = async () => {
+  try {
+    const response = await ofrecidosApi.get('/api/Categorias');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
