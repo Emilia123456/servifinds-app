@@ -66,6 +66,7 @@ export default function SearchScreen({ navigation }) {  // Recibe navigation com
             onPress={() => navigation.navigate('Categoría', { 
               title: category.name,
               imageUri: category.imageUri,
+              idCategory: category.id,
             })}
           >
             <Image source={category.imageUri} style={styles.categoryImage} />

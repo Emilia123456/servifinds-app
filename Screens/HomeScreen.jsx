@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingBottom: 10,
-    paddingTop: 10,
+    paddingTop: 0,
   },
   category: {
     alignItems: 'center',
