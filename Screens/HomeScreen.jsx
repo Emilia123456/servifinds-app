@@ -6,21 +6,7 @@ import { getCategories } from '../service/offersService.js';
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories(); 
-        setCategories(data); 
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []); 
-
+  
   const recommendations = [ /*vamos a traer las que tienen mas estrellas*/
     {
       title: 'Jardinería',
@@ -64,23 +50,7 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.logo}>ServiFinds</Text>
     </View>
 
-    <ScrollView horizontal style={styles.categoriesContainer} showsHorizontalScrollIndicator={false}>
-      {categories.map((category, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.category}
-          onPress={() => navigation.navigate('Categoría', { 
-            title: category.nombre,
-            imageURL: category.imageURL
-          })}
-        >
-          <Image source={{ uri: category.imageURL }} style={styles.categoryImage} />
-          <Text style={styles.categoryText}>{category.nombre}</Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-
-    <View style={styles.propagandaContainer}>
+      <View style={styles.propagandaContainer}>
       <ScrollView 
         horizontal 
         pagingEnabled 

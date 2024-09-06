@@ -8,14 +8,14 @@ const ofrecidosApi = axios.create({
   },
 });
 
-export const searchOffers = async (pubicacion, pcalificacion, pprecio) => {
+export const searchOffers = async (pcategoria, pubicacion, pcalificacion, pprecio) => {
   try {
     const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?ubicacion={pubicacion}&calificacion={pcalificacion}&search={flores}&', {
       params: {
-        busqueda: inputValue,
-        ubicacion: pubicacion,
-        calificacion: pcalificacion,
-        precio : pprecio
+        categoria: pcategoria, 
+        ubicacion: pubicacion, 
+        calificacion: pcalificacion, 
+        precio: pprecio,
       },
     });
     return response.data;

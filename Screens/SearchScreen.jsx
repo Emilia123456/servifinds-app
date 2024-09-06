@@ -35,6 +35,8 @@ export default function SearchScreen({ navigation }) {
       [filterType]: prevFilters[filterType] === value ? null : value,
     }));
   };
+
+  /*llamamos a la api de los ofrecidos cada vez que cambia un filtro*/
   const filter = () => {
     const searchOffersFiltered = async () => {
       try {
@@ -66,7 +68,7 @@ export default function SearchScreen({ navigation }) {
       <TouchableOpacity
         key={index}
         style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
-        onPress={() => handleFilterPress('categoria', category.value)}
+        onPress={() => filter()}
       >
         <Image source={{ uri:'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL}} style={styles.filterImage} />
         <Text style={styles.filterText}>{category.nombre}</Text>
@@ -76,8 +78,8 @@ export default function SearchScreen({ navigation }) {
         <Text>No hay categorías disponibles</Text>
       )}
       </ScrollView>
-
-      <Text style={styles.sectionTitle}>Ubicación</Text>
+        
+      {/* <Text style={styles.sectionTitle}>Ubicación</Text>
       <View style={styles.filterContainer}>
         <TouchableOpacity
           style={[styles.filter, selectedFilters.ubicacion === 'Cerca tuyo' && styles.selectedFilter]}
@@ -130,14 +132,17 @@ export default function SearchScreen({ navigation }) {
           <Text style={styles.filterText}>1+ Estrellas</Text>
         </TouchableOpacity>
       </View>
-
+       */}
+      
       <TouchableOpacity style={styles.filterButton} onPress={() => filter()}>
         <Text style={styles.filterButtonText}>Filtrar</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.clearButton} onPress={() => setSelectedFilters({})}>
         <Text style={styles.clearButtonText}>Limpiar Filtros</Text>
       </TouchableOpacity>
     </ScrollView>
+    
   );
 }
 
