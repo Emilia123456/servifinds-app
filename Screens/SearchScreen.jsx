@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-
+import { getCategories } from '../service/offersService';
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
@@ -12,15 +12,22 @@ export default function SearchScreen({ navigation }) {
     calificaciones: null,
     distancia: null,
   });
+  const [categories, setCategories] = useState([]);
 
-  const categories = [
-    { name: 'Arreglos', value: 'Arreglos', imageUri: require('../assets/Arreglos.png') },
-    { name: 'Limpieza', value: 'Limpieza', imageUri: require('../assets/limpieza.png') },
-    { name: 'Estética', value: 'Estética', imageUri: require('../assets/manicura.png') },
-    { name: 'Clases', value: 'Clases', imageUri: require('../assets/clases.png') },
-    { name: 'Jardinería', value: 'Jardinería', imageUri: require('../assets/jardineria.png') },
-    { name: 'Cuidado', value: 'Cuidado', imageUri: require('../assets/cuidado.png') },
-  ];
+  useEffect(() => {
+    console.log('useEffect')
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories(); 
+        console.log('Fetched categories:', data);
+        setCategories(data); 
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []); 
 
   const handleFilterPress = (filterType, value) => {
     setSelectedFilters(prevFilters => ({
@@ -28,7 +35,19 @@ export default function SearchScreen({ navigation }) {
       [filterType]: prevFilters[filterType] === value ? null : value,
     }));
   };
-
+  const filter = () => {
+    const searchOffersFiltered = async () => {
+      try {
+        const data = await searchOffers(); 
+        setCategories(data); 
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+      }
+    };
+  
+    searchOffersFiltered();
+  };
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -53,16 +72,20 @@ export default function SearchScreen({ navigation }) {
 
       <Text style={styles.sectionTitle}>Categorías</Text>
       <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-        {categories.map((category, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
-            onPress={() => handleFilterPress('categoria', category.value)}
-          >
-            <Image source={category.imageUri} style={styles.filterImage} />
-            <Text style={styles.filterText}>{category.name}</Text>
-          </TouchableOpacity>
-        ))}
+      {categories.length > 0 ? (
+        categories.map((category, index) => (
+      <TouchableOpacity
+        key={index}
+        style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
+        onPress={() => handleFilterPress('categoria', category.value)}
+      >
+        {category.imageUri && <Image source={{ uri: category.imageUri }} style={styles.filterImage} />} {/* Aseguramos que imageUri sea válido */}
+        <Text style={styles.filterText}>{category.nombre}</Text>
+      </TouchableOpacity>
+      ))
+      ) : (
+        <Text>No hay categorías disponibles</Text>
+      )}
       </ScrollView>
 
       <Text style={styles.sectionTitle}>Precio</Text>
@@ -109,7 +132,7 @@ export default function SearchScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.filterButton} onPress={() => {/* Lógica para aplicar filtros */}}>
+      <TouchableOpacity style={styles.filterButton} onPress={() => filter()}>
         <Text style={styles.filterButtonText}>Filtrar</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.clearButton} onPress={() => setSelectedFilters({})}>

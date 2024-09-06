@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await getCategories(); 
+        const data = await getCategories.get('/api/Categorias'); 
         setCategories(data); 
       } catch (error) {
         console.error('Error fetching categories:', error);
