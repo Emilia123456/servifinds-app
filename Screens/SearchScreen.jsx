@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-import { getCategories } from '../service/offersService';
+import { getCategories, searchOffers} from '../service/offersService';
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
@@ -59,6 +59,23 @@ export default function SearchScreen({ navigation }) {
           style={styles.searchInput}
         />
       </View>
+      <Text style={styles.sectionTitle}>Categorías</Text>
+      <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
+      {categories.length > 0 ? (
+        categories.map((category, index) => (
+      <TouchableOpacity
+        key={index}
+        style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
+        onPress={() => handleFilterPress('categoria', category.value)}
+      >
+        <Image source={{ uri:'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL}} style={styles.filterImage} />
+        <Text style={styles.filterText}>{category.nombre}</Text>
+      </TouchableOpacity>
+      ))
+      ) : (
+        <Text>No hay categorías disponibles</Text>
+      )}
+      </ScrollView>
 
       <Text style={styles.sectionTitle}>Ubicación</Text>
       <View style={styles.filterContainer}>
@@ -69,24 +86,6 @@ export default function SearchScreen({ navigation }) {
           <Text style={styles.filterText}>Cerca tuyo</Text>
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-      {categories.length > 0 ? (
-        categories.map((category, index) => (
-      <TouchableOpacity
-        key={index}
-        style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
-        onPress={() => handleFilterPress('categoria', category.value)}
-      >
-        {category.imageUri && <Image source={{ uri: category.imageUri }} style={styles.filterImage} />} {/* Aseguramos que imageUri sea válido */}
-        <Text style={styles.filterText}>{category.nombre}</Text>
-      </TouchableOpacity>
-      ))
-      ) : (
-        <Text>No hay categorías disponibles</Text>
-      )}
-      </ScrollView>
 
       <Text style={styles.sectionTitle}>Precio</Text>
       <View style={styles.filterContainer}>

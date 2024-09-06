@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler, handleScroll, activeIndex } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getCategories } from '../service/offersService';
+import { getCategories } from '../service/offersService.js';
 
 const { width } = Dimensions.get('window');
 
@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await getCategories.get('/api/Categorias'); 
+        const data = await getCategories(); 
         setCategories(data); 
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }) {
     fetchCategories();
   }, []); 
 
-  const recommendations = [
+  const recommendations = [ /*vamos a traer las que tienen mas estrellas*/
     {
       title: 'Jardinería',
       description: 'Soy Romina y me gustan las flores re coloridas',
