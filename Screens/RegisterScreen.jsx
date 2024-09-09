@@ -11,15 +11,16 @@ export default function LoginScreen({ navigation }) {
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [fecha, setFecha] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false); // Estado para mostrar el DatePicker
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
+  const [showSecondPassword, setShowSecondPassword] = useState(false); // Estado para la repetición de la contraseña
 
   const handleRegister = async () => {
     if (password !== secondPassword) {
       Alert.alert("Las contraseñas no coinciden");
     } else {
       try {
-        const result = await register(email, nombre, apellido, '', password, '', '', fecha.toISOString());
+        const result = await register(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
         if (result.success) {
           navigation.navigate('Main');
           navigation.reset({
@@ -73,11 +74,18 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
       />
 
-      <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.dateText}>
-          {fecha ? fecha.toLocaleDateString() : 'Seleccionar fecha de nacimiento'}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.dateContainer}>
+        <TextInput
+          style={styles.dateInput}
+          placeholder="Fecha de nacimiento"
+          placeholderTextColor="#777"
+          value={fecha ? fecha.toLocaleDateString() : ''}
+          editable={false} // No editable para que solo se cambie con el DatePicker
+        />
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Icon name="event" size={24} color="#777" />
+        </TouchableOpacity>
+      </View>
 
       {showDatePicker && (
         <DateTimePicker
@@ -90,7 +98,7 @@ export default function LoginScreen({ navigation }) {
 
       <View style={styles.passwordContainer}>
         <TextInput
-          style={styles.input}
+          style={styles.passwordInput}
           placeholder="Contraseña"
           placeholderTextColor="#777"
           value={password}
@@ -102,14 +110,19 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Repite la contraseña"
-        placeholderTextColor="#777"
-        value={secondPassword}
-        onChangeText={setSecondPassword}
-        secureTextEntry={!showPassword}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Repite la contraseña"
+          placeholderTextColor="#777"
+          value={secondPassword}
+          onChangeText={setSecondPassword}
+          secureTextEntry={!showSecondPassword} // Mostrar u ocultar la repetición de contraseña
+        />
+        <TouchableOpacity onPress={() => setShowSecondPassword(!showSecondPassword)}>
+          <Icon name={showSecondPassword ? "visibility-off" : "visibility"} size={24} color="#777" />
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Continuar</Text>
@@ -144,16 +157,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: '#000',
   },
-  dateButton: {
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     backgroundColor: '#f0f0f0',
     padding: 15,
     borderRadius: 10,
     marginVertical: 10,
-    alignItems: 'center',
   },
-  dateText: {
-    color: '#777',
+  dateInput: {
+    flex: 1,
+    color: '#000',
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -163,6 +178,10 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginVertical: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#000',
   },
   button: {
     width: '100%',

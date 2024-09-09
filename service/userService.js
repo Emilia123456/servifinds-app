@@ -28,6 +28,7 @@ export const login = async (email, password) => {
 
 
 export const register = async (email, nombre, apellido, direccion, password, genero, foto, fecha) => {
+  console.log("hola")
   try {
     const response = await userApi.post('/users/register', {
       email: email, 
@@ -38,7 +39,10 @@ export const register = async (email, nombre, apellido, direccion, password, gen
       idGenero: genero, 
       foto: foto, 
       FechaNacimiento: fecha
+
+
     });
+    //if (response.satatu = 201)
 
     return response.data;  
   } catch (error) {
