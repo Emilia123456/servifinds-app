@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { login } from '../service/loginService.js';  // Corrige la importación
+import { login } from '../service/userService.js';  // Corrige la importación
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');

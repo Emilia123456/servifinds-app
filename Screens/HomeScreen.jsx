@@ -7,6 +7,23 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
   
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    console.log('useEffect')
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories(); 
+        console.log('Fetched categories:', data);
+        setCategories(data); 
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []); 
+
   const recommendations = [ /*vamos a traer las que tienen mas estrellas*/
     {
       title: 'Jardinería',
@@ -50,7 +67,24 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.logo}>ServiFinds</Text>
     </View>
 
-      <View style={styles.propagandaContainer}>
+    <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
+      {categories.length > 0 ? (
+        categories.map((category, index) => (
+      <TouchableOpacity
+        key={index}
+        style={[styles.category, selectedCategory.categoria === category.value && styles.selectedCategory]}
+        onPress={() => filter()}
+      >
+        <Image source={{ uri:'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL}} style={styles.filterImage} />
+        <Text style={styles.filterText}>{category.nombre}</Text>
+      </TouchableOpacity>
+      ))
+      ) : (
+        <Text>No hay categorías disponibles</Text>
+      )}
+    </ScrollView>
+
+    <View style={styles.propagandaContainer}>
       <ScrollView 
         horizontal 
         pagingEnabled 
@@ -129,6 +163,17 @@ categoriesContainer: {
 category: {
   alignItems: 'center',
   marginRight: 16,
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#f9f9f9',
+  borderColor: '#ccc',
+  borderWidth: 1,
+  borderRadius: 10,
+  paddingVertical: 8,
+  paddingHorizontal: 12,
+  marginRight: 8,
+  marginBottom: 8,
+  
 },
 categoryImage: {
   width: 25,
@@ -213,5 +258,8 @@ recommendationTitle: {
 recommendationSubtitle: {
   color: '#1B2E35',
   marginBottom: 4,
+},
+selectedCategory: {
+  borderColor: '#1B2E35',
 },
 });
