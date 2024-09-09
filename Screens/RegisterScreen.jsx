@@ -21,14 +21,14 @@ export default function LoginScreen({ navigation }) {
     } else {
       try {
         const result = await register(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
-        if (result.success) {
+        if (result>0) {
           navigation.navigate('Main');
           navigation.reset({
             index: 0,
             routes: [{ name: 'Main' }],
           });
         } else {
-          Alert.alert("Error", "Usuario o contraseña incorrecta.");
+          Alert.alert("Error", "No se pudo registrar, el usuario ya existe"); //porque el result te lo devolvio como -1
         }
       } catch (error) {
         Alert.alert("Error", "Hubo un problema al registrarse.");
