@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCategories } from '../service/offersService.js';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importa un ícono para el corazón
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
   const [categories, setCategories] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState('All'); // Estado para el filtro seleccionado
+  const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -49,8 +53,21 @@ export default function HomeScreen({ navigation }) {
     require('../assets/propaganda3.png'),
   ];
 
-  const handleScroll = () => {
-    // Implementar lógica de scroll si es necesario
+  const handleScroll = (event) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / width);
+    setActiveImageIndex(index); // Actualiza el índice de la imagen activa según el desplazamiento
+  };
+
+  const handleLike = (index) => {
+    setLikedRecommendations((prev) => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
+  const handleCategoryPress = (category) => {
+    navigation.navigate('CategoryScreen', { category });
   };
 
   useFocusEffect(
@@ -65,16 +82,20 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>ServiFinds</Text>
+        {/* Icono de notificaciones */}
+        <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')}>
+          <Image source={require('../assets/notificacion.png')} style={styles.notificationIcon} />
+        </TouchableOpacity>
       </View>
 
       {/* Categorías */}
       <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
         {categories.length > 0 ? (
           categories.map((category, index) => (
-            <View key={index} style={styles.category}>
+            <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category)}>
               <Image source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }} style={styles.filterImage} />
               <Text style={styles.filterText}>{category.nombre}</Text>
-            </View>
+            </TouchableOpacity>
           ))
         ) : (
           <Text>No hay categorías disponibles</Text>
@@ -102,7 +123,7 @@ export default function HomeScreen({ navigation }) {
               key={index} 
               style={[
                 styles.indicator, 
-                // Aquí podrías agregar la lógica para manejar el indicador activo
+                activeImageIndex === index ? styles.activeIndicator : {} // Activa el círculo solo si la imagen está visible
               ]}
             />
           ))}
@@ -112,6 +133,21 @@ export default function HomeScreen({ navigation }) {
       {/* Recomendaciones */}
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
+        {/* Filtros */}
+        <ScrollView horizontal style={styles.filterButtonsContainer} showsHorizontalScrollIndicator={false}>
+          {['Todo', 'Nuevo', 'Popular', 'Mejor calificación'].map((filter, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.filterButton,
+                selectedFilter === filter && styles.selectedFilterButton
+              ]}
+              onPress={() => setSelectedFilter(filter)}
+            >
+              <Text style={styles.filterButtonText}>{filter}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         {recommendations.map((recommendation, index) => (
           <TouchableOpacity
             key={index}
@@ -126,6 +162,9 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>4.9 (234)</Text>
+                <TouchableOpacity onPress={() => handleLike(index)}>
+                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+                </TouchableOpacity>
               </View>
               <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
               <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
@@ -145,31 +184,20 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
     marginTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  notificationIcon: {
+    width: 25,
+    height: 25,
   },
   logo: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: '#1B2E35',
     textAlign: 'left',
     padding: 5,
-  },
-  filterContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    paddingTop: 0,
-  },
-  category: {
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  filterImage: {
-    width: 25,
-    height: 25,
-    marginBottom: 8,
-  },
-  filterText: {
-    paddingVertical: 4,
-    color: '#1B2E35',
+    fontWeight: 'bold',
   },
   propagandaContainer: {
     marginVertical: 16,
@@ -193,18 +221,64 @@ const styles = StyleSheet.create({
     height: 8,
     width: 8,
     borderRadius: 4,
-    backgroundColor: '#c4c4c4',
+    backgroundColor: '#ccc',
     marginHorizontal: 4,
   },
-  recommendationsContainer: {
+  activeIndicator: {
+    backgroundColor: '#446C64',
+  },
+  filterContainer: {
     paddingHorizontal: 16,
+    paddingBottom: 10,
+    paddingTop: 0,
+  },
+  category: {
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  filterImage: {
+    width: 25,
+    height: 25,
+    marginBottom: 8,
+  },
+  filterText: {
+    paddingVertical: 4,
+    color: '#1B2E35',
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 0,
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  filterButton: {
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+    marginBottom: 7,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+  },
+  selectedFilterButton: {
+    backgroundColor: '#D5F1E4',
+    borderColor: '#446C64',
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: '#1B2E35',
+  },
+  recommendationsContainer: {
+    padding: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    paddingVertical: 4,
     color: '#1B2E35',
+    marginBottom: 9,
+    fontWeight: 'bold',
   },
   recommendation: {
     flexDirection: 'row',
@@ -222,24 +296,24 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     flex: 1,
-    paddingVertical: 4,
   },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    justifyContent: 'space-between',
   },
   ratingText: {
-    marginLeft: 4,
-    color: '#1B2E35',
+    fontSize: 14,
+    color: '#7f8c8d',
   },
   recommendationTitle: {
-    fontWeight: 'bold',
-    color: '#1B2E35',
-    marginBottom: 4,
+    fontSize: 16,
+    fontWeight: 'semi-bold',
+    color: '#333',
   },
   recommendationSubtitle: {
-    color: '#1B2E35',
-    marginBottom: 4,
+    fontSize: 12,
+    color: '#666',
   },
 });
+

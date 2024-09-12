@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importa un ícono para el corazón
 
-const { width } = Dimensions.get('window');
+export default function FavoritesScreen({ navigation }) {
+  const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
 
-export default function FavoriteScreen({ route, navigation }) {
-  useEffect(() => {
-    if (!route.params) {
-      navigation.goBack(); 
-    }
-  }, [route.params]);
-
-  const { title = 'Default Title', description = 'Default Description', imageUri = null } = route.params || {};
-
-  const [selectedFilter, setSelectedFilter] = useState(null);
-
-  // Reemplazar esto con Axios
   const recommendations = [
     {
       title: 'Jardinería',
@@ -38,23 +28,20 @@ export default function FavoriteScreen({ route, navigation }) {
     }
   ];
 
-  const filteredRecommendations = recommendations.filter(
-    recommendation => recommendation.filter === selectedFilter
-  );
-
-  const handleFilterPress = (filterName) => {
-    if (selectedFilter === filterName) {
-      setSelectedFilter(null); 
-    } else {
-      setSelectedFilter(filterName);
-    }
+  const handleLike = (index) => {
+    setLikedRecommendations((prev) => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
   return (
-    <>
-    <View style={styles.header}></View>
-    <View style={styles.container}>
-      <ScrollView style={styles.recommendationsContainer}>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>Favoritos</Text>
+      </View>
+
+      <View style={styles.recommendationsContainer}>
         {recommendations.map((recommendation, index) => (
           <TouchableOpacity
             key={index}
@@ -69,69 +56,58 @@ export default function FavoriteScreen({ route, navigation }) {
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>4.9 (234)</Text>
+                <TouchableOpacity onPress={() => handleLike(index)}>
+                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+                </TouchableOpacity>
               </View>
               <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
               <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
             </View>
           </TouchableOpacity>
         ))}
-      </ScrollView>
-    </View>
-    </>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Fondo blanco
   },
   header: {
     padding: 16,
-    marginTop: 92,
-  },
-  searchInput: {
-    width: width - 32,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginTop: 8,
-    color: '#1B2E35',
-  },
-  filtersContainer: {
+    marginTop: 50,
+    marginBottom: -20,
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  filter: {
-    height: 38,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginRight: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    minWidth: 100, 
+    backgroundColor: '#fff', // Fondo blanco en el header
+    borderBottomWidth: 1,
+    borderBottomColor: '#0000', // Línea de separación en el header
   },
-  selectedFilter: {
-    backgroundColor: '#D5F8E4',
-    borderColor: '#446C64',
-  },
-  filterText: {
-    color: '#1B2E35',
-    fontFamily: 'Roboto-Regular',
+  logo: {
+    fontSize: 24,
+    color: '#1B2E35', // Color del texto del logo
+    textAlign: 'left',
+    padding: 5,
+    fontWeight: 'bold',
   },
   recommendationsContainer: {
-    paddingHorizontal: 16,
+    padding: 16,
+    marginTop: 0,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    color: '#1B2E35',
+    marginBottom: 9,
+    fontWeight: 'bold',
   },
   recommendation: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f9f9f9', // Fondo ligeramente gris
     padding: 8,
     borderRadius: 8,
   },
@@ -143,24 +119,23 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     flex: 1,
-    paddingVertical: 4,
   },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    justifyContent: 'space-between',
   },
   ratingText: {
-    marginLeft: 4,
-    color: '#1B2E35',
+    fontSize: 14,
+    color: '#7f8c8d',
   },
   recommendationTitle: {
-    fontWeight: 'bold',
-    color: '#1B2E35',
-    marginBottom: 4,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
   recommendationSubtitle: {
-    color: '#1B2E35',
-    marginBottom: 4,
+    fontSize: 12,
+    color: '#666',
   },
 });
