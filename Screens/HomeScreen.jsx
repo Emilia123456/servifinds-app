@@ -48,9 +48,9 @@ export default function HomeScreen({ navigation }) {
   ];
 
   const propagandaImages = [
-    require('../assets/propaganda.png'),
-    require('../assets/propaganda2.png'),
-    require('../assets/propaganda3.png'),
+    require('../assets/propagandaa.png'),
+    require('../assets/propagandaa2.png'),
+    require('../assets/propagandaa3.png'),
   ];
 
   const handleScroll = (event) => {
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   activeIndicator: {
-    backgroundColor: '#446C64',
+    backgroundColor: '#1B2E35',
   },
   filterContainer: {
     paddingHorizontal: 16,
