@@ -3,22 +3,67 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Dimensions }
 
 const { width } = Dimensions.get('window');
 
+// Función para obtener los días del mes
+const getDaysInMonth = (month, year) => {
+  return new Date(year, month + 1, 0).getDate();
+};
+
+// Función para obtener el primer día del mes
+const getFirstDayOfMonth = (month, year) => {
+  return new Date(year, month, 1).getDay();
+};
+
+// Nombres de los meses
+const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
 // Componente para el calendario
 const Calendar = ({ selectedDate, setSelectedDate }) => {
-  const dates = [10, 11, 12, 13, 14, 15, 16];
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+  const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+  
+  const dates = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
 
   return (
-
     <View style={styles.calendarContainer}>
       <View style={styles.header}>
-        <Text style={styles.monthText}>Septiembre</Text>
+        <TouchableOpacity onPress={handlePrevMonth}>
+          <Text style={styles.navButton}>{"<"}</Text>
+        </TouchableOpacity>
+        <Text style={styles.monthText}>{monthNames[currentMonth]} {currentYear}</Text>
+        <TouchableOpacity onPress={handleNextMonth}>
+          <Text style={styles.navButton}>{">"}</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.daysRow}>
-        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <Text key={day} style={styles.dayText}>{day}</Text>
         ))}
       </View>
-      <View style={styles.dateRow}>
+      <View style={styles.dateGrid}>
+        {Array.from({ length: firstDay }, (_, index) => (
+          <View key={`empty-${index}`} style={styles.emptyDate} />
+        ))}
         {dates.map(date => (
           <TouchableOpacity
             key={date}
@@ -40,7 +85,6 @@ const TaskList = ({ tasks }) => {
   };
 
   return (
-     
     <View style={styles.taskContainer}>
       <Text style={styles.taskTitle}>Today's Tasks</Text>
       <FlatList
@@ -57,13 +101,12 @@ const TaskList = ({ tasks }) => {
         )}
       />
     </View>
-    
   );
 };
 
 // Pantalla principal
 const BookingScreen = () => {
-  const [selectedDate, setSelectedDate] = useState(15);
+  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
 
   const tasksForDate = {
     15: [
@@ -90,40 +133,53 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    padding: 16,
-    marginTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 16,
+    marginTop: 50,
   },
   calendarContainer: {
-    
     backgroundColor: '#fff',
     borderRadius: 10,
-    
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   monthText: {
     fontSize: 24,
     color: '#1B2E35',
-    textAlign: 'left',
-    padding: 5,
     fontWeight: 'bold',
-    
+  },
+  navButton: {
+    fontSize: 20,
+    color: '#1B2E35',
   },
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
-    marginLeft:10,
   },
   dayText: {
     fontSize: 16,
     color: '#333',
+    fontWeight: 'bold',
   },
-  dateRow: {
+  dateGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginLeft:20,
+  },
+  emptyDate: {
+    width: 40,
+    height: 40,
+    margin: 5,
   },
   date: {
     width: 40,
@@ -132,7 +188,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     backgroundColor: '#f9f9f9',
-    marginBottom:20,
+    margin: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
   },
   selectedDate: {
     width: 40,
@@ -142,6 +200,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
+    margin: 5,
+    borderWidth: 2,
   },
   dateText: {
     color: '#1B2E35',
@@ -164,12 +224,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 8,
     borderRadius: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   taskTime: {
     marginRight: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FF6F61',
+    color: '#1B2E35',
   },
   taskDescription: {
     fontSize: 14,

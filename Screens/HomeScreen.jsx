@@ -48,9 +48,9 @@ export default function HomeScreen({ navigation }) {
   ];
 
   const propagandaImages = [
-    require('../assets/propagandaa.png'),
-    require('../assets/propagandaa2.png'),
-    require('../assets/propagandaa3.png'),
+    require('../assets/propaganda.png'),
+    require('../assets/propaganda2.png'),
+    require('../assets/propaganda3.png'),
   ];
 
   const handleScroll = (event) => {
@@ -187,10 +187,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    elevation: 4, // Para Android
+    shadowColor: '#000', // Para iOS
+    shadowOffset: { width: 0, height: 2 }, // Para iOS
+    shadowOpacity: 0.1, // Para iOS
+    shadowRadius: 4, // Para iOS
   },
   notificationIcon: {
     width: 25,
     height: 25,
+    marginRight: 10,
   },
   logo: {
     fontSize: 24,
@@ -200,7 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   propagandaContainer: {
-    marginVertical: 16,
+    marginVertical: 20,
     alignItems: 'center',
   },
   imageWrapper: {
@@ -209,13 +215,18 @@ const styles = StyleSheet.create({
   },
   propagandaImage: {
     width: width - 40,
-    height: 200,
-    borderRadius: 10,
+    height: 180,
+    borderRadius: 30,
+    elevation: 4, // Para Android
+    shadowColor: '#000', // Para iOS
+    shadowOffset: { width: 0, height: 2 }, // Para iOS
+    shadowOpacity: 0.2, // Para iOS
+    shadowRadius: 4, // Para iOS
   },
   indicatorContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 20,
   },
   indicator: {
     height: 8,
@@ -229,8 +240,6 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 10,
-    paddingTop: 0,
   },
   category: {
     alignItems: 'center',
@@ -247,7 +256,6 @@ const styles = StyleSheet.create({
   },
   filterButtonsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 0,
     paddingBottom: 10,
     paddingTop: 10,
   },
@@ -262,6 +270,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     backgroundColor: '#fff',
+    elevation: 3, // Para Android
+    shadowColor: '#000', // Para iOS
+    shadowOffset: { width: 0, height: 2 }, // Para iOS
+    shadowOpacity: 0.1, // Para iOS
+    shadowRadius: 4, // Para iOS
   },
   selectedFilterButton: {
     backgroundColor: '#D5F1E4',
@@ -284,9 +297,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff',
     padding: 8,
     borderRadius: 8,
+    elevation: 3, // Para Android
+    shadowColor: '#000', // Para iOS
+    shadowOffset: { width: 0, height: 2 }, // Para iOS
+    shadowOpacity: 0.1, // Para iOS
+    shadowRadius: 4, // Para iOS
   },
   recommendationImage: {
     width: 140,
@@ -316,4 +334,5 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 });
+
 
