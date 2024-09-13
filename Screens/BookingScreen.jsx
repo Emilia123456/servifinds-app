@@ -8,7 +8,8 @@ export default function BookingScreen() {
   return (
     <ScrollView style={styles.container}>   
       <View style={styles.header}>
-        <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
+        <Text style={styles.sectionTitle}>Reservas</Text>
+
       </View>
     </ScrollView>
   );

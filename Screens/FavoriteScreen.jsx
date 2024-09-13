@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Importa un ícono para el corazón
+import Icon from 'react-native-vector-icons/FontAwesome'; // ícono para el corazón
 
 export default function FavoritesScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
@@ -73,7 +73,7 @@ export default function FavoritesScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff', // Fondo blanco
+    backgroundColor: '#fff', 
   },
   header: {
     padding: 16,
@@ -82,13 +82,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff', // Fondo blanco en el header
+    backgroundColor: '#fff', 
     borderBottomWidth: 1,
-    borderBottomColor: '#0000', // Línea de separación en el header
+    borderBottomColor: '#0000', 
   },
   logo: {
     fontSize: 24,
-    color: '#1B2E35', // Color del texto del logo
+    color: '#1B2E35', 
     textAlign: 'left',
     padding: 5,
     fontWeight: 'bold',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    backgroundColor: '#f9f9f9', // Fondo ligeramente gris
+    backgroundColor: '#f9f9f9',
     padding: 8,
     borderRadius: 8,
   },

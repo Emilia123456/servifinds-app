@@ -53,7 +53,7 @@ export default function CategoryScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.header}>+
         <TextInput style={styles.searchInput} placeholder="Buscar" placeholderTextColor="#777" />
       </View>
 

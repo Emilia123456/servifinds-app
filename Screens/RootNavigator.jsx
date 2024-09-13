@@ -37,7 +37,6 @@ export default function RootNavigator() {
               iconName = 'person';
             }
 
-            // Puedes devolver cualquier componente que desees aquí.
             return <Octicons name={iconName} size={24} color="black" />;
           },
           tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },

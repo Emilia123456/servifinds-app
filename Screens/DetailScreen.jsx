@@ -9,18 +9,12 @@ export default function DetailScreen({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        {/* Imagen que ocupa toda la parte superior */}
+       
         <Image source={imageUri} style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]} />
 
-        {/* Contenedor de detalles del producto */}
         <View style={styles.detailsContainer}>
-          {/* Nombre del producto */}
           <Text style={styles.productName}>{title}</Text>
-
-          {/* Descripción del producto */}
           <Text style={styles.productDescription}>{description}</Text>
-
-          {/* Información del vendedor */}
           <View style={styles.sellerContainer}>
             <Image source={{ uri: '../assets/propaganda.png' }} style={styles.sellerImage} />
             <View style={styles.sellerDetails}>

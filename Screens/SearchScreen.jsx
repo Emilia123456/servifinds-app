@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#1B2E35',
-    marginLeft: 6,  // Espacio entre la imagen y el texto
+    marginLeft: 6, 
   },
   filterImage: {
     width: 20,

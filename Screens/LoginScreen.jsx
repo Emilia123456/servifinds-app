@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { login } from '../service/userService.js';  // Corrige la importación
+import { login } from '../service/userService.js';  
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ export default function LoginScreen({ navigation }) {
     try {
       const result = await login(email, password);
 
-      if (result.success) {  // Asegúrate de que el backend devuelve un campo "success"
+      if (result.success) {  
         navigation.navigate('Main');
         navigation.reset({
           index: 0,

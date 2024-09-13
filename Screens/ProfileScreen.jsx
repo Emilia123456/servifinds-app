@@ -9,8 +9,8 @@ export default function ProfileScreen({ navigation }) {
     name: 'Jaboris Wells',
     status: 'Mantenimiento de jardines',
     mutualFriends: 8,
-    coverImageUri: require('../assets/jardineria-recomendaciones.jpg'), // Imagen de portada
-    imageUri: require('../assets/jardineria-recomendaciones.jpg'), // Imagen del usuario
+    coverImageUri: require('../assets/jardineria-recomendaciones.jpg'), 
+    imageUri: require('../assets/jardineria-recomendaciones.jpg'),
   };
 
   const recommendations = [
@@ -132,10 +132,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   profileName: {
-    fontSize: 22, // Ajuste del tamaño de la fuente
+    fontSize: 22, 
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 70, // Ajuste para que no esté tan arriba
+    marginTop: 70,
     marginBottom: 0,
   },
   profileStatus: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-    backgroundColor: '#f9f9f9', // Fondo ligeramente gris
+    backgroundColor: '#f9f9f9',
     padding: 8,
     borderRadius: 8,
   },

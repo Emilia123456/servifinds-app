@@ -13,7 +13,7 @@ export default function StartScreen({ navigation }) {
         <Text style={styles.subtitle}>La solución a tu puerta. Servicios a domicilio</Text>
       </View>
       <Image
-        source={require('../assets/icon.jpg')} // Cambia la ruta a la imagen subida
+        source={require('../assets/icon.jpg')} 
         style={styles.image}
       />
       <TouchableOpacity style={styles.startButton} onPress={() => navigation.navigate('Login')}>

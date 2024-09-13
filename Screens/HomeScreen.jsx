@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCategories } from '../service/offersService.js';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Importa un ícono para el corazón
+import Icon from 'react-native-vector-icons/FontAwesome'; // ícono para el corazón
 
 const { width } = Dimensions.get('window');
 
