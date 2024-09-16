@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-import { getCategories, searchOffers} from '../service/offersService';
+import { getCategories, searchOffers } from '../service/offersService';
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
@@ -13,136 +13,99 @@ export default function SearchScreen({ navigation }) {
     distancia: null,
   });
   const [categories, setCategories] = useState([]);
+  const [categOffers, setCategOffers] = useState([]);
 
   useEffect(() => {
-    console.log('useEffect')
     const fetchCategories = async () => {
       try {
-        const data = await getCategories(); 
-        console.log('Fetched categories:', data);
-        setCategories(data); 
+        console.log("trayendo categorias");
+        const data = await getCategories();
+        setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-
     fetchCategories();
-  }, []); 
 
-  const handleFilterPress = (filterType, value) => {
-    setSelectedFilters(prevFilters => ({
-      ...prevFilters,
-      [filterType]: prevFilters[filterType] === value ? null : value,
-    }));
-  };
-
-  /*llamamos a la api de los ofrecidos cada vez que cambia un filtro*/
-  const filter = () => {
-    const searchOffersFiltered = async () => {
+    fetchOffers = async (props) => {
       try {
-        const data = await searchOffers(); 
-        setCategories(data); 
+        console.log("trayendo eventos filtrados");
+        const data = await searchOffers(props);
+        setCategories(data);
       } catch (error) {
-        console.error('Error fetching offers:', error);
+        console.error('Error fetching categories:', error);
       }
     };
-  
-    searchOffersFiltered();
+    fetchCategories();
+  }, []);
+
+  const handleCategoryPress = (nombCateg) => {
+    const fetchByCategory = async () => {
+      try {
+        console.log("trayendo ofrecidos de categoria");
+        const response = await getByCategories(nombCateg);
+        setCategOffers(response);
+      } catch (error) {
+        console.error('Error fetching byCategories:', error);
+      }
+    };
+    fetchByCategory();
+    //se puede poner html aca?
   };
-  
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TextInput
-          value={search}
-          placeholder="Buscar"
-          placeholderTextColor="#777"
-          onChangeText={text => setSearch(text)}
-          style={styles.searchInput}
-        />
-      </View>
-      <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-      {categories.length > 0 ? (
-        categories.map((category, index) => (
-      <TouchableOpacity
-        key={index}
-        style={[styles.filter, selectedFilters.categoria === category.value && styles.selectedFilter]}
-        onPress={() => filter()}
-      >
-        <Image source={{ uri:'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL}} style={styles.filterImage} />
-        <Text style={styles.filterText}>{category.nombre}</Text>
-      </TouchableOpacity>
-      ))
-      ) : (
-        <Text>No hay categorías disponibles</Text>
-      )}
-      </ScrollView>
+    <>
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <TextInput
+            value={search}
+            placeholder="Buscar"
+            placeholderTextColor="#777"
+            onChangeText={text => setSearch(text)}
+            style={styles.searchInput}
+          />
+        </View>
         
-      {/* <Text style={styles.sectionTitle}>Ubicación</Text>
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.ubicacion === 'Cerca tuyo' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('ubicacion', 'Cerca tuyo')}
-        >
-          <Text style={styles.filterText}>Cerca tuyo</Text>
-        </TouchableOpacity>
-      </View>
+        <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
+        {categories.length > 0 ? (
+          categories.map((category, index) => (
+            <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
+              <Image
+                source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }}
+                style={styles.filterImage}
+              />
+              <Text style={styles.filterText}>{category.nombre}</Text>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Text>No hay categorías disponibles</Text>
+        )}
+      </ScrollView>
+      </ScrollView>
 
-      <Text style={styles.sectionTitle}>Precio</Text>
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.precio === 'Bajo' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('precio', 'Bajo')}
-        >
-          <Text style={styles.filterText}>De menor a mayor</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.precio === 'Alto' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('precio', 'Alto')}
-        >
-          <Text style={styles.filterText}>De mayor a menor</Text>
-        </TouchableOpacity>
+      <Image source={recommendation.imageUri} style={styles.recommendationImage} />
+      <View style={styles.recommendationText}>
+        <View style={styles.rating}>
+          <Text style={styles.ratingText}>4.9 (234)</Text>
+          <TouchableOpacity onPress={() => handleLike(index)}>
+            <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
+        <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
       </View>
-
-      <Text style={styles.sectionTitle}>Calificaciones</Text>
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.calificaciones === '4+' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('calificaciones', '4+')}
-        >
-          <Text style={styles.filterText}>4+ Estrellas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.calificaciones === '3+' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('calificaciones', '3+')}
-        >
-          <Text style={styles.filterText}>3+ Estrellas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.calificaciones === '2+' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('calificaciones', '2+')}
-        >
-          <Text style={styles.filterText}>2+ Estrellas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filter, selectedFilters.calificaciones === '1+' && styles.selectedFilter]}
-          onPress={() => handleFilterPress('calificaciones', '1+')}
-        >
-          <Text style={styles.filterText}>1+ Estrellas</Text>
-        </TouchableOpacity>
-      </View>
-       */}
       
-      <TouchableOpacity style={styles.filterButton} onPress={() => filter()}>
-        <Text style={styles.filterButtonText}>Filtrar</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity style={styles.clearButton} onPress={() => setSelectedFilters({})}>
-        <Text style={styles.clearButtonText}>Limpiar Filtros</Text>
-      </TouchableOpacity>
-    </ScrollView>
-    
+     {/*  <>
+        <TouchableOpacity style={styles.filterButton} onPress={filter}>
+          <Text style={styles.filterButtonText}>Filtrar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.clearButton} onPress={() => setSelectedFilters({})}>
+          <Text style={styles.clearButtonText}>Limpiar Filtros</Text>
+        </TouchableOpacity>
+      </> */}
+    </>
   );
 }
 
@@ -194,7 +157,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#1B2E35',
-    marginLeft: 6, 
+    marginLeft: 6,
   },
   filterImage: {
     width: 20,
@@ -228,4 +191,25 @@ const styles = StyleSheet.create({
     color: '#1B2E35',
     fontSize: 16,
   },
+  filterContainer: {
+    paddingHorizontal: 16,
+  },
+  category: {
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  filterImage: {
+    width: 25,
+    height: 25,
+    marginBottom: 8,
+  },
+  filterText: {
+    paddingVertical: 4,
+    color: '#1B2E35',
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    paddingBottom: 10,
+    paddingTop: 10,
+  }
 });

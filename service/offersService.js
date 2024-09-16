@@ -25,10 +25,25 @@ export const searchOffers = async (pcategoria, pubicacion, pcalificacion, ppreci
   }
 };
 
-
 export const getCategories = async () => {
   try {
     const response = await ofrecidosApi.get('/api/Categorias');
+    console.error('fetching categories:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    //throw error;
+  }
+};
+
+//buscar los ofrecidos de cada categoria
+export const getByCategories= async (pcategoria) => {
+  try {
+    const response = await ofrecidosApi.get('/api/Ofrecimientos/filtros?categoria={pcategoria}', {
+      params: {
+        categoria: pcategoria,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);

@@ -15,6 +15,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log("trayendo categorias")
         const data = await getCategories(); 
         setCategories(data); 
       } catch (error) {
@@ -88,20 +89,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Categorías */}
-      <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-        {categories.length > 0 ? (
-          categories.map((category, index) => (
-            <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category)}>
-              <Image source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }} style={styles.filterImage} />
-              <Text style={styles.filterText}>{category.nombre}</Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>No hay categorías disponibles</Text>
-        )}
-      </ScrollView>
-
+      
       {/* Propaganda */}
       <View style={styles.propagandaContainer}>
         <ScrollView 
