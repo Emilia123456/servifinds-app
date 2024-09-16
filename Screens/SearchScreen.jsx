@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-import { getCategories, searchOffers } from '../service/offersService';
+import { getCategories, searchOffers, getByCategories } from '../service/offersService';
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
@@ -31,12 +31,12 @@ export default function SearchScreen({ navigation }) {
       try {
         console.log("trayendo eventos filtrados");
         const data = await searchOffers(props);
-        setCategories(data);
+        setCategOffers(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-    fetchCategories();
+    fetchOffers("", "", "1", "");
   }, []);
 
   const handleCategoryPress = (nombCateg) => {
@@ -82,20 +82,25 @@ export default function SearchScreen({ navigation }) {
         )}
       </ScrollView>
       </ScrollView>
-
-      <Image source={recommendation.imageUri} style={styles.recommendationImage} />
-      <View style={styles.recommendationText}>
-        <View style={styles.rating}>
-          <Text style={styles.ratingText}>4.9 (234)</Text>
-          <TouchableOpacity onPress={() => handleLike(index)}>
-            <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
-        <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
-      </View>
+      {categOffers.length > 0 ? (
+          categOffers.map((offer, index) => (
+          <>
+            <Image source={offer.imageUri} style={styles.recommendationImage} />
+            <View style={styles.recommendationText}>
+              <View style={styles.rating}>
+                <Text style={styles.ratingText}>{offer.promedio_calificacion}</Text>
+                <TouchableOpacity onPress={() => handleLike(index)}>
+                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.recommendationTitle}>{offer.descripcion}</Text>
+            </View>
+          </>
+      ))
+      ) : (
+        <Text>No hay ofrecimientos disponibles</Text>
+      )}
       
-
      {/*  <>
         <TouchableOpacity style={styles.filterButton} onPress={filter}>
           <Text style={styles.filterButtonText}>Filtrar</Text>

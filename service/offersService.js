@@ -8,13 +8,28 @@ const ofrecidosApi = axios.create({
   },
 });
 
-export const searchOffers = async (pcategoria, pubicacion, pcalificacion, pprecio) => {
+export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, pprecio) => {
+  //let url = 'api/Ofrecimientos/filtros?ubicacion={pubicacion}&mayorPromedio={mayorPromedio}&search={flores}&';
+  let url = 'api/Ofrecimientos/filtros?';
   try {
-    const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?ubicacion={pubicacion}&calificacion={pcalificacion}&search={flores}&', {
+    if (pcategoria!="" ){
+      url = url + "categoria=" + pcategoria + "&";
+    }
+    if (ppublicacion!="" ){
+      url = url + "categoria=" + pcategoria + "&";
+    }
+    if (mayorPromedio!="" ){
+      url = url + "categoria=" + pcategoria + "&";
+    }
+    if (pprecio!="" ){
+      url = url + "categoria=" + pcategoria + "&";
+    }
+
+    const response = await ofrecidosApi.get(url, {
       params: {
         categoria: pcategoria, 
         ubicacion: pubicacion, 
-        calificacion: pcalificacion, 
+        mayorPromedio: mayorPromedio, 
         precio: pprecio,
       },
     });
