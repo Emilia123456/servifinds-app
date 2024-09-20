@@ -11,6 +11,7 @@ export default function HomeScreen({ navigation }) {
   const [selectedFilter, setSelectedFilter] = useState('All'); // Estado para el filtro seleccionado
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [recomendations, setRecomendations] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -23,8 +24,18 @@ export default function HomeScreen({ navigation }) {
       }
     };
     fetchCategories();
-  }, []); 
 
+    const fetchRecomendations = async () => {
+      try{
+        const data = await getRecomendations();
+        setRecomendations(data);
+      } catch(error){
+        console.log("error", error )
+      }
+    }
+    fetchRecomendations();
+  }, []); 
+/* 
   const recommendations = [
     {
       title: 'Jardinería',
@@ -46,7 +57,7 @@ export default function HomeScreen({ navigation }) {
       description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
       imageUri: require('../assets/clases-recomendaciones.jpg'),
     }
-  ];
+  ]; */
 
   const propagandaImages = [
     require('../assets/propaganda.png'),
@@ -141,21 +152,24 @@ export default function HomeScreen({ navigation }) {
             key={index}
             style={styles.recommendation}
             onPress={() => navigation.navigate('Detail', {
-              title: recommendation.title,
-              description: recommendation.description,
-              imageUri: recommendation.imageUri,
+              title: recommendation.titulo,
+              description: recommendation.descripcion,
+              imageUri: recommendation.foto,
+              calificacion: recommendation.promedio_calificacion,
+              
             })}
           >
-            <Image source={recommendation.imageUri} style={styles.recommendationImage} />
+            <Image source={recommendation.foto} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
-                <Text style={styles.ratingText}>4.9 (234)</Text>
+                <Text style={styles.ratingText}>4.9 (234)</Text> {/*investigar como ponerlo posta*/}
                 <TouchableOpacity onPress={() => handleLike(index)}>
                   <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
-              <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
+              <Text style={styles.recommendationTitle}>{recommendation.titulo}</Text>
+              <Text style={styles.recommendationSubtitle}>{recommendation.descripcion}</Text>
+              <Text style={styles.recommendationSubtitle}>{recommendation.promedio_calificacion}</Text>
             </View>
           </TouchableOpacity>
         ))}

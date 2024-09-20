@@ -16,13 +16,13 @@ export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, ppreci
       url = url + "categoria=" + pcategoria + "&";
     }
     if (ppublicacion!="" ){
-      url = url + "categoria=" + pcategoria + "&";
+      url = url + "ubicacion=" + pubicacion + "&";
     }
     if (mayorPromedio!="" ){
-      url = url + "categoria=" + pcategoria + "&";
+      url = url + "mayorPromedio=" + mayorPromedio + "&";
     }
     if (pprecio!="" ){
-      url = url + "categoria=" + pcategoria + "&";
+      url = url + "precio=" + pprecio + "&";
     }
 
     const response = await ofrecidosApi.get(url, {
@@ -57,6 +57,23 @@ export const getByCategories= async (pcategoria) => {
     const response = await ofrecidosApi.get('/api/Ofrecimientos/filtros?categoria={pcategoria}', {
       params: {
         categoria: pcategoria,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+
+
+export const getRecomendations = async () => {
+  //let url = 'api/Ofrecimientos/filtros?ubicacion={pubicacion}&mayorPromedio={mayorPromedio}&search={flores}&';
+;
+  try {
+    const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?mayorPromedio=1', {
+      params: {
+        mayorPromedio: '1', 
       },
     });
     return response.data;
