@@ -148,18 +148,17 @@ export default function HomeScreen({ navigation }) {
               
             })}
           >
-            <Image source={recommendation.foto} style={styles.recommendationImage} />
+            <Image source={{ uri: recommendation.foto }} style={styles.recommendationImage} />
 
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
-                <Text style={styles.ratingText}>4.9 (234)</Text> {/*investigar como ponerlo posta*/}
+                <Text style={styles.ratingText}>{recommendation.promedio_calificacion}(234)</Text> {/*investigar como ponerlo posta*/}
                 <TouchableOpacity onPress={() => handleLike(index)}>
                   <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
                 </TouchableOpacity>
               </View>
               <Text style={styles.recommendationTitle}>{recommendation.titulo}</Text>
               <Text style={styles.recommendationSubtitle}>{recommendation.descripcion}</Text>
-              <Text style={styles.recommendationSubtitle}>{recommendation.promedio_calificacion}</Text>
             </View>
           </TouchableOpacity>
         ))}
