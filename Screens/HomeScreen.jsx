@@ -12,6 +12,8 @@ export default function HomeScreen({ navigation }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [recomendations, setRecomendations] = useState([]);
 
+  
+
   useEffect(() => {
     const fetchRecomendations = async () => {
       try{
@@ -23,6 +25,7 @@ export default function HomeScreen({ navigation }) {
       }
     }
     fetchRecomendations();
+
   }, []); 
 /* 
   const recommendations = [
@@ -136,29 +139,31 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        {recomendations.map((recommendation, index) => (
+        {recomendations.map((recomendation, index) => (
           <TouchableOpacity
             key={index}
             style={styles.recommendation}
             onPress={() => navigation.navigate('Detail', {
-              title: recommendation.titulo,
-              description: recommendation.descripcion,
-              imageUri: recommendation.foto,
-              calificacion: recommendation.promedio_calificacion,
+              title: recomendation.titulo,
+              description: recomendation.descripcion,
+              imageUri: recomendation.foto,
+              calificacion: recomendation.promedio_calificacion,
               
             })}
           >
-            <Image source={{ uri: recommendation.foto }} style={styles.recommendationImage} />
+            <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
 
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
-                <Text style={styles.ratingText}>{recommendation.promedio_calificacion}(234)</Text> {/*investigar como ponerlo posta*/}
+                  
+                <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text> 
+
                 <TouchableOpacity onPress={() => handleLike(index)}>
                   <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.recommendationTitle}>{recommendation.titulo}</Text>
-              <Text style={styles.recommendationSubtitle}>{recommendation.descripcion}</Text>
+              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
+              <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
             </View>
           </TouchableOpacity>
         ))}

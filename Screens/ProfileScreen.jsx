@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes en trabajos realizados
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const openModal = () => {
+    setModalVisible(true);
+  }
+
+  
+  const closeModal = () => {
+    setModalVisible(false);
+  }
   const userProfile = {
     name: 'Jaboris Wells',
     status: 'Mantenimiento de jardines',
@@ -55,9 +64,21 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity style={styles.actionButton}>
           <Text style={styles.actionText}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={openModal}>
           <Text style={styles.actionText}>Publicar nuevo trabajo</Text>
         </TouchableOpacity>
+        <Modal 
+          yyeeeejaaa 
+          animationType="slide"
+          transparent={true}
+          onRequestClose={closeModal}>
+          <View>
+            <Text> Va a ser el form de publicar trabajos yeeja </Text>
+            <TouchableOpacity onPress={closeModal}>
+            <Text> Close </Text>
+            </TouchableOpacity>
+          </View>
+          </Modal>
       </View>
 
       {/* Información adicional */}
