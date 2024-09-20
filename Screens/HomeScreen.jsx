@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getCategories } from '../service/offersService.js';
+import { getRecomendations } from '../service/offersService.js';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ícono para el corazón
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
-  const [categories, setCategories] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState('All'); // Estado para el filtro seleccionado
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [recomendations, setRecomendations] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        console.log("trayendo categorias")
-        const data = await getCategories(); 
-        setCategories(data); 
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    fetchCategories();
-
     const fetchRecomendations = async () => {
       try{
         const data = await getRecomendations();
+        console.log(data);
         setRecomendations(data);
       } catch(error){
         console.log("error", error )
@@ -147,7 +136,7 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        {recommendations.map((recommendation, index) => (
+        {recomendations.map((recommendation, index) => (
           <TouchableOpacity
             key={index}
             style={styles.recommendation}
@@ -160,6 +149,7 @@ export default function HomeScreen({ navigation }) {
             })}
           >
             <Image source={recommendation.foto} style={styles.recommendationImage} />
+
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>4.9 (234)</Text> {/*investigar como ponerlo posta*/}
