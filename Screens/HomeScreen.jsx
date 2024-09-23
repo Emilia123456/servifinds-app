@@ -11,6 +11,7 @@ export default function HomeScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [recomendations, setRecomendations] = useState([]);
+  
 
   
 
@@ -27,7 +28,7 @@ export default function HomeScreen({ navigation }) {
     fetchRecomendations();
 
   }, []); 
-/* 
+  /* 
   const recommendations = [
     {
       title: 'Jardinería',
@@ -81,25 +82,21 @@ export default function HomeScreen({ navigation }) {
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, [])
   );
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>ServiFinds</Text>
-        {/* Icono de notificaciones */}
         <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')}>
           <Image source={require('../assets/notificacion.png')} style={styles.notificationIcon} />
         </TouchableOpacity>
       </View>
 
-      
-      {/* Propaganda */}
       <View style={styles.propagandaContainer}>
-        <ScrollView 
-          horizontal 
-          pagingEnabled 
-          onScroll={handleScroll} 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          pagingEnabled
+          onScroll={handleScroll}
+          showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
         >
           {propagandaImages.map((imageUri, index) => (
@@ -110,63 +107,61 @@ export default function HomeScreen({ navigation }) {
         </ScrollView>
         <View style={styles.indicatorContainer}>
           {propagandaImages.map((_, index) => (
-            <View 
-              key={index} 
+            <View
+              key={index}
               style={[
-                styles.indicator, 
-                activeImageIndex === index ? styles.activeIndicator : {} // Activa el círculo solo si la imagen está visible
+                styles.indicator,
+                activeImageIndex === index ? styles.activeIndicator : {},
               ]}
             />
           ))}
         </View>
       </View>
 
-      {/* Recomendaciones */}
       <View style={styles.recommendationsContainer}>
         <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
-        {/* Filtros */}
+
         <ScrollView horizontal style={styles.filterButtonsContainer} showsHorizontalScrollIndicator={false}>
           {['Todo', 'Nuevo', 'Popular', 'Mejor calificación'].map((filter, index) => (
             <TouchableOpacity
               key={index}
-              style={[
-                styles.filterButton,
-                selectedFilter === filter && styles.selectedFilterButton
-              ]}
+              style={[styles.filterButton, selectedFilter === filter && styles.selectedFilterButton]}
               onPress={() => setSelectedFilter(filter)}
             >
               <Text style={styles.filterButtonText}>{filter}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
-        {recomendations.map((recomendation, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() => navigation.navigate('Detail', {
-              title: recomendation.titulo,
-              description: recomendation.descripcion,
-              imageUri: recomendation.foto,
-              calificacion: recomendation.promedio_calificacion,
-              
-            })}
-          >
-            <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
 
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                  
-                <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text> 
+        {recomendations.map((recomendation, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              style={styles.recommendation}
+              onPress={() => navigation.navigate('Detail', {
+                title: recomendation.titulo,
+                description: recomendation.descripcion,
+                imageUri: recomendation.foto,
+                calificacion: recomendation.promedio_calificacion,
+              })}
+            >
+              <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
 
-                <TouchableOpacity onPress={() => handleLike(index)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
+              <View style={styles.recommendationText}>
+                <View style={styles.rating}>
+                  <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text>
+
+                  <TouchableOpacity onPress={() => handleLike(index)}>
+                    <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
+                <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
               </View>
-              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
-              <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          );
+        }
+      )}
       </View>
     </ScrollView>
   );
