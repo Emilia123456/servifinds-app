@@ -11,46 +11,29 @@ export default function HomeScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [recomendations, setRecomendations] = useState([]);
-  
-
-  
+  const shownIds = new Set(); 
 
   useEffect(() => {
     const fetchRecomendations = async () => {
-      try{
+      try {
         const data = await getRecomendations();
-        console.log(data);
-        setRecomendations(data);
-      } catch(error){
-        console.log("error", error )
-      }
-    }
-    fetchRecomendations();
 
-  }, []); 
-  /* 
-  const recommendations = [
-    {
-      title: 'Jardinería',
-      description: 'Soy Romina y me gustan las flores re coloridas',
-      imageUri: require('../assets/jardineria-recomendaciones.jpg'),
-    },
-    {
-      title: 'Plomería',
-      description: 'Hola me llamo Luis y me gustan las conejitas',
-      imageUri: require('../assets/plomeria-recomendaciones.jpg'),
-    },
-    {
-      title: 'Manicura',
-      description: 'Hola me llamo Angela y hago nail art y esas cosas',
-      imageUri: require('../assets/manicura-recomendaciones.jpg'),
-    },
-    {
-      title: 'Particular Matematica',
-      description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
-      imageUri: require('../assets/clases-recomendaciones.jpg'),
-    }
-  ]; */
+        // Filtrar duplicados basado en un id
+        const uniqueRecommendations = data.filter((recomendation) => {
+          if (!shownIds.has(recomendation.id)) {
+            shownIds.add(recomendation.id);
+            return true;
+          }
+          return false;
+        });
+
+        setRecomendations(uniqueRecommendations);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    fetchRecomendations();
+  }, []);
 
   const propagandaImages = [
     require('../assets/propaganda.png'),
@@ -82,6 +65,7 @@ export default function HomeScreen({ navigation }) {
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, [])
   );
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -133,35 +117,31 @@ export default function HomeScreen({ navigation }) {
           ))}
         </ScrollView>
 
-        {recomendations.map((recomendation, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              style={styles.recommendation}
-              onPress={() => navigation.navigate('Detail', {
-                title: recomendation.titulo,
-                description: recomendation.descripcion,
-                imageUri: recomendation.foto,
-                calificacion: recomendation.promedio_calificacion,
-              })}
-            >
-              <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
-
-              <View style={styles.recommendationText}>
-                <View style={styles.rating}>
-                  <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text>
-
-                  <TouchableOpacity onPress={() => handleLike(index)}>
-                    <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
-                <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
+        {recomendations.map((recomendation, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.recommendation}
+            onPress={() => navigation.navigate('Detail', {
+              title: recomendation.titulo,
+              description: recomendation.descripcion,
+              imageUri: recomendation.foto,
+              calificacion: recomendation.promedio_calificacion,
+            })}
+          >
+            {/* Mostrar solo la primera imagen */}
+            <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
+            <View style={styles.recommendationText}>
+              <View style={styles.rating}>
+                <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text>
+                <TouchableOpacity onPress={() => handleLike(index)}>
+                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          );
-        }
-      )}
+              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
+              <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     </ScrollView>
   );
@@ -325,5 +305,3 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 });
-
-
