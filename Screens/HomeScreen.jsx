@@ -1,8 +1,10 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getRecomendations } from '../service/offersService.js';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ícono para el corazón
+import { likeRecomendation } from '../service/favsService.js';
 
 const { width } = Dimensions.get('window');
 
@@ -44,28 +46,32 @@ export default function HomeScreen({ navigation }) {
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(contentOffsetX / width);
-    setActiveImageIndex(index); // Actualiza el índice de la imagen activa según el desplazamiento
+    setActiveImageIndex(index); 
   };
 
   const handleLike = async (recomendationId) => {
     try {
-      const isLiked = likedRecommendations[recomendationId];
-  
-      // Enviar la acción de like/unlike al backend
-      const response = await axios.post('https://diverse-tightly-mongoose.ngrok-free.app/api/Favoritos/like', {
+      const isLiked = likedRecommendations[recomendationId]; 
+    
+      const response = await likeRecomendation({
         recomendationId,
-        liked: !isLiked,  // Cambiar el estado de like
+        liked: !isLiked,
       });
+      
   
-      // Actualizar el estado local según la respuesta
-      setLikedRecommendations((prev) => ({
-        ...prev,
-        [recomendationId]: !prev[recomendationId],
-      }));
+      if (response.status === 200) {
+        setLikedRecommendations((prev) => ({
+          ...prev,
+          [recomendationId]: !prev[recomendationId],
+        }));
+      } else {
+        console.error('Error al actualizar el like en el servidor:', response);
+      }
     } catch (error) {
-      console.error('Error al actualizar el like:', error);
+      console.error('Error al realizar la solicitud:', error);
     }
   };
+  
   
 
   const handleCategoryPress = (category) => {
