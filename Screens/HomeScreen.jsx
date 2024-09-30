@@ -51,18 +51,14 @@ export default function HomeScreen({ navigation }) {
 
   const handleLike = async (recomendationId) => {
     try {
-      const isLiked = likedRecommendations[recomendationId]; 
-    
-      const response = await likeRecomendation({
-        recomendationId,
-        liked: !isLiked,
-      });
+      const isLiked = likedRecommendations[recomendationId]; // Verifica si ya está likeada
       
-  
-      if (response.status === 200) {
+      const response = await likeRecomendation(recomendationId, !isLiked); // Cambia el estado
+      
+      if (response.status === 201) {
         setLikedRecommendations((prev) => ({
           ...prev,
-          [recomendationId]: !prev[recomendationId],
+          [recomendationId]: !prev[recomendationId], // Cambia el estado del like
         }));
       } else {
         console.error('Error al actualizar el like en el servidor:', response);
@@ -71,7 +67,6 @@ export default function HomeScreen({ navigation }) {
       console.error('Error al realizar la solicitud:', error);
     }
   };
-  
   
 
   const handleCategoryPress = (category) => {
@@ -148,12 +143,11 @@ export default function HomeScreen({ navigation }) {
               calificacion: recomendation.promedio_calificacion,
             })}
           >
-            {/* Mostrar solo la primera imagen */}
             <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text>
-                <TouchableOpacity onPress={() => handleLike(index)}>
+                <TouchableOpacity onPress={() => handleLike(recomendation.id)}>
                   <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
                 </TouchableOpacity>
               </View>

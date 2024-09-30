@@ -11,13 +11,17 @@ export default function FavoritesScreen({ navigation }) {
     const fetchLikedRecomendations = async () => {
       try {
         const data = await getLikedRecomendations();
-        setLikedRecommendations(data);
+        
+        // Si tienes un campo que marca si ha sido likeada o no
+        const likedData = data.filter(recommendation => recommendation.liked === true);
+        setLikedRecommendations(likedData);
       } catch (error) {
         console.log("Error al obtener los favoritos:", error);
       }
     };
     fetchLikedRecomendations();
   }, []);
+  
   
   return (
     <ScrollView style={styles.container}>

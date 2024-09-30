@@ -1,4 +1,6 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // Creación de instancia axios con configuración base
 const favsApi = axios.create({
@@ -22,13 +24,19 @@ export const getLikedRecomendations = async () => {
 
 export const likeRecomendation = async (recomendationId, liked) => {
   try {
-   
-    const response = await favsApi.post('/Favoritos/like', {
-      recomendationId, 
-      liked,          
+    const token = await AsyncStorage.getItem('token'); // Obtener el token almacenado
+    const miurl = `/Favoritos/likes/${recomendationId}`; // Construir correctamente la URL con el id
+    
+    const response = await favsApi.patch(miurl, {
+      liked,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Agregar el token en el header
+        'Content-Type': 'application/json',
+      },
     });
 
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error('Error al likear la recomendación:', error);
     throw error;
