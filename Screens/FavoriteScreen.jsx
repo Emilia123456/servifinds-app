@@ -1,70 +1,52 @@
-import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // ícono para el corazón
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity,  } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
+import { getLikedRecomendations } from '../service/favsService';
 
 export default function FavoritesScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes
 
-  const recommendations = [
-    {
-      title: 'Jardinería',
-      description: 'Soy Romina y me gustan las flores re coloridas',
-      imageUri: require('../assets/jardineria-recomendaciones.jpg'),
-    },
-    {
-      title: 'Plomería',
-      description: 'Hola me llamo Luis y me gustan las conejitas',
-      imageUri: require('../assets/plomeria-recomendaciones.jpg'),
-    },
-    {
-      title: 'Manicura',
-      description: 'Hola me llamo Angela y hago nail art y esas cosas',
-      imageUri: require('../assets/manicura-recomendaciones.jpg'),
-    },
-    {
-      title: 'Particular Matematica',
-      description: 'Hola me llamo Paola y te hago la vida mas facil (no)',
-      imageUri: require('../assets/clases-recomendaciones.jpg'),
-    }
-  ];
-
-  const handleLike = (index) => {
-    setLikedRecommendations((prev) => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
-  };
-
+  useEffect(() => {
+    const fetchLikedRecomendations = async () => {
+      try {
+        const data = await getLikedRecomendations();
+        setLikedRecommendations(data);
+      } catch (error) {
+        console.log("Error al obtener los favoritos:", error);
+      }
+    };
+    fetchLikedRecomendations();
+  }, []);
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>Favoritos</Text>
       </View>
-
+  
       <View style={styles.recommendationsContainer}>
-        {recommendations.map((recommendation, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() => navigation.navigate('Detail', {
-              title: recommendation.title,
-              description: recommendation.description,
-              imageUri: recommendation.imageUri,
-            })}
-          >
-            <Image source={recommendation.imageUri} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>4.9 (234)</Text>
-                <TouchableOpacity onPress={() => handleLike(index)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
+        {likedRecommendations.length > 0 ? (
+          likedRecommendations.map((recommendation, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.recommendation}
+              onPress={() => navigation.navigate('Detail', {
+                title: recommendation.titulo,
+                description: recommendation.descripcion,
+                imageUri: recommendation.foto,
+                calificacion: recommendation.promedio_calificacion,
+              })}
+            >
+              <Image source={{ uri: recommendation.foto }} style={styles.recommendationImage} />
+              <View style={styles.recommendationText}>
+                <Text style={styles.recommendationTitle}>{recommendation.titulo}</Text>
+                <Text style={styles.recommendationSubtitle}>{recommendation.descripcion}</Text>
               </View>
-              <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
-              <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Text>No tienes publicaciones likeadas aún</Text>
+        )}
       </View>
     </ScrollView>
   );

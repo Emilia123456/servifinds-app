@@ -47,12 +47,26 @@ export default function HomeScreen({ navigation }) {
     setActiveImageIndex(index); // Actualiza el índice de la imagen activa según el desplazamiento
   };
 
-  const handleLike = (index) => {
-    setLikedRecommendations((prev) => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
+  const handleLike = async (recomendationId) => {
+    try {
+      const isLiked = likedRecommendations[recomendationId];
+  
+      // Enviar la acción de like/unlike al backend
+      const response = await axios.post('https://diverse-tightly-mongoose.ngrok-free.app/api/Favoritos/like', {
+        recomendationId,
+        liked: !isLiked,  // Cambiar el estado de like
+      });
+  
+      // Actualizar el estado local según la respuesta
+      setLikedRecommendations((prev) => ({
+        ...prev,
+        [recomendationId]: !prev[recomendationId],
+      }));
+    } catch (error) {
+      console.error('Error al actualizar el like:', error);
+    }
   };
+  
 
   const handleCategoryPress = (category) => {
     navigation.navigate('CategoryScreen', { category });
