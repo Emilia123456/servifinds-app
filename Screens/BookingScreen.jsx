@@ -13,7 +13,7 @@ import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons'; // Librería de íconos
 
-const WeekCalendarScreen = () => {
+const BookingScreen = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [animation] = useState(new Animated.Value(0));
@@ -194,4 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WeekCalendarScreen;
+export default BookingScreen;
