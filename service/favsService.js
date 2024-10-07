@@ -29,14 +29,12 @@ export const getLikedRecomendations = async () => {
 };
 
 
-export const likeRecomendation = async (recomendationId, liked) => {
+export const likeRecomendation = async (recomendationId) => {
   try {
     const token = await AsyncStorage.getItem('token'); 
     const miurl = `/Favoritos/likes/${recomendationId}`; 
     
     const response = await favsApi.patch(miurl, {
-      liked,
-    }, {
       headers: {
         Authorization: `Bearer ${token}`, 
         'Content-Type': 'application/json',
