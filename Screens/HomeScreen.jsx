@@ -53,7 +53,7 @@ export default function HomeScreen({ navigation }) {
     try {
       const isLiked = likedRecommendations[recomendationId]; // Verifica si ya está likeada
       
-      const response = await likeRecomendation(recomendationId, !isLiked); // Cambia el estado
+      const response = await likeRecomendation(recomendationId); 
       
       if (response.status === 201) {
         setLikedRecommendations((prev) => ({
