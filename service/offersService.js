@@ -15,7 +15,7 @@ export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, ppreci
     if (pcategoria!="" ){
       url = url + "categoria=" + pcategoria + "&";
     }
-    if (ppublicacion!="" ){
+    if (pubicacion!="" ){
       url = url + "ubicacion=" + pubicacion + "&";
     }
     if (mayorPromedio!="" ){
