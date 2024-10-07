@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const userApi = axios.create({
@@ -14,8 +15,8 @@ export const login = async (email, password) => {
       contrasena: password, 
     });
 
-    console.log('LLEGO ACA');
-    console.log(email, password);
+    AsyncStorage.setItem('token', response.data.token);
+    
     console.log(response.data);
 
     return response.data;  

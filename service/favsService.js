@@ -10,10 +10,17 @@ const favsApi = axios.create({
   },
 });
 
-// Función para obtener las recomendaciones likeadas
 export const getLikedRecomendations = async () => {
   try {
-    const response = await favsApi.get('/Favoritos/favoritos');
+    const token = await AsyncStorage.getItem('token');
+    console.log(token);
+    const response = await favsApi.get('/Favoritos/favoritos', {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error('Error al obtener los favoritos:', error);
@@ -24,14 +31,14 @@ export const getLikedRecomendations = async () => {
 
 export const likeRecomendation = async (recomendationId, liked) => {
   try {
-    const token = await AsyncStorage.getItem('token'); // Obtener el token almacenado
-    const miurl = `/Favoritos/likes/${recomendationId}`; // Construir correctamente la URL con el id
+    const token = await AsyncStorage.getItem('token'); 
+    const miurl = `/Favoritos/likes/${recomendationId}`; 
     
     const response = await favsApi.patch(miurl, {
       liked,
     }, {
       headers: {
-        Authorization: `Bearer ${token}`, // Agregar el token en el header
+        Authorization: `Bearer ${token}`, 
         'Content-Type': 'application/json',
       },
     });
