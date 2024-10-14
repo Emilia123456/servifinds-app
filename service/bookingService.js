@@ -11,26 +11,22 @@ const api = axios.create({
 
 export const fetchOfrecidosPorFecha = async (fecha) => {
     const token = await AsyncStorage.getItem('token');
+    console.log('fecha', fecha);
     console.log('token', token);
-    fecha = '2023-01-04';
-    try {
-      let miUrl = `/api/Historial/historial?fecha=${fecha}`;
-      console.log('miUrl', miUrl);
 
-        const response = await fetch(miUrl, {
-            method: 'GET',
+    try {
+        const response = await api.get(`/api/Historial/historial`, {
+            params: { fecha },
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, 
+                Authorization: `Bearer ${token}`, 
             },
         });
-        const data = await response.json();
-        return data;
+        return response.data;
     } catch (error) {
         console.error('Error al obtener los ofrecidos:', error);
+        return null;
     }
 };
-
 
 
 export const createOfrecido = async (ofrecidoData) => {
