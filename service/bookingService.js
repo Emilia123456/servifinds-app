@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
     baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/', 
@@ -9,8 +10,14 @@ const api = axios.create({
 
 
 export const fetchOfrecidosPorFecha = async (fecha) => {
+    const token = await AsyncStorage.getItem('token');
+    console.log('token', token);
+    fecha = '2023-01-04';
     try {
-        const response = await fetch(`/api/historial?fecha=${fecha}`, {
+      let miUrl = `/api/Historial/historial?fecha=${fecha}`;
+      console.log('miUrl', miUrl);
+
+        const response = await fetch(miUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
