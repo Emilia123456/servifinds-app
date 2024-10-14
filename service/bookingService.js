@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
     baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/', 
@@ -9,18 +10,21 @@ const api = axios.create({
 
 
 export const fetchOfrecidosPorFecha = async (fecha) => {
+    const token = await AsyncStorage.getItem('token');
+    console.log('fecha', fecha);
+    console.log('token', token);
+
     try {
-        const response = await fetch(`/api/historial?fecha=${fecha}`, {
-            method: 'GET',
+        const response = await api.get(`/api/Historial/historial`, {
+            params: { fecha },
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, 
+                Authorization: `Bearer ${token}`, 
             },
         });
-        const data = await response.json();
-        return data;
+        return response.data;
     } catch (error) {
         console.error('Error al obtener los ofrecidos:', error);
+        return null;
     }
 };
 /*
@@ -64,7 +68,6 @@ export const createReserva = async (username, password, address) => {
   }
 };
 */
-
 
 export const createOfrecido = async (ofrecidoData) => {
   try {

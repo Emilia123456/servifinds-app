@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Animated,
-  Easing,
-  ScrollView,
-} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,Modal,Animated,Easing,ScrollView,} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { fetchOfrecidosPorFecha } from '../service/bookingService';  
 
 const BookingScreen = () => {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -41,33 +33,27 @@ const BookingScreen = () => {
     outputRange: [0, 1],
   });
 
+  // Obtener ofrecidos según la fecha seleccionada
+  const fetchOfrecidos = async (fecha) => {
+    try {
+      const data = await fetchOfrecidosPorFecha(fecha);
+      setOfrecidos(Array.isArray(data) ? data : []); // Asegurar que siempre sea un array
+    } catch (error) {
+      console.error('Error fetching ofrecidos:', error);
+      setOfrecidos([]); // Si hay error, setear ofrecidos como array vacío
+    }
+  };
+
+  // Recargar los ofrecidos al cambiar la fecha seleccionada
+  useEffect(() => {
+    if (selectedDate) {
+      fetchOfrecidos(selectedDate);
+    }
+  }, [selectedDate]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tasks for {selectedDate || 'Today'}</Text>
-
-      {/* Scrollable list of offered tasks */}
-      <ScrollView>
-        {ofrecidos.map((ofrecido) => (
-          <View key={ofrecido.id} style={styles.taskCard}>
-            <View style={styles.taskHeader}>
-              <View style={styles.taskImages}>
-                {/* Placeholder for participant images */}
-                <Icon name="people-circle" size={24} color="#555" />
-              </View>
-              <View>
-                <Text style={styles.taskTitle}>{ofrecido.titulo}</Text>
-                <Text style={styles.taskDescription}>{ofrecido.descripcion}</Text>
-              </View>
-            </View>
-            <View style={styles.taskFooter}>
-              <Text style={styles.taskTime}>Price: {ofrecido.precio}</Text>
-              <Text style={styles.taskRating}>Rating: {ofrecido.promedio_calificacion}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      <Text style={styles.title}>Pick a date</Text>
+      <Text style={styles.title}>Selecciona una fecha</Text>
       <View style={styles.weekContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {daysOfWeek.map((day) => (
@@ -129,11 +115,38 @@ const BookingScreen = () => {
               }}
             />
             <TouchableOpacity onPress={toggleCalendar} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>
       </Modal>
+
+      {/* Mover la sección de pendientes aquí */}
+      <Text style={styles.title}>Pendientes del {selectedDate || 'Today'}</Text>
+
+      <ScrollView>
+        {Array.isArray(ofrecidos) && ofrecidos.length > 0 ? (
+          ofrecidos.map((ofrecido) => (
+            <View key={ofrecido.id} style={styles.taskCard}>
+              <View style={styles.taskHeader}>
+                <View style={styles.taskImages}>
+                  <Icon name="people-circle" size={24} color="#555" />
+                </View>
+                <View>
+                  <Text style={styles.taskTitle}>{ofrecido.titulo}</Text>
+                  <Text style={styles.taskDescription}>{ofrecido.descripcion}</Text>
+                </View>
+              </View>
+              <View style={styles.taskFooter}>
+                <Text style={styles.taskTime}>Price: {ofrecido.precio}</Text>
+                <Text style={styles.taskRating}>Rating: {ofrecido.promedio_calificacion}</Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text>No hay ninguna tarea para esta fecha</Text> 
+        )}
+      </ScrollView>
     </View>
   );
 };
