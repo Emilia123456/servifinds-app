@@ -91,53 +91,11 @@ export default function HomeScreen({ navigation }) {
   
       <FilterComponent selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />
 
-<<<<<<< HEAD
       <RecommendationsComponent
         navigation={navigation}
         recomendations={recomendations}
         selectedFilter={selectedFilter}
       />
-=======
-        <ScrollView horizontal style={styles.filterButtonsContainer} showsHorizontalScrollIndicator={false}>
-          {['Todo', 'Nuevo', 'Popular', 'Mejor calificación'].map((filter, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.filterButton, selectedFilter === filter && styles.selectedFilterButton]}
-              onPress={() => setSelectedFilter(filter)}
-            >
-              <Text style={styles.filterButtonText}>{filter}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-
-        {/* aca ver la manera de pasar el idProveedor, token y demas */}
-        {recomendations.map((recomendation, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() => navigation.navigate('Detail', {
-              title: recomendation.titulo,
-              description: recomendation.descripcion,
-              imageUri: recomendation.foto,
-              calificacion: recomendation.promedio_calificacion,
-            })}
-          >
-            <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>{recomendation.promedio_calificacion.toString()}</Text>
-                <TouchableOpacity onPress={() => handleLike(recomendation.id)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
-              <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
->>>>>>> 1373f61b8c8fffd630522e202ffd790d3e26d569
     </ScrollView>
   );
 }
