@@ -132,6 +132,8 @@ export default function HomeScreen({ navigation }) {
           ))}
         </ScrollView>
 
+
+        {/* aca ver la manera de pasar el idProveedor, token y demas */}
         {recomendations.map((recomendation, index) => (
           <TouchableOpacity
             key={index}

@@ -1,16 +1,39 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Modal,
+  TextInput,
+  Button,
+} from 'react-native';
 
 export default function DetailScreen({ route }) {
   const { title, description, imageUri, seller } = route.params;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [address, setAddress] = useState('');
+
+  const handleHire = () => {
+    console.log({ username, password, address });
+    setModalVisible(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-       
-        <Image source={imageUri} style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]} />
+        <Image
+          source={imageUri}
+          style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]}
+        />
 
         <View style={styles.detailsContainer}>
           <Text style={styles.productName}>{title}</Text>
@@ -23,22 +46,21 @@ export default function DetailScreen({ route }) {
             </View>
           </View>
 
-          {/* Botones */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.messageButton}>
               <Text style={styles.buttonText}>Mensaje</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.hireButton}>
+            <TouchableOpacity
+              style={styles.hireButton}
+              onPress={() => setModalVisible(true)}
+            >
               <Text style={styles.buttonText}>Contratar</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Sección de comentarios */}
         <View style={styles.commentsSection}>
           <Text style={styles.commentsTitle}>Comentarios</Text>
-
-          {/* Ejemplo de comentarios */}
           <View style={styles.comment}>
             <Text style={styles.commentUser}>John Doe</Text>
             <Text style={styles.commentText}>Excelente servicio</Text>
@@ -49,6 +71,48 @@ export default function DetailScreen({ route }) {
           </View>
         </View>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Contratar</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Usuario"
+              placeholderTextColor="#888"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor="#888"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Dirección"
+              placeholderTextColor="#888"
+              value={address}
+              onChangeText={setAddress}
+            />
+            <Button title="Confirmar" onPress={handleHire} />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -172,5 +236,43 @@ const styles = StyleSheet.create({
   commentText: {
     fontSize: 14,
     color: '#666',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 15,
+    paddingLeft: 10,
+    borderRadius: 10,
+  },
+  closeButton: {
+    marginTop: 10,
+    backgroundColor: '#E8EAF6',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
