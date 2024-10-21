@@ -1,39 +1,24 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
-const HamburgerMenu = ({ visible, onClose }) => {
+const HamburgerMenu = () => {
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.menuContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>X</Text>
-        </TouchableOpacity>
-        <Text style={styles.menuItem}>Perfil</Text>
-        <Text style={styles.menuItem}>Configuraciones</Text>
-        <Text style={styles.menuItem}>Cerrar sesión</Text>
-      </View>
-    </Modal>
+    <View style={styles.menuContainer}>
+      <Text style={styles.menuItem}>Opción 1</Text>
+      <Text style={styles.menuItem}>Opción 2</Text>
+      <Text style={styles.menuItem}>Opción 3</Text>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
-    backgroundColor: 'white',
-    paddingTop: 50,
-    paddingHorizontal: 20,
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: '#1B2E35',
+    padding: 20,
   },
   menuItem: {
     fontSize: 18,
-    marginVertical: 15,
-    color: '#1B2E35',
+    marginVertical: 10,
   },
 });
 

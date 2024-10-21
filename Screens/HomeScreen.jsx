@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, PanResponder, BackHandler } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
 import { getRecomendations } from '../service/offersService.js';
 import FilterComponent from '../components/Filter.jsx';
-import RecommendationsComponent from '../components/Recommendations.jsx';; // Nuevo componente importado
+import RecommendationsComponent from '../components/Recommendations.jsx';
+import HamburgerMenu from '../components/HamburguerMenu.jsx';
 
 const { width } = Dimensions.get('window');
 
@@ -13,6 +14,9 @@ export default function HomeScreen({ navigation }) {
   const [recomendations, setRecomendations] = useState([]);
   const [isMenuVisible, setMenuVisible] = useState(false);
   const shownIds = new Set(); 
+
+
+  const menuAnimation = useRef(new Animated.Value(-width * 0.75)).current; // Empieza fuera de la pantalla
 
   useEffect(() => {
     const fetchRecomendations = async () => {
@@ -36,6 +40,35 @@ export default function HomeScreen({ navigation }) {
     fetchRecomendations();
   }, []);
 
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Detecta si se desliza desde el borde izquierdo para abrir el menú
+        return gestureState.dx > 20 || gestureState.dx < -20;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // Controla la apertura/cierre del menú deslizando
+        if (gestureState.dx > 0) {
+          Animated.timing(menuAnimation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }).start();
+          setMenuVisible(true);
+        } else if (gestureState.dx < -0) {
+          Animated.timing(menuAnimation, {
+            toValue: -width,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => setMenuVisible(false));
+        }
+      },
+    })
+  ).current;
+
+
+
   const propagandaImages = [
     require('../assets/propaganda.png'),
     require('../assets/propaganda2.png'),
@@ -57,7 +90,7 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} {...panResponder.panHandlers}>
       <View style={styles.header}>
         <View style={styles.leftHeader}>
           <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuContainer}>
@@ -96,6 +129,11 @@ export default function HomeScreen({ navigation }) {
         recomendations={recomendations}
         selectedFilter={selectedFilter}
       />
+
+      <Animated.View style={[styles.menuOverlay, { transform: [{ translateX: menuAnimation }] }]}>
+        <HamburgerMenu />
+      </Animated.View>
+
     </ScrollView>
   );
 }
@@ -145,6 +183,8 @@ const styles = StyleSheet.create({
     color: '#1B2E35',
     textAlign: 'left',
     padding: 5,
+    flexDirection: 'column',
+    marginTop: 5,
     fontWeight: 'bold',
   },
   propagandaContainer: {
