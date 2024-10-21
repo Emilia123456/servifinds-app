@@ -14,7 +14,7 @@ import {
 
 
 export default function DetailScreen({ route }) {
-  const { title, description, imageUri, seller } = route.params;
+  const {idOffer, seller, title, description, price, imageUri, rating} = route.params;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
@@ -24,7 +24,6 @@ export default function DetailScreen({ route }) {
   const [address, setAddress] = useState('');
 
   const handleHire = () => {
-    console.log({ username, password, address });
     let tok = AsyncStorage.getItem('token');
     setModalVisible(false);
   };
@@ -40,10 +39,12 @@ export default function DetailScreen({ route }) {
         <View style={styles.detailsContainer}>
           <Text style={styles.productName}>{title}</Text>
           <Text style={styles.productDescription}>{description}</Text>
+          <Text style={styles.productDescription}>{price}</Text>
+          <Text style={styles.productDescription}>{rating}</Text>
           <View style={styles.sellerContainer}>
             <Image source={{ uri: '../assets/propaganda.png' }} style={styles.sellerImage} />
             <View style={styles.sellerDetails}>
-              <Text style={styles.sellerName}>Santiago</Text>
+              <Text style={styles.sellerName}>{tok.nombre} {tok.apellido} </Text>
               <Text style={styles.sellerDescription}>Hola, soy el vendedor</Text>
             </View>
           </View>

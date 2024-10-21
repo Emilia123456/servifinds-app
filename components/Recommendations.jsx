@@ -34,10 +34,13 @@ const RecommendationsComponent = ({ recomendations, navigation }) => {
             style={styles.recommendation}
             onPress={() =>
               navigation.navigate('Detail', {
+                idOffer: recomendation.id,
+                seller: recomendation.idUsuario,
                 title: recomendation.titulo,
                 description: recomendation.descripcion,
+                price: recomendation.precio,
                 imageUri: recomendation.foto,
-                calificacion: recomendation.promedio_calificacion,
+                rating: recomendation.promedio_calificacion,
               })
             }
           >
