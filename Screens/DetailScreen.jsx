@@ -12,6 +12,7 @@ import {
   Button,
 } from 'react-native';
 
+
 export default function DetailScreen({ route }) {
   const { title, description, imageUri, seller } = route.params;
   const screenWidth = Dimensions.get('window').width;
@@ -24,6 +25,7 @@ export default function DetailScreen({ route }) {
 
   const handleHire = () => {
     console.log({ username, password, address });
+    let tok = AsyncStorage.getItem('token');
     setModalVisible(false);
   };
 
