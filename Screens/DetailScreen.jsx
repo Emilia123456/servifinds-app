@@ -12,6 +12,7 @@ import {
   Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createReserva } from '../service/bookingService';
 
 export default function DetailScreen({ route }) {
   const {idOffer, seller, title, description, price, imageUri, rating} = route.params;
@@ -29,10 +30,13 @@ export default function DetailScreen({ route }) {
     console.log('fecha', fecha);
     
     let ofrecidoData = {
-      idOffer : idOffer,
-      fecha : fecha,
+      idPublicacion : idOffer,
+      fechaReservada : fecha,
       idEstado : 1,
-    }
+      // idProveedor: idOffer,
+    };
+
+    createReserva(ofrecidoData);
 
   };
 
