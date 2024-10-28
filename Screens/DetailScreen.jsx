@@ -11,7 +11,7 @@ import {
   TextInput,
   Button,
 } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DetailScreen({ route }) {
   const {idOffer, seller, title, description, price, imageUri, rating} = route.params;
@@ -19,13 +19,21 @@ export default function DetailScreen({ route }) {
   const screenHeight = Dimensions.get('window').height;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [address, setAddress] = useState('');
+  const [fecha, setFecha] = useState('');
+
+  const tok = AsyncStorage.getItem('token');
 
   const handleHire = () => {
-    let tok = AsyncStorage.getItem('token');
     setModalVisible(false);
+    console.log('idOffer', idOffer);
+    console.log('fecha', fecha);
+    
+    let ofrecidoData = {
+      idOffer : idOffer,
+      fecha : fecha,
+      idEstado : 1,
+    }
+
   };
 
   return (
@@ -86,25 +94,10 @@ export default function DetailScreen({ route }) {
             <Text style={styles.modalTitle}>Contratar</Text>
             <TextInput
               style={styles.input}
-              placeholder="Usuario"
+              placeholder="Fecha"
               placeholderTextColor="#888"
-              value={username}
-              onChangeText={setUsername}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Contraseña"
-              placeholderTextColor="#888"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Dirección"
-              placeholderTextColor="#888"
-              value={address}
-              onChangeText={setAddress}
+              value={fecha}
+              onChangeText={setFecha}
             />
             <Button title="Confirmar" onPress={handleHire} />
             <TouchableOpacity

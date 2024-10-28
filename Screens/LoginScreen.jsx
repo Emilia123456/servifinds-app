@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { login } from '../service/userService.js';  
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('maiukuper@gmail.com');
+  const [password, setPassword] = useState('maiukuper123');
 
   const handleLogin = async () => {
     try {
