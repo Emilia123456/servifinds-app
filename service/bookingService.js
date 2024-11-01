@@ -53,12 +53,20 @@ export const fetchOfrecidosPorFecha = async (fecha) => {
     }    
 };
 
+/*
 
+ofrecidoData = {
+      idPublicacion: idOffer,
+      fechaReservada: fecha,
+      idEstado: 1,
+      idOffer: idOffer,  
+    };
+*/
 export const createReserva = async (ofrecidoData) => {
   const token = await AsyncStorage.getItem('token');
 
   const fecha = ofrecidoData.fechaReservada; // Asegúrate de que esto sea "DD/MM"
-  const [dia, mes] = fecha.split('/');
+  const [dia, mes] = fecha.split('-');
   const año = new Date().getFullYear(); // O el año que necesites
   const fechaReservada = new Date(`${año}-${mes}-${dia}T00:00:00`).toISOString();
 

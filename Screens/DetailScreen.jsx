@@ -20,25 +20,30 @@ export default function DetailScreen({ route }) {
   const screenHeight = Dimensions.get('window').height;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [fecha, setFecha] = useState('');
+  const [fecha, setFecha] = useState('2024-11-02');
 
   const tok = AsyncStorage.getItem('token');
 
-  const handleHire = () => {
+  const handleHire = async () => {
     setModalVisible(false);
-    console.log('idOffer', idOffer);
-    console.log('fecha', fecha);
-    
+  
     let ofrecidoData = {
-      idPublicacion : idOffer,
-      fechaReservada : fecha,
-      idEstado : 1,
-      // idProveedor: idOffer,
+      idPublicacion: idOffer,
+      fechaReservada: fecha,
+      idEstado: 1,
+      idOffer: idOffer,  
     };
+  
+    try {
+      const result = await createReserva(ofrecidoData);
+      console.log('Reserva guardada:', result); // Mensaje de éxito
+      alert('Reserva guardada exitosamente');
+    } catch (error) {
+      console.error('Error al guardar la reserva:', error); // Mensaje de error
+      alert('Hubo un problema al guardar la reserva. Inténtalo nuevamente.');
+    }
+  };  
 
-    createReserva(ofrecidoData);
-
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>

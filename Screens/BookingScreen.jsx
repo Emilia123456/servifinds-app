@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {View,Text,StyleSheet,TouchableOpacity,Modal,Animated,Easing,ScrollView,} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated, Easing, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { fetchOfrecidosPorFecha } from '../service/bookingService';  
+import { fetchOfrecidosPorFecha } from '../service/bookingService';
 
 const BookingScreen = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
-  const [ofrecidos, setOfrecidos] = useState([]); 
+  const [ofrecidos, setOfrecidos] = useState([]);
   const [animation] = useState(new Animated.Value(0));
 
-  const daysOfWeek = getDaysOfCurrentWeek();
+  const daysOfWeek = getRemainingDaysOfCurrentWeek();
 
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
@@ -33,18 +33,16 @@ const BookingScreen = () => {
     outputRange: [0, 1],
   });
 
-  // Obtener ofrecidos según la fecha seleccionada
   const fetchOfrecidos = async (fecha) => {
     try {
       const data = await fetchOfrecidosPorFecha(fecha);
-      setOfrecidos(Array.isArray(data) ? data : []); // Asegurar que siempre sea un array
+      setOfrecidos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching ofrecidos:', error);
-      setOfrecidos([]); // Si hay error, setear ofrecidos como array vacío
+      setOfrecidos([]);
     }
   };
 
-  // Recargar los ofrecidos al cambiar la fecha seleccionada
   useEffect(() => {
     if (selectedDate) {
       fetchOfrecidos(selectedDate);
@@ -121,7 +119,6 @@ const BookingScreen = () => {
         </View>
       </Modal>
 
-      {/* Mover la sección de pendientes aquí */}
       <Text style={styles.title}>Pendientes del {selectedDate || 'Today'}</Text>
 
       <ScrollView>
@@ -144,18 +141,19 @@ const BookingScreen = () => {
             </View>
           ))
         ) : (
-          <Text>No hay ninguna tarea para esta fecha</Text> 
+          <Text>No hay ninguna tarea para esta fecha</Text>
         )}
       </ScrollView>
     </View>
   );
 };
 
-const getDaysOfCurrentWeek = () => {
-  const startOfWeek = moment().startOf('isoWeek');
+const getRemainingDaysOfCurrentWeek = () => {
+  const today = moment();
+  const endOfWeek = moment().endOf('isoWeek');
   const days = [];
-  for (let i = 0; i < 7; i++) {
-    const day = startOfWeek.clone().add(i, 'days');
+
+  for (let day = today; day.isBefore(endOfWeek) || day.isSame(endOfWeek); day.add(1, 'days')) {
     days.push({
       day: day.format('D'),
       weekday: day.format('ddd'),
@@ -164,6 +162,13 @@ const getDaysOfCurrentWeek = () => {
   }
   return days;
 };
+
+// Define los estilos aquí (sin cambios)
+
+
+// Define los estilos aquí (sin cambios)
+
+
 
 const styles = StyleSheet.create({
   container: {
