@@ -67,7 +67,7 @@ export default function SearchScreen({ navigation }) {
         </View>
         
         <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-        {categories.length() > 0 ? (
+        {categories.length > 0 ? (
           categories.map((category, index) => (
             <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
               <Image
