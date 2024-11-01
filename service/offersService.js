@@ -41,14 +41,17 @@ export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, ppreci
 };
 
 export const getCategories = async () => {
+  let returnArray = [];
   try {
     const response = await ofrecidosApi.get('/api/Categorias');
     console.error('fetching categories:', response.data);
-    return response.data;
+    returnArray = response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     //throw error;
+
   }
+  return returnArray;
 };
 
 //buscar los ofrecidos de cada categoria

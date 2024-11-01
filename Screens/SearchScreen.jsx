@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
 import { getCategories, searchOffers, getByCategories } from '../service/offersService';
+import OfrecidoListaComponent from '../components/OfrecidoLista';
+
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
@@ -32,6 +34,8 @@ export default function SearchScreen({ navigation }) {
         console.log("trayendo eventos filtrados");
         const data = await searchOffers(props);
         setCategOffers(data);
+        console.log("categOffers", categOffers)
+
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -45,6 +49,7 @@ export default function SearchScreen({ navigation }) {
         console.log("trayendo ofrecidos de categoria");
         const response = await getByCategories(nombCateg);
         setCategOffers(response);
+        console.log("ofrecimientosPorCategorias", response);
       } catch (error) {
         console.error('Error fetching byCategories:', error);
       }
@@ -62,11 +67,13 @@ export default function SearchScreen({ navigation }) {
             placeholder="Buscar"
             placeholderTextColor="#777"
             onChangeText={text => setSearch(text)}
+            //onSubmit={setCategOffers(text)}
             style={styles.searchInput}
           />
         </View>
         
         <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
+        
         {categories.length > 0 ? (
           categories.map((category, index) => (
             <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
@@ -76,6 +83,7 @@ export default function SearchScreen({ navigation }) {
               />
               <Text style={styles.filterText}>{category.nombre}</Text>
             </TouchableOpacity>
+            
           ))
         ) : (
           <Text>No hay categorías disponibles</Text>
@@ -84,7 +92,8 @@ export default function SearchScreen({ navigation }) {
       </ScrollView>
       {categOffers.length > 0 ? (
           categOffers.map((offer, index) => (
-          <>
+            <>
+            <OfrecidoListaComponent>
             <Image source={offer.imageUri} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
@@ -95,6 +104,7 @@ export default function SearchScreen({ navigation }) {
               </View>
               <Text style={styles.recommendationTitle}>{offer.descripcion}</Text>
             </View>
+          </OfrecidoListaComponent>
           </>
       ))
       ) : (
