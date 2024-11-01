@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
 import { getCategories, searchOffers, getByCategories } from '../service/offersService';
 import OfrecidoListaComponent from '../components/OfrecidoLista';
+import { Icon } from 'react-native-vector-icons/Icon';
 
 const { width } = Dimensions.get('window');
 
@@ -47,6 +48,7 @@ export default function SearchScreen({ navigation }) {
     const fetchByCategory = async () => {
       try {
         console.log("trayendo ofrecidos de categoria");
+        console.log("categSelec",nombCateg);
         const response = await getByCategories(nombCateg);
         setCategOffers(response);
         console.log("ofrecimientosPorCategorias", response);

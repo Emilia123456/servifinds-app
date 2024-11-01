@@ -56,17 +56,19 @@ export const getCategories = async () => {
 
 //buscar los ofrecidos de cada categoria
 export const getByCategories= async (pcategoria) => {
+  let returnArray = [];
+  console.log('pcategoria', pcategoria)
   try {
-    const response = await ofrecidosApi.get('/api/Ofrecimientos/filtros?categoria={pcategoria}', {
-      params: {
-        categoria: pcategoria,
-      },
-    });
-    return response.data;
+    let url = `/api/Ofrecimientos/filtros?categoria=${pcategoria}`;
+    console.log('url',url)
+    const response = await ofrecidosApi.get(url);
+    returnArray = response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
-    throw error;
+    //throw error;
   }
+  console.log('returnArray', returnArray);
+  return returnArray 
 };
 
 
