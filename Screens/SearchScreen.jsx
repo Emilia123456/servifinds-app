@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-import { getCategories, searchOffers, getByCategories } from '../service/offersService';
-import OfrecidoListaComponent from '../components/OfrecidoLista';
-import { Icon } from 'react-native-vector-icons/Icon';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { getCategories, searchOffers, getByCategories, getRecomendations } from '../service/offersService'; 
+import RecommendationsComponent from '../components/Recommendations';
 
 const { width } = Dimensions.get('window');
 
@@ -16,48 +16,50 @@ export default function SearchScreen({ navigation }) {
     distancia: null,
   });
   const [categories, setCategories] = useState([]);
-  const [categOffers, setCategOffers] = useState([]);
+  const [categOffers, setCategOffers] = useState(null); // Cambiamos a null por defecto
+  const [likedRecommendations, setLikedRecommendations] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log("trayendo categorias");
         const data = await getCategories();
-        setCategories(data);
+        setCategories(data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-    fetchCategories();
 
-    fetchOffers = async (props) => {
+    const fetchRecomendations = async () => {
       try {
-        console.log("trayendo eventos filtrados");
-        const data = await searchOffers(props);
-        setCategOffers(data);
-        console.log("categOffers", categOffers)
-
+        const data = await getRecomendations();
+        setCategOffers(data || []);
+        setLikedRecommendations(new Array((data || []).length).fill(false));
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching recommendations:', error);
       }
     };
-    fetchOffers("", "", "1", "");
+
+    fetchCategories();
+    fetchRecomendations();
   }, []);
 
   const handleCategoryPress = (nombCateg) => {
     const fetchByCategory = async () => {
       try {
-        console.log("trayendo ofrecidos de categoria");
-        console.log("categSelec",nombCateg);
         const response = await getByCategories(nombCateg);
-        setCategOffers(response);
-        console.log("ofrecimientosPorCategorias", response);
+        setCategOffers(response || []);
+        setLikedRecommendations(new Array((response || []).length).fill(false));
       } catch (error) {
         console.error('Error fetching byCategories:', error);
       }
     };
     fetchByCategory();
-    //se puede poner html aca?
+  };
+
+  const handleLike = (index) => {
+    const updatedLikes = [...likedRecommendations];
+    updatedLikes[index] = !updatedLikes[index];
+    setLikedRecommendations(updatedLikes);
   };
 
   return (
@@ -69,34 +71,31 @@ export default function SearchScreen({ navigation }) {
             placeholder="Buscar"
             placeholderTextColor="#777"
             onChangeText={text => setSearch(text)}
-            //onSubmit={setCategOffers(text)}
             style={styles.searchInput}
           />
         </View>
         
         <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-        
-        {categories.length > 0 ? (
-          categories.map((category, index) => (
-            <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
-              <Image
-                source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }}
-                style={styles.filterImage}
-              />
-              <Text style={styles.filterText}>{category.nombre}</Text>
-            </TouchableOpacity>
-            
-          ))
-        ) : (
-          <Text>No hay categorías disponibles</Text>
-        )}
+          {categories.length > 0 ? (
+            categories.map((category, index) => (
+              <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
+                <Image
+                  source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }}
+                  style={styles.filterImage}
+                />
+                <Text style={styles.filterText}>{category.nombre}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text>No hay categorías disponibles</Text>
+          )}
+        </ScrollView>
       </ScrollView>
-      </ScrollView>
-      {categOffers.length > 0 ? (
-          categOffers.map((offer, index) => (
-            <>
-            <OfrecidoListaComponent>
-            <Image source={offer.imageUri} style={styles.recommendationImage} />
+      
+      {categOffers && categOffers.length > 0 ? ( // Verifica si categOffers está listo y tiene datos
+        categOffers.map((offer, index) => (
+          <RecommendationsComponent key={index}>
+            <Image source={{ uri: offer.imageUri }} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>{offer.promedio_calificacion}</Text>
@@ -106,22 +105,11 @@ export default function SearchScreen({ navigation }) {
               </View>
               <Text style={styles.recommendationTitle}>{offer.descripcion}</Text>
             </View>
-          </OfrecidoListaComponent>
-          </>
-      ))
+          </RecommendationsComponent>
+        ))
       ) : (
         <Text>No hay ofrecimientos disponibles</Text>
       )}
-      
-     {/*  <>
-        <TouchableOpacity style={styles.filterButton} onPress={filter}>
-          <Text style={styles.filterButtonText}>Filtrar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.clearButton} onPress={() => setSelectedFilters({})}>
-          <Text style={styles.clearButtonText}>Limpiar Filtros</Text>
-        </TouchableOpacity>
-      </> */}
     </>
   );
 }
@@ -143,72 +131,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: '#1B2E35',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1B2E35',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    marginBottom: 10,
-  },
   filterContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  filter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  selectedFilter: {
-    borderColor: '#1B2E35',
-  },
-  filterText: {
-    color: '#1B2E35',
-    marginLeft: 6,
-  },
-  filterImage: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  filterButton: {
-    backgroundColor: '#1B2E35',
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginHorizontal: 16,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  filterButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  clearButton: {
-    borderColor: '#1B2E35',
-    borderWidth: 1,
-    backgroundColor: 'transparent',
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginHorizontal: 16,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  clearButtonText: {
-    color: '#1B2E35',
-    fontSize: 16,
-  },
-  filterContainer: {
     paddingHorizontal: 16,
   },
   category: {
@@ -224,9 +148,25 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     color: '#1B2E35',
   },
-  filterButtonsContainer: {
+  recommendationImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+  },
+  recommendationText: {
+    padding: 10,
+  },
+  rating: {
     flexDirection: 'row',
-    paddingBottom: 10,
-    paddingTop: 10,
-  }
+    alignItems: 'center',
+  },
+  ratingText: {
+    marginRight: 8,
+    fontSize: 14,
+    color: '#1B2E35',
+  },
+  recommendationTitle: {
+    fontSize: 16,
+    color: '#1B2E35',
+  },
 });
