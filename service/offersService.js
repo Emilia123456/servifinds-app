@@ -55,32 +55,22 @@ export const getCategories = async () => {
 };
 
 //buscar los ofrecidos de cada categoria
-export const getByCategories= async (pcategoria) => {
-  let returnArray = [];
-  console.log('pcategoria', pcategoria)
+export const getByCategories = async () => {
   try {
-    let url = `/api/Ofrecimientos/filtros?categoria=${pcategoria}`;
-    console.log('url',url)
-    const response = await ofrecidosApi.get(url);
-    returnArray = response.data;
+    const response = await ofrecidosApi.get('/api/Categorias');
+    console.log('Categorías recibidas desde API:', response.data); // Comprobar la estructura
+    return response.data;  // Asegúrate de que esto es un array
   } catch (error) {
-    console.error('Error fetching data:', error);
-    //throw error;
+    console.log('Error fetching categories:', error);
+    return [];  // Retorna un array vacío en caso de error
   }
-  console.log('returnArray', returnArray);
-  return returnArray 
 };
 
 
+
 export const getRecomendations = async () => {
-  //let url = 'api/Ofrecimientos/filtros?ubicacion={pubicacion}&mayorPromedio={mayorPromedio}&search={flores}&';
-;
   try {
-    const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?mayorPromedio=1', {
-      params: {
-        mayorPromedio: '1', 
-      },
-    });
+    const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?mayorPromedio=1');
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);

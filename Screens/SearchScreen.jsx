@@ -16,39 +16,44 @@ export default function SearchScreen({ navigation }) {
     distancia: null,
   });
   const [categories, setCategories] = useState([]);
-  const [categOffers, setCategOffers] = useState(null); // Cambiamos a null por defecto
+  const [categOffers, setCategOffers] = useState([]); 
   const [likedRecommendations, setLikedRecommendations] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
+        console.log('Categorías cargadas:', data);
         setCategories(data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-
+  
     const fetchRecomendations = async () => {
       try {
         const data = await getRecomendations();
-        setCategOffers(data || []);
+        console.log('Recomendaciones cargadas:', data);
+        //setCategOffers(data || []);
+        setCategOffers([]);
         setLikedRecommendations(new Array((data || []).length).fill(false));
       } catch (error) {
         console.error('Error fetching recommendations:', error);
       }
-    };
+   
+    }  
 
-    fetchCategories();
-    fetchRecomendations();
+    //fetchCategories();
+    //fetchRecomendations();
   }, []);
 
   const handleCategoryPress = (nombCateg) => {
     const fetchByCategory = async () => {
       try {
         const response = await getByCategories(nombCateg);
-        setCategOffers(response || []);
-        setLikedRecommendations(new Array((response || []).length).fill(false));
+        //setCategOffers(response || []);
+        setCategOffers([]);
+        //setLikedRecommendations(new Array((response || []).length).fill(false));
       } catch (error) {
         console.error('Error fetching byCategories:', error);
       }
@@ -92,7 +97,7 @@ export default function SearchScreen({ navigation }) {
         </ScrollView>
       </ScrollView>
       
-      {categOffers && categOffers.length > 0 ? ( // Verifica si categOffers está listo y tiene datos
+      {categOffers.length > 0 ? (
         categOffers.map((offer, index) => (
           <RecommendationsComponent key={index}>
             <Image source={{ uri: offer.imageUri }} style={styles.recommendationImage} />

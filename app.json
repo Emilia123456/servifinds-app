@@ -1,27 +1,30 @@
-  {
-    "expo": {
-      "name": "servifinds-app",
-      "slug": "servifinds-app",
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "icon": "./assets/LogoServifinds.png",
-      "userInterfaceStyle": "light",
-      "splash": {
-        "image": "./assets/splash.png",
-        "resizeMode": "native",
+{
+  "expo": {
+    "name": "servifinds-app",
+    "slug": "servifinds-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/LogoServifinds.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "native",
+      "backgroundColor": "#D5F8E4"
+    },
+    "entryPoint": "./index.js",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
         "backgroundColor": "#D5F8E4"
-      },
-      "entryPoint": "./index.js",
-      "ios": {
-        "supportsTablet": true
-      },
-      "android": {
-        "adaptiveIcon": {
-          "backgroundColor": "#D5F8E4"
-        }
-      },
-      "web": {
-        "favicon": ""
       }
-    }
+    },
+    "web": {
+      "favicon": ""
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
+}

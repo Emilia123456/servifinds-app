@@ -46,22 +46,24 @@ const RecommendationsComponent = ({ recomendations, navigation }) => {
           >
             <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
             <View style={styles.recommendationText}>
-              <View style={styles.rating}>
+              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
+              <Text style={styles.recommendationSubtitle} numberOfLines={2}>
+                {recomendation.descripcion}
+              </Text>
+              <View style={styles.ratingContainer}>
                 <Text style={styles.ratingText}>
-                  {typeof recomendation.promedio_calificacion === 'number'
-                    ? recomendation.promedio_calificacion.toFixed(2)
-                    : 'N/A'}
+                  {(Number.isFinite(recomendation.promedio_calificacion) 
+                    ? recomendation.promedio_calificacion 
+                    : 0).toFixed(1)}
                 </Text>
                 <TouchableOpacity onPress={() => handleLike(recomendation.id)}>
                   <Icon
-                    name={likedRecommendations[index] ? 'heart' : 'heart-o'}
-                    size={22}
-                    color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'}
+                    name={likedRecommendations[recomendation.id] ? 'heart' : 'heart-o'}
+                    size={18}
+                    color={likedRecommendations[recomendation.id] ? '#e74c3c' : '#bdc3c7'}
                   />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
-              <Text style={styles.recommendationSubtitle}>{recomendation.descripcion}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -72,59 +74,52 @@ const RecommendationsComponent = ({ recomendations, navigation }) => {
 
 const styles = StyleSheet.create({
   recommendationsContainer: {
-    paddingVertical: 16,
-    paddingLeft: 20, 
+    paddingVertical: 20,
+    paddingLeft: 20,
   },
   sectionTitle: {
     fontSize: 20,
-    color: '#1B2E35',
-    marginBottom: 12,
-    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 16,
   },
   recommendation: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginRight: 16,
     backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 16,
-    borderWidth: 1, 
-    borderColor: '#ddd',
-    width: 180, 
+    borderRadius: 8,
+    padding: 10,
+    marginRight: 16,
+    width: 160,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   recommendationImage: {
-    width: 160,
-    height: 100,
-    borderRadius: 12,
-    marginBottom: 8,
+    width: '100%',
+    height: 90,
+    borderRadius: 6,
   },
   recommendationText: {
-    flex: 1,
-    alignItems: 'center', 
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 6,
-  },
-  ratingText: {
-    fontSize: 16,
-    color: '#2c3e50',
-    fontWeight: 'bold',
+    paddingHorizontal: 4,
   },
   recommendationTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
-    textAlign: 'center',
     marginBottom: 4,
   },
   recommendationSubtitle: {
+    fontSize: 12,
+    color: '#666',
+    lineHeight: 16,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  ratingText: {
     fontSize: 14,
-    color: '#7f8c8d',
-    textAlign: 'center',
+    fontWeight: '600',
+    color: '#555',
   },
 });
 

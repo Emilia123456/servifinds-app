@@ -45,7 +45,7 @@ const FilterComponent = ({ selectedFilter, setSelectedFilter, navigation }) => {
 const styles = StyleSheet.create({
   filterButtonsContainer: {
     flexDirection: 'row',
-    paddingBottom: 30,
+    paddingBottom: 10,
     paddingTop: 10,
     paddingLeft: 30,
   },
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   filterButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#a3a2a2',
     textAlign: 'left',
     padding: 5,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
   selectedFilterText: {
     color: '#fff',
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#1B2E35',
     marginBottom: 9,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
     paddingTop: 10,
     paddingLeft: 20,
   },
@@ -94,10 +94,10 @@ const styles = StyleSheet.create({
 
   },
   viewAllText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#a3a2a2',
     textAlign: 'left',
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
 });
 

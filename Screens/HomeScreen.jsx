@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, PanResponder, BackHandler } from 'react-native'; 
+import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, BackHandler } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
 import { getRecomendations } from '../service/offersService.js';
 import FilterComponent from '../components/Filter.jsx';
@@ -16,7 +16,6 @@ export default function HomeScreen({ navigation }) {
   const shownIds = new Set(); 
 
 
-  const menuAnimation = useRef(new Animated.Value(-width * 0.75)).current; // Empieza fuera de la pantalla
 
   useEffect(() => {
     const fetchRecomendations = async () => {
@@ -40,39 +39,8 @@ export default function HomeScreen({ navigation }) {
     fetchRecomendations();
   }, []);
 
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Detecta si se desliza desde el borde izquierdo para abrir el menú
-        return gestureState.dx > 20 || gestureState.dx < -20;
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // Controla la apertura/cierre del menú deslizando
-        if (gestureState.dx > 0) {
-          Animated.timing(menuAnimation, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true,
-          }).start();
-          setMenuVisible(true);
-        } else if (gestureState.dx < -0) {
-          Animated.timing(menuAnimation, {
-            toValue: -width,
-            duration: 300,
-            useNativeDriver: true,
-          }).start(() => setMenuVisible(false));
-        }
-      },
-    })
-  ).current;
-
-
-
   const propagandaImages = [
-    require('../assets/propaganda.png'),
-    require('../assets/propaganda2.png'),
-    require('../assets/propaganda3.png'),
+    require('../assets/propp.png'),
   ];
 
   const handleScroll = (event) => {
@@ -90,28 +58,30 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <ScrollView style={styles.container} {...panResponder.panHandlers}>
+    <ScrollView style={styles.container} >
       <View style={styles.header}>
         <View style={styles.leftHeader}>
-          <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuContainer}>
-            <Image source={require('../assets/menu.png')} style={styles.menuIcon} />
-          </TouchableOpacity>
+          <Text style={styles.logo}>Hola Usuario!</Text>
+          <Text style={styles.subtitle}>¿Qué servicio contratarás hoy?</Text>
         </View>
-        <Text style={styles.logo}>Hola Usuario!</Text>
+        
         <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={styles.notificationContainer}>
           <Image source={require('../assets/notificacion.png')} style={styles.notificationIcon} />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.subtitle}>¿Qué servicio contratarás hoy?</Text>
+      
 
       <View style={styles.propagandaContainer}>
+        <View style={styles.promoOverlay}>
+        <Text style={styles.promoTitle}>Ofertas</Text>
+          <Text style={styles.promoText}>¡Descubre servicios únicos en tu zona!</Text>
+          <TouchableOpacity style={styles.promoButton} onPress={() => navigation.navigate('OffersScreen')}>
+            <Text style={styles.promoButtonText}>Explorar</Text>
+          </TouchableOpacity>
+        </View>
         <ScrollView
-          horizontal
-          pagingEnabled
-          onScroll={handleScroll}
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
+          
         >
           {propagandaImages.map((imageUri, index) => (
             <View key={index} style={styles.imageWrapper}>
@@ -121,6 +91,11 @@ export default function HomeScreen({ navigation }) {
         </ScrollView>
       </View>
 
+
+
+      <View >
+        
+      </View>
   
       <FilterComponent selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />
 
@@ -129,10 +104,6 @@ export default function HomeScreen({ navigation }) {
         recomendations={recomendations}
         selectedFilter={selectedFilter}
       />
-
-      <Animated.View style={[styles.menuOverlay, { transform: [{ translateX: menuAnimation }] }]}>
-        <HamburgerMenu />
-      </Animated.View>
 
     </ScrollView>
   );
@@ -159,24 +130,23 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  menuIcon: {
-    width: 25,
-    height: 25,
-    marginBottom: 10,
-  },
+
   notificationContainer: {
     marginLeft: 'auto',
+    marginTop: -20,
+    marginRight: 10,
   },
   notificationIcon: {
-    width: 25,
-    height: 25,
+    width: 23,
+    height: 23,
+    
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#8a8888',
     textAlign: 'left',
     padding: 5,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
   logo: {
     fontSize: 24,
@@ -184,11 +154,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 5,
     flexDirection: 'column',
-    marginTop: 5,
-    fontWeight: 'bold',
+    marginTop: 10,
+    fontWeight: 'normal',
   },
   propagandaContainer: {
-    marginVertical: 20,
+    marginVertical: 15,
     alignItems: 'center',
   },
   imageWrapper: {
@@ -200,11 +170,46 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 30,
     elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
+    promoOverlay: {
+      position: 'absolute',
+      top: 27,
+      zIndex: 1,
+      alignItems: 'center',
+    },
+    promoText: {
+      fontSize: 14,
+      color: '#1B2E35',
+      textAlign: 'left',
+      marginBottom: 20,
+      marginLeft: -90,
+      width: 200,
+    },
+    promoTitle: {
+      fontSize: 20,
+      color: '#1B2E35',
+      textAlign: 'left',
+      marginBottom: 5,
+      marginLeft: -90,
+      width: 200,
+    },
+    promoButton: {
+      backgroundColor: '#1B2E35',
+      paddingVertical: 8,
+      paddingHorizontal: 20,
+      marginLeft: -190,
+      borderRadius: 10,
+    },
+    promoButtonText: {
+      color: '#fff',
+    },
+    imageWrapper: {
+      width: width,
+      alignItems: 'center',
+    },
+
+  });
+  
 
 
-});
+
