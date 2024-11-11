@@ -2,37 +2,39 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 const ofrecidosApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/',  // Corrección de la URL base
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',  // Corrección de la URL base
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, pprecio) => {
-  //let url = 'api/Ofrecimientos/filtros?ubicacion={pubicacion}&mayorPromedio={mayorPromedio}&search={flores}&';
-  let url = 'api/Ofrecimientos/filtros?';
+  let url = '/Ofrecimientos/filtros?';
+  
   try {
-    if (pcategoria!="" ){
-      url = url + "categoria=" + pcategoria + "&";
+    if (pcategoria !== "") {
+      url += "categoria=" + encodeURIComponent(pcategoria) + "&";
     }
-    if (pubicacion!="" ){
-      url = url + "ubicacion=" + pubicacion + "&";
+    if (pubicacion !== "") {
+      url += "ubicacion=" + encodeURIComponent(pubicacion) + "&";
     }
-    if (mayorPromedio!="" ){
-      url = url + "mayorPromedio=" + mayorPromedio + "&";
+    if (mayorPromedio !== "") {
+      url += "mayorPromedio=" + encodeURIComponent(mayorPromedio) + "&";
     }
-    if (pprecio!="" ){
-      url = url + "precio=" + pprecio + "&";
+    if (pprecio !== "") {
+      url += "precio=" + encodeURIComponent(pprecio) + "&";
+    }
+    
+    // Eliminar el último `&` si está presente
+    if (url.endsWith("&")) {
+      url = url.slice(0, -1);
     }
 
-    const response = await ofrecidosApi.get(url, {
-      params: {
-        categoria: pcategoria, 
-        ubicacion: pubicacion, 
-        mayorPromedio: mayorPromedio, 
-        precio: pprecio,
-      },
-    });
+    url= '/ofrecimientos/filtros?mayorPromedio=1'
+
+    console.log("url", url);
+
+    const response = await ofrecidosApi.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -44,12 +46,11 @@ export const getCategories = async () => {
   let returnArray = [];
   try {
     const response = await ofrecidosApi.get('/api/Categorias');
-    console.error('fetching categories:', response.data);
+    //console.log('fetching categories:', response.data);
     returnArray = response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     //throw error;
-
   }
   return returnArray;
 };
@@ -66,7 +67,7 @@ export const getByCategories = async () => {
   }
 };
 
-
+/* 
 
 export const getRecomendations = async () => {
   try {
@@ -77,3 +78,4 @@ export const getRecomendations = async () => {
     throw error;
   }
 };
+ */

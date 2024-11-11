@@ -23,28 +23,29 @@ export default function SearchScreen({ navigation }) {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
-        console.log('Categorías cargadas:', data);
+        //console.log('Categorías cargadas:', data);
         setCategories(data || []);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        //console.error('Error fetching categories:', error);
+        setCategories([]);
       }
     };
   
     const fetchRecomendations = async () => {
       try {
-        const data = await getRecomendations();
+        const data = await searchOffers("", "", "1", "");
         console.log('Recomendaciones cargadas:', data);
         //setCategOffers(data || []);
-        setCategOffers([]);
-        setLikedRecommendations(new Array((data || []).length).fill(false));
+        setCategOffers(data);
+        //setLikedRecommendations(new Array((data || []).length).fill(false));
       } catch (error) {
-        console.error('Error fetching recommendations:', error);
+        console.error('Error (pipa) fetching recommendations:', error);
       }
    
     }  
 
     //fetchCategories();
-    //fetchRecomendations();
+    fetchRecomendations();
   }, []);
 
   const handleCategoryPress = (nombCateg) => {
