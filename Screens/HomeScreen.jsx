@@ -16,15 +16,12 @@ export default function HomeScreen({ navigation }) {
   const shownIds = new Set(); 
 
 
-
   useEffect(() => {
     const fetchRecomendations = async () => {
       try {
         const data = await searchOffers({
           mayorPromedio: "1"
         });
-        
-        console.log("Datos recibidos:", data); // Para debug
         
         if (Array.isArray(data)) {
           setRecomendations(data);

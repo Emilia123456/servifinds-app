@@ -99,20 +99,10 @@ export default function SearchScreen({ navigation }) {
       </ScrollView>
       
       {categOffers.length > 0 ? (
-        categOffers.map((offer, index) => (
-          <RecommendationsComponent key={index}>
-            <Image source={{ uri: offer.imageUri }} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>{offer.promedio_calificacion}</Text>
-                <TouchableOpacity onPress={() => handleLike(index)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.recommendationTitle}>{offer.descripcion}</Text>
-            </View>
-          </RecommendationsComponent>
-        ))
+        <RecommendationsComponent 
+          recomendations={categOffers}
+          navigation={navigation}
+        />
       ) : (
         <Text>No hay ofrecimientos disponibles</Text>
       )}
