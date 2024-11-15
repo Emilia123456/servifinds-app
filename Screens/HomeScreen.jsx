@@ -20,7 +20,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchRecomendations = async () => {
       try {
-        const data = await getRecomendations();
+        const data = await searchOffers(("", "", "1", ""));
 
         // Filtrar duplicados basado en un id
         const uniqueRecommendations = data.filter((recomendation) => {
