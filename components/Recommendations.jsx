@@ -2,81 +2,87 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { likeRecomendation } from '../service/favsService';
-
 const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const [likedRecommendations, setLikedRecommendations] = useState({});
 
-  if (!Array.isArray(recomendations)) {
-    console.warn('recomendations no es un array:', recomendations);
-    return <Text>No hay recomendaciones disponibles</Text>;
-  }
-
-  const handleLike = async (recomendationId) => {
-    try {
-      const isLiked = likedRecommendations[recomendationId];
-      await likeRecomendation(recomendationId);
-      
-      setLikedRecommendations(prev => ({
-        ...prev,
-        [recomendationId]: !isLiked
-      }));
-    } catch (error) {
-      console.error('Error al dar like:', error);
-    }
-  };
-
+  // Función mejorada para manejar el rating
   const formatRating = (rating) => {
-    if (typeof rating === 'number') {
+    // Si es string, convertir a número
+    if (typeof rating === 'string') {
+      rating = parseFloat(rating);
+    }
+    
+    // Verificar si es un número válido
+    if (typeof rating === 'number' && !isNaN(rating)) {
       return rating.toFixed(1);
     }
+    
+    // Valor por defecto si no es válido
     return '0.0';
   };
+
+  // Debug: Imprimir los datos recibidos
+  console.log('Recomendaciones recibidas:', recomendations.map(r => ({
+    id: r.id,
+    titulo: r.titulo,
+    promedio: r.promedio_calificacion,
+    tipo: typeof r.promedio_calificacion
+  })));
 
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {recomendations.map((offer, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() => navigation.navigate('Detail', {
-              idOffer: offer.id,
-              title: offer.titulo || 'Sin título',
-              description: offer.descripcion || 'Sin descripción',
-              imageUri: offer.foto || 'https://via.placeholder.com/150', //si no anda cambiar la propiedad a imageU
-              rating: offer.promedio_calificacion || 0,
-            })}
-          >
-            <Image 
-              source={{ uri: offer.foto || 'https://via.placeholder.com/150' }} 
-              style={styles.recommendationImage}
-            />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>
-                  {formatRating(offer.promedio_calificacion)}
+        {recomendations.map((offer, index) => {
+          // Debug: Imprimir el promedio de cada oferta
+          console.log(`Oferta ${index}:`, {
+            id: offer.id,
+            promedio: offer.promedio_calificacion,
+            tipo: typeof offer.promedio_calificacion
+          });
+
+          return (
+            <TouchableOpacity
+              key={index}
+              style={styles.recommendation}
+              onPress={() => navigation.navigate('Detail', {
+                idOffer: offer.id,
+                title: offer.titulo || 'Sin título',
+                description: offer.descripcion || 'Sin descripción',
+                imageUri: offer.foto || 'https://via.placeholder.com/150',
+                rating: parseFloat(offer.promedio_calificacion) || 0,
+              })}
+            >
+              <Image 
+                source={{ uri: offer.foto || 'https://via.placeholder.com/150' }} 
+                style={styles.recommendationImage}
+              />
+              <View style={styles.recommendationText}>
+                <View style={styles.rating}>
+                  <Text style={styles.ratingText}>
+                    {formatRating(offer.promedio_calificacion)}
+                  </Text>
+                  <TouchableOpacity 
+                    onPress={() => handleLike(offer.id)}
+                    style={styles.likeButton}
+                  >
+                    <Icon 
+                      name={likedRecommendations[offer.id] ? 'heart' : 'heart-o'} 
+                      size={20} 
+                      color={likedRecommendations[offer.id] ? '#e74c3c' : '#7f8c8d'} 
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.recommendationTitle}>
+                  {offer.titulo || 'Sin título'}
                 </Text>
-                <TouchableOpacity 
-                  onPress={() => handleLike(offer.id)}
-                  style={styles.likeButton}
-                >
-                  <Icon 
-                    name={likedRecommendations[offer.id] ? 'heart' : 'heart-o'} 
-                    size={20} 
-                    color={likedRecommendations[offer.id] ? '#e74c3c' : '#7f8c8d'} 
-                  />
-                </TouchableOpacity>
+                <Text style={styles.recommendationDescription}>
+                  {offer.descripcion || 'Sin descripción'}
+                </Text>
               </View>
-              <Text style={styles.recommendationTitle}>
-                {offer.titulo || 'Sin título'}
-              </Text>
-              <Text style={styles.recommendationDescription}>
-                {offer.descripcion || 'Sin descripción'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
     </View>
   );

@@ -14,7 +14,6 @@ export default function FavoritesScreen({ navigation }) {
       setIsLoading(true);
       setError(null);
       const data = await getLikedRecomendations();
-      console.log('Datos de favoritos recibidos:', data);
       setLikedRecommendations(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error al obtener favoritos:", error);
