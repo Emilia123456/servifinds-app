@@ -7,6 +7,8 @@ import RecommendationsComponent from '../components/Recommendations';
 const { width } = Dimensions.get('window');
 
 export default function SearchScreen({ navigation }) {
+  console.log("Renderizando SearchScreen");
+
   const [search, setSearch] = useState('');
   const [selectedFilters, setSelectedFilters] = useState({
     ubicacion: null,
@@ -19,47 +21,69 @@ export default function SearchScreen({ navigation }) {
   const [categOffers, setCategOffers] = useState([]); 
   const [likedRecommendations, setLikedRecommendations] = useState([]);
 
+  // useEffect específico para cargar categorías
   useEffect(() => {
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
       try {
-        const data = await getCategories();
-        //console.log('Categorías cargadas:', data);
-        setCategories(data || []);
+        console.log("Cargando categorías..."); // Debug
+        const response = await getCategories();
+        console.log("Respuesta de categorías:", response); // Debug
+        if (response && Array.isArray(response)) {
+          setCategories(response);
+        }
       } catch (error) {
-        //console.error('Error fetching categories:', error);
-        setCategories([]);
+        console.error("Error al cargar categorías:", error);
+        // Categorías básicas sin imágenes
+        setCategories([
+          { id: 1, nombre: "Jardinería" },
+          { id: 2, nombre: "Plomería" },
+          { id: 3, nombre: "Electricidad" },
+          { id: 4, nombre: "Limpieza" }
+        ]);
       }
     };
-  
-    const fetchRecomendations = async () => {
-      try {
-        const data = await searchOffers("", "", "1", "");
-        console.log('Recomendaciones cargadas:', data);
-        //setCategOffers(data || []);
-        setCategOffers(data);
-        //setLikedRecommendations(new Array((data || []).length).fill(false));
-      } catch (error) {
-        console.error('Error (pipa) fetching recommendations:', error);
-      }
-   
-    }  
 
-    //fetchCategories();
-    fetchRecomendations();
+    loadCategories();
   }, []);
 
-  const handleCategoryPress = (nombCateg) => {
-    const fetchByCategory = async () => {
+  // useEffect separado para cargar ofertas iniciales
+  useEffect(() => {
+    const loadInitialOffers = async () => {
       try {
-        const response = await getByCategories(nombCateg);
-        //setCategOffers(response || []);
-        setCategOffers([]);
-        //setLikedRecommendations(new Array((response || []).length).fill(false));
+        const offers = await searchOffers("", "", "1", "");
+        setCategOffers(offers || []);
       } catch (error) {
-        console.error('Error fetching byCategories:', error);
+        console.error("Error al cargar ofertas:", error);
       }
     };
-    fetchByCategory();
+
+    loadInitialOffers();
+  }, []);
+
+  // Agregar console.log para ver el estado de las categorías
+  console.log("Categories state:", categories);
+
+  // Manejador de búsqueda actualizado
+  const handleSearch = async (searchText) => {
+    setSearch(searchText);
+    try {
+      // Mantiene el ordenamiento por promedio pero agrega el texto de búsqueda
+      const searchResults = await searchOffers(searchText, "", "1", "");
+      setCategOffers(searchResults || []);
+    } catch (error) {
+      console.error('Error en búsqueda:', error);
+    }
+  };
+
+  const handleCategoryPress = async (nombCateg) => {
+    try {
+      // Mantiene el ordenamiento por promedio pero filtra por categoría
+      const response = await searchOffers("", nombCateg, "1", "");
+      setCategOffers(response || []);
+    } catch (error) {
+      console.error('Error cargando categoría:', error);
+      setCategOffers([]);
+    }
   };
 
   const handleLike = (index) => {
@@ -76,46 +100,54 @@ export default function SearchScreen({ navigation }) {
             value={search}
             placeholder="Buscar"
             placeholderTextColor="#777"
-            onChangeText={text => setSearch(text)}
+            onChangeText={handleSearch}
             style={styles.searchInput}
           />
         </View>
         
-        <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
+        <ScrollView 
+          horizontal 
+          style={styles.filterContainer} 
+          showsHorizontalScrollIndicator={false}
+        >
           {categories.length > 0 ? (
             categories.map((category, index) => (
-              <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
+              <TouchableOpacity 
+                key={category.id || index}
+                style={[
+                  styles.category,
+                  selectedFilters.categoria === category.nombre && {
+                    backgroundColor: '#D5F8E4',
+                    borderColor: '#446C64',
+                  }
+                ]}
+                onPress={() => handleCategoryPress(category.nombre)}
+              >
                 <Image
-                  source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }}
-                  style={styles.filterImage}
+                  source={{ uri: `https://diverse-tightly-mongoose.ngrok-free.app${category.imageURL}` }}
+                  style={styles.categoryImage}
                 />
                 <Text style={styles.filterText}>{category.nombre}</Text>
               </TouchableOpacity>
             ))
           ) : (
-            <Text>No hay categorías disponibles</Text>
+            <Text>Cargando categorías...</Text>
           )}
         </ScrollView>
+
+        {categOffers.length > 0 ? (
+          <View>
+            {categOffers.map((offer, index) => (
+              <RecommendationsComponent 
+                key={index} 
+                recomendations={[offer]}
+              />
+            ))}
+          </View>
+        ) : (
+          <Text>No hay ofrecimientos disponibles</Text>
+        )}
       </ScrollView>
-      
-      {categOffers.length > 0 ? (
-        categOffers.map((offer, index) => (
-          <RecommendationsComponent key={index}>
-            <Image source={{ uri: offer.imageUri }} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>{offer.promedio_calificacion}</Text>
-                <TouchableOpacity onPress={() => handleLike(index)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.recommendationTitle}>{offer.descripcion}</Text>
-            </View>
-          </RecommendationsComponent>
-        ))
-      ) : (
-        <Text>No hay ofrecimientos disponibles</Text>
-      )}
     </>
   );
 }
@@ -140,19 +172,41 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 8,
   },
   category: {
     alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 16,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    minWidth: 90,
   },
-  filterImage: {
-    width: 25,
-    height: 25,
+  categoryImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     marginBottom: 8,
+    backgroundColor: '#F5F5F5', // Color de fondo mientras carga
   },
   filterText: {
-    paddingVertical: 4,
     color: '#1B2E35',
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 4,
   },
   recommendationImage: {
     width: '100%',

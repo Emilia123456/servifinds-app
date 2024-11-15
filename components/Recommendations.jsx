@@ -1,125 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const RecommendationsComponent = ({ recomendations, navigation }) => {
-  const [likedRecommendations, setLikedRecommendations] = React.useState({});
+const RecommendationsComponent = ({ recomendations }) => {
+  const [likedRecommendations, setLikedRecommendations] = useState({});
 
-  const handleLike = async (recomendationId) => {
-    try {
-      const isLiked = likedRecommendations[recomendationId];
-      const response = await likeRecomendation(recomendationId);
+  if (!recomendations || recomendations.length === 0) {
+    return <Text>No hay ofrecimientos disponibles</Text>;
+  }
 
-      if (response.status === 201) {
-        setLikedRecommendations((prev) => ({
-          ...prev,
-          [recomendationId]: !prev[recomendationId],
-        }));
-      } else {
-        console.error('Error al actualizar el like en el servidor:', response);
-      }
-    } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
-    }
+  const handleLike = (index) => {
+    setLikedRecommendations(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
   return (
-    <View style={styles.recommendationsContainer}>
-      <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {recomendations.map((recomendation, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() =>
-              navigation.navigate('Detail', {
-                idOffer: recomendation.id,
-                seller: recomendation.idUsuario,
-                title: recomendation.titulo,
-                description: recomendation.descripcion,
-                price: recomendation.precio,
-                imageUri: recomendation.foto,
-                rating: recomendation.promedio_calificacion,
-              })
-            }
-          >
-            <Image source={{ uri: recomendation.foto }} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <Text style={styles.recommendationTitle}>{recomendation.titulo}</Text>
-              <Text style={styles.recommendationSubtitle} numberOfLines={2}>
-                {recomendation.descripcion}
+    <View>
+      {recomendations.map((offer, index) => (
+        <View key={index} style={styles.recommendation}>
+          <Image 
+            source={{ uri: offer.imageUri }} 
+            style={styles.recommendationImage}
+            
+          />
+          <View style={styles.recommendationText}>
+            <View style={styles.rating}>
+              <Text style={styles.ratingText}>
+                {offer.promedio_calificacion || '0.0'}
               </Text>
-              <View style={styles.ratingContainer}>
-                <Text style={styles.ratingText}>
-                  {(Number.isFinite(recomendation.promedio_calificacion) 
-                    ? recomendation.promedio_calificacion 
-                    : 0).toFixed(1)}
-                </Text>
-                <TouchableOpacity onPress={() => handleLike(recomendation.id)}>
-                  <Icon
-                    name={likedRecommendations[recomendation.id] ? 'heart' : 'heart-o'}
-                    size={18}
-                    color={likedRecommendations[recomendation.id] ? '#e74c3c' : '#bdc3c7'}
-                  />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={() => handleLike(index)}>
+                <Icon 
+                  name={likedRecommendations[index] ? 'heart' : 'heart-o'} 
+                  size={20} 
+                  color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} 
+                />
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            <Text style={styles.recommendationTitle}>
+              {offer.descripcion || 'Sin descripción'}
+            </Text>
+          </View>
+        </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  recommendationsContainer: {
-    paddingVertical: 20,
-    paddingLeft: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    color: '#333',
-    marginBottom: 16,
-  },
   recommendation: {
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 10,
-    marginRight: 16,
-    width: 160,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    flexDirection: 'row',
   },
   recommendationImage: {
-    width: '100%',
+    width: 120,
     height: 90,
     borderRadius: 6,
   },
   recommendationText: {
-    paddingHorizontal: 4,
+    flex: 1,
+    paddingHorizontal: 12,
+    justifyContent: 'center',
   },
-  recommendationTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  recommendationSubtitle: {
-    fontSize: 12,
-    color: '#666',
-    lineHeight: 16,
-  },
-  ratingContainer: {
+  rating: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10,
+    marginBottom: 8,
   },
   ratingText: {
     fontSize: 14,
     fontWeight: '600',
     color: '#555',
+    marginRight: 8,
+  },
+  recommendationTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
 

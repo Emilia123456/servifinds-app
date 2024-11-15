@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ofrecidosApi = axios.create({
   baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',  // Corrección de la URL base
@@ -43,16 +44,22 @@ export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, ppreci
 };
 
 export const getCategories = async () => {
-  let returnArray = [];
+  console.log("Llamando a getCategories"); // Debug
   try {
-    const response = await ofrecidosApi.get('/api/Categorias');
-    //console.log('fetching categories:', response.data);
-    returnArray = response.data;
+    const response = await fetch('https://diverse-tightly-mongoose.ngrok-free.app/api/Categorias');
+    console.log("Status de respuesta:", response.status); // Debug
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("Datos de categorías recibidos:", data); // Debug
+    return data;
   } catch (error) {
-    console.error('Error fetching data:', error);
-    //throw error;
+    console.error("Error en getCategories:", error);
+    throw error;
   }
-  return returnArray;
 };
 
 //buscar los ofrecidos de cada categoria

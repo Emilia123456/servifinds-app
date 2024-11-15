@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }) {
     const fetchRecomendations = async () => {
       try {
         const data = await searchOffers(("", "", "1", ""));
-
+        console.log("trae esto:", data);
         // Filtrar duplicados basado en un id
         const uniqueRecommendations = data.filter((recomendation) => {
           if (!shownIds.has(recomendation.id)) {
