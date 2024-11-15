@@ -1,43 +1,34 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ofrecidosApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',  // Corrección de la URL base
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',  // Verifica que esta URL sea correcta
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, pprecio) => {
-  let url = '/Ofrecimientos/filtros?';
-  
+export const searchOffers = async (params = {}) => {
   try {
-    if (pcategoria !== "") {
-      url += "categoria=" + encodeURIComponent(pcategoria) + "&";
-    }
-    if (pubicacion !== "") {
-      url += "ubicacion=" + encodeURIComponent(pubicacion) + "&";
-    }
-    if (mayorPromedio !== "") {
-      url += "mayorPromedio=" + encodeURIComponent(mayorPromedio) + "&";
-    }
-    if (pprecio !== "") {
-      url += "precio=" + encodeURIComponent(pprecio) + "&";
-    }
+    const token = await AsyncStorage.getItem('token');
+    const url = '/Ofrecimientos/filtros';
     
-    // Eliminar el último `&` si está presente
-    if (url.endsWith("&")) {
-      url = url.slice(0, -1);
-    }
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    };
 
-    url= '/ofrecimientos/filtros?mayorPromedio=1'
-
-    console.log("url", url);
-
-    const response = await ofrecidosApi.get(url);
+    console.log('Intentando obtener ofrecimientos de:', url);
+    const response = await ofrecidosApi.get(url, config);
+    console.log("Respuesta completa:", response.data);
+    
+    
     return response.data;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error completo:', error.response || error);
     throw error;
   }
 };
@@ -67,8 +58,8 @@ export const getByCategories = async () => {
   }
 };
 
-/* 
 
+/*
 export const getRecomendations = async () => {
   try {
     const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?mayorPromedio=1');
@@ -78,4 +69,4 @@ export const getRecomendations = async () => {
     throw error;
   }
 };
- */
+*/

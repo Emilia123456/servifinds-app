@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, BackHandler } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
-import { getRecomendations } from '../service/offersService.js';
+import { searchOffers } from '../service/offersService.js';
 import FilterComponent from '../components/Filter.jsx';
 import RecommendationsComponent from '../components/Recommendations.jsx';
 import HamburgerMenu from '../components/HamburguerMenu.jsx';
@@ -20,22 +20,22 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchRecomendations = async () => {
       try {
-        const data = await searchOffers(("", "", "1", ""));
-
-        // Filtrar duplicados basado en un id
-        const uniqueRecommendations = data.filter((recomendation) => {
-          if (!shownIds.has(recomendation.id)) {
-            shownIds.add(recomendation.id);
-            return true;
-          }
-          return false;
+        const data = await searchOffers({
+          mayorPromedio: "1"
         });
-
-        setRecomendations(uniqueRecommendations);
+        
+        console.log("Datos recibidos:", data); // Para debug
+        
+        if (Array.isArray(data)) {
+          setRecomendations(data);
+        } else {
+          console.log("La respuesta no es un array:", data);
+        }
       } catch (error) {
-        console.log("error", error);
+        console.error("Error completo:", error);
       }
     };
+
     fetchRecomendations();
   }, []);
 
