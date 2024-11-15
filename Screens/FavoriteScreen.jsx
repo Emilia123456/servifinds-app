@@ -72,7 +72,6 @@ export default function FavoritesScreen({ navigation }) {
                   uri: recommendation.foto || 'URL_POR_DEFECTO'
                 }} 
                 style={styles.recommendationImage}
-                defaultSource={require('../assets/placeholder.png')} // Asegúrate de tener esta imagen
               />
               <View style={styles.recommendationText}>
                 <Text style={styles.recommendationTitle}>

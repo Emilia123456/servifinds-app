@@ -25,6 +25,13 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
     }
   };
 
+  const formatRating = (rating) => {
+    if (typeof rating === 'number') {
+      return rating.toFixed(1);
+    }
+    return '0.0';
+  };
+
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
@@ -35,22 +42,25 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
             style={styles.recommendation}
             onPress={() => navigation.navigate('Detail', {
               idOffer: offer.id,
-              title: offer.titulo,
-              description: offer.descripcion,
-              imageUri: offer.foto,
-              rating: offer.promedio_calificacion,
+              title: offer.titulo || 'Sin título',
+              description: offer.descripcion || 'Sin descripción',
+              imageUri: offer.foto || 'https://via.placeholder.com/150', //si no anda cambiar la propiedad a imageU
+              rating: offer.promedio_calificacion || 0,
             })}
           >
             <Image 
-              source={{ uri: offer.foto }} 
+              source={{ uri: offer.foto || 'https://via.placeholder.com/150' }} 
               style={styles.recommendationImage}
             />
             <View style={styles.recommendationText}>
               <View style={styles.rating}>
                 <Text style={styles.ratingText}>
-                  {(offer.promedio_calificacion || 0).toFixed(1)}
+                  {formatRating(offer.promedio_calificacion)}
                 </Text>
-                <TouchableOpacity onPress={() => handleLike(offer.id)}>
+                <TouchableOpacity 
+                  onPress={() => handleLike(offer.id)}
+                  style={styles.likeButton}
+                >
                   <Icon 
                     name={likedRecommendations[offer.id] ? 'heart' : 'heart-o'} 
                     size={20} 
@@ -121,6 +131,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  likeButton: {
+    padding: 8,
+  }
 });
 
 export default RecommendationsComponent;

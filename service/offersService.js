@@ -11,8 +11,9 @@ const ofrecidosApi = axios.create({
 export const searchOffers = async (params = {}) => {
   try {
     const token = await AsyncStorage.getItem('token');
+    console.log('Token usado:', token);
+
     const url = '/Ofrecimientos/filtros';
-    
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -20,11 +21,15 @@ export const searchOffers = async (params = {}) => {
       },
       params: params
     };
+    const response = await ofrecidosApi.get(url, config);
 
-    const response = await ofrecidosApi.get(url, config);    
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error('Error en searchOffers:', error.response || error);
+    console.error('Error en searchOffers:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     return [];
   }
 };
@@ -32,6 +37,7 @@ export const searchOffers = async (params = {}) => {
 export const getCategories = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
+
     const response = await ofrecidosApi.get('/Categorias', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -41,7 +47,11 @@ export const getCategories = async () => {
     
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error('Error en getCategories:', error.response || error);
+    console.error('Error en getCategories:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     return [];
   }
 };
