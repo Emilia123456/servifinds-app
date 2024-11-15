@@ -1,10 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import Icon from 'react-native-vector-icons/FontAwesome';
-=======
 import AsyncStorage from '@react-native-async-storage/async-storage';
->>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
 
 const ofrecidosApi = axios.create({
   baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api', 
@@ -22,48 +17,47 @@ export const searchOffers = async (params = {}) => {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
-      }
+      },
+      params: params
     };
+
     const response = await ofrecidosApi.get(url, config);    
-    return response.data;
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error('Error completo:', error.response || error);
-    throw error;
+    console.error('Error en searchOffers:', error.response || error);
+    return [];
   }
 };
 
 export const getCategories = async () => {
-  console.log("Llamando a getCategories"); // Debug
   try {
-<<<<<<< HEAD
-    const response = await fetch('https://diverse-tightly-mongoose.ngrok-free.app/api/Categorias');
-    console.log("Status de respuesta:", response.status); // Debug
+    const token = await AsyncStorage.getItem('token');
+    const response = await ofrecidosApi.get('/Categorias', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log("Datos de categorías recibidos:", data); // Debug
-    return data;
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error("Error en getCategories:", error);
-    throw error;
-=======
-    const response = await ofrecidosApi.get('/api/Categorias');
-    returnArray = response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
->>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
+    console.error('Error en getCategories:', error.response || error);
+    return [];
   }
 };
 
-export const getByCategories = async () => {
+export const getByCategories = async (categoryId) => {
   try {
-    const response = await ofrecidosApi.get('/api/Categorias');
-    return response.data; 
+    const token = await AsyncStorage.getItem('token');
+    const response = await ofrecidosApi.get(`/Ofrecimientos/categoria/${categoryId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.log('Error fetching categories:', error);
-    return []; 
+    console.error('Error en getByCategories:', error.response || error);
+    return [];
   }
 };

@@ -19,29 +19,23 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchRecomendations = async () => {
       try {
-<<<<<<< HEAD
-        const data = await searchOffers(("", "", "1", ""));
-        console.log("trae esto:", data);
-        // Filtrar duplicados basado en un id
-        const uniqueRecommendations = data.filter((recomendation) => {
+        const data = await searchOffers({
+          mayorPromedio: "1"
+        });
+        
+        // Filtrar duplicados
+        const uniqueRecommendations = data.filter(recomendation => {
           if (!shownIds.has(recomendation.id)) {
             shownIds.add(recomendation.id);
             return true;
           }
           return false;
-=======
-        const data = await searchOffers({
-          mayorPromedio: "1"
->>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
         });
         
-        if (Array.isArray(data)) {
-          setRecomendations(data);
-        } else {
-          console.log("La respuesta no es un array:", data);
-        }
-      } catch (error) {
-        console.error("Error completo:", error);
+        setRecomendations(uniqueRecommendations);
+      } catch(error) {
+        console.error("Error al obtener recomendaciones:", error);
+        setRecomendations([]);
       }
     };
 
@@ -78,9 +72,6 @@ export default function HomeScreen({ navigation }) {
           <Image source={require('../assets/notificacion.png')} style={styles.notificationIcon} />
         </TouchableOpacity>
       </View>
-
-      
-
       <View style={styles.propagandaContainer}>
         <View style={styles.promoOverlay}>
         <Text style={styles.promoTitle}>Ofertas</Text>
@@ -99,9 +90,6 @@ export default function HomeScreen({ navigation }) {
           ))}
         </ScrollView>
       </View>
-
-
-
       <View >
         
       </View>
@@ -218,7 +206,3 @@ const styles = StyleSheet.create({
     },
 
   });
-  
-
-
-
