@@ -148,6 +148,18 @@ export default function SearchScreen({ navigation }) {
           <Text>No hay ofrecimientos disponibles</Text>
         )}
       </ScrollView>
+<<<<<<< HEAD
+=======
+      
+      {categOffers.length > 0 ? (
+        <RecommendationsComponent 
+          recomendations={categOffers}
+          navigation={navigation}
+        />
+      ) : (
+        <Text>No hay ofrecimientos disponibles</Text>
+      )}
+>>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
     </>
   );
 }

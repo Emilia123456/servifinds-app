@@ -2,12 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+<<<<<<< HEAD
 const RecommendationsComponent = ({ recomendations }) => {
   const [likedRecommendations, setLikedRecommendations] = useState({});
 
   if (!recomendations || recomendations.length === 0) {
     return <Text>No hay ofrecimientos disponibles</Text>;
   }
+=======
+const RecommendationsComponent = ({ recomendations = [], navigation }) => {
+  const [likedRecommendations, setLikedRecommendations] = React.useState({});
+
+  if (!Array.isArray(recomendations)) {
+    console.warn('recomendations no es un array:', recomendations);
+    return <Text>No hay recomendaciones disponibles</Text>;
+  }
+
+  const handleLike = async (recomendationId) => {
+    try {
+      const isLiked = likedRecommendations[recomendationId];
+      const response = await likeRecomendation(recomendationId);
+>>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
 
   const handleLike = (index) => {
     setLikedRecommendations(prev => ({

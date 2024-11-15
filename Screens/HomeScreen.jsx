@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, BackHandler } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
-import { getRecomendations } from '../service/offersService.js';
+import { searchOffers } from '../service/offersService.js';
 import FilterComponent from '../components/Filter.jsx';
 import RecommendationsComponent from '../components/Recommendations.jsx';
 import HamburgerMenu from '../components/HamburguerMenu.jsx';
@@ -16,10 +16,10 @@ export default function HomeScreen({ navigation }) {
   const shownIds = new Set(); 
 
 
-
   useEffect(() => {
     const fetchRecomendations = async () => {
       try {
+<<<<<<< HEAD
         const data = await searchOffers(("", "", "1", ""));
         console.log("trae esto:", data);
         // Filtrar duplicados basado en un id
@@ -29,13 +29,22 @@ export default function HomeScreen({ navigation }) {
             return true;
           }
           return false;
+=======
+        const data = await searchOffers({
+          mayorPromedio: "1"
+>>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
         });
-
-        setRecomendations(uniqueRecommendations);
+        
+        if (Array.isArray(data)) {
+          setRecomendations(data);
+        } else {
+          console.log("La respuesta no es un array:", data);
+        }
       } catch (error) {
-        console.log("error", error);
+        console.error("Error completo:", error);
       }
     };
+
     fetchRecomendations();
   }, []);
 

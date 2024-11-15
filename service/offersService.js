@@ -1,44 +1,33 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import Icon from 'react-native-vector-icons/FontAwesome';
+=======
+import AsyncStorage from '@react-native-async-storage/async-storage';
+>>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
 
 const ofrecidosApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',  // Corrección de la URL base
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api', 
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, pprecio) => {
-  let url = '/Ofrecimientos/filtros?';
-  
+export const searchOffers = async (params = {}) => {
   try {
-    if (pcategoria !== "") {
-      url += "categoria=" + encodeURIComponent(pcategoria) + "&";
-    }
-    if (pubicacion !== "") {
-      url += "ubicacion=" + encodeURIComponent(pubicacion) + "&";
-    }
-    if (mayorPromedio !== "") {
-      url += "mayorPromedio=" + encodeURIComponent(mayorPromedio) + "&";
-    }
-    if (pprecio !== "") {
-      url += "precio=" + encodeURIComponent(pprecio) + "&";
-    }
+    const token = await AsyncStorage.getItem('token');
+    const url = '/Ofrecimientos/filtros';
     
-    // Eliminar el último `&` si está presente
-    if (url.endsWith("&")) {
-      url = url.slice(0, -1);
-    }
-
-    url= '/ofrecimientos/filtros?mayorPromedio=1'
-
-    console.log("url", url);
-
-    const response = await ofrecidosApi.get(url);
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    };
+    const response = await ofrecidosApi.get(url, config);    
     return response.data;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error completo:', error.response || error);
     throw error;
   }
 };
@@ -46,6 +35,7 @@ export const searchOffers = async (pcategoria, pubicacion, mayorPromedio, ppreci
 export const getCategories = async () => {
   console.log("Llamando a getCategories"); // Debug
   try {
+<<<<<<< HEAD
     const response = await fetch('https://diverse-tightly-mongoose.ngrok-free.app/api/Categorias');
     console.log("Status de respuesta:", response.status); // Debug
     
@@ -59,30 +49,21 @@ export const getCategories = async () => {
   } catch (error) {
     console.error("Error en getCategories:", error);
     throw error;
+=======
+    const response = await ofrecidosApi.get('/api/Categorias');
+    returnArray = response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+>>>>>>> cb4dcf700ea3bf75614efd010d38fd4ce94e7a23
   }
 };
 
-//buscar los ofrecidos de cada categoria
 export const getByCategories = async () => {
   try {
     const response = await ofrecidosApi.get('/api/Categorias');
-    console.log('Categorías recibidas desde API:', response.data); // Comprobar la estructura
-    return response.data;  // Asegúrate de que esto es un array
+    return response.data; 
   } catch (error) {
     console.log('Error fetching categories:', error);
-    return [];  // Retorna un array vacío en caso de error
+    return []; 
   }
 };
-
-/* 
-
-export const getRecomendations = async () => {
-  try {
-    const response = await ofrecidosApi.get('api/Ofrecimientos/filtros?mayorPromedio=1');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-};
- */
