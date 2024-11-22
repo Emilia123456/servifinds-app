@@ -29,17 +29,25 @@ export default function DetailScreen({ route }) {
   
     let ofrecidoData = {
       idPublicacion: idOffer,
+      idOffer: idOffer,
       fechaReservada: fecha,
       idEstado: 1,
-      idOffer: idOffer,  
     };
   
     try {
       const result = await createReserva(ofrecidoData);
-      alert('Reserva guardada exitosamente');
+      if (result) {
+        alert('Reserva guardada exitosamente');
+      } else {
+        alert('No se pudo guardar la reserva');
+      }
     } catch (error) {
-      console.error('Error al guardar la reserva:', error); // Mensaje de error
-      alert('Hubo un problema al guardar la reserva. Inténtalo nuevamente.');
+      console.error('Error al guardar la reserva:', error);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Hubo un problema al guardar la reserva. Inténtalo nuevamente.');
+      }
     }
   };  
 
