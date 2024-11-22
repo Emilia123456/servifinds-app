@@ -23,7 +23,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView vertical showsHorizontalScrollIndicator={false}>
         {recomendations.map((offer, index) => {
           return (
             <TouchableOpacity
