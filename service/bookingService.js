@@ -33,22 +33,44 @@ export const fetchOfrecidosPorFecha = async (fecha) => {
   const token = await AsyncStorage.getItem('token');
 
   try {
-    console.log('Fetching data for date:', fecha); // Debug log
-    const response = await api.get('/api/Historial/historial', {
-      params: { fecha },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const fechaObj = new Date(fecha);
+    const fechaFormateada = fechaObj.toISOString().split('T')[0];
     
-    console.log('Response data:', response.data); // Debug log
-    return Array.isArray(response.data) ? response.data : [];
-  } catch (error) {
-    console.error('Error completo:', error);
-    if (error.response) {
-      console.error('Error en la respuesta:', error.response.data);
-      console.error('Código de estado:', error.response.status);
+    // Primero obtenemos las reservas
+    const historialResponse = await api.get('/api/Historial/historial', {
+      params: { fecha: fechaFormateada },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    // Si hay reservas, obtenemos los detalles de cada ofrecido
+    if (Array.isArray(historialResponse.data) && historialResponse.data.length > 0) {
+      const reservasConDetalles = await Promise.all(
+        historialResponse.data.map(async (reserva) => {
+          try {
+            const ofrecidoResponse = await api.get(`/api/Ofrecimientos/${reserva.idPublicacion}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              }
+            });
+            return {
+              ...reserva,
+              ofrecido: ofrecidoResponse.data
+            };
+          } catch (error) {
+            console.error(`Error al obtener detalles del ofrecido ${reserva.idPublicacion}:`, error);
+            return reserva;
+          }
+        })
+      );
+      return reservasConDetalles;
     }
+    
+    return [];
+  } catch (error) {
+    console.error('Error al obtener reservas:', error);
     return [];
   }
 };
@@ -64,44 +86,27 @@ ofrecidoData = {
 */
 export const createReserva = async (ofrecidoData) => {
   const token = await AsyncStorage.getItem('token');
-  
+  if (!token) throw new Error('No hay token disponible');
+
   try {
-    // Convertimos la fecha a formato YYYY-MM-DD
-    const fechaOriginal = ofrecidoData.fechaReservada;
-    const fecha = new Date(fechaOriginal);
-    const fechaReservada = fecha.toISOString().split('T')[0];
-
-    // Obtenemos el idContratador del token decodificado o del AsyncStorage
-    const idContratador = await AsyncStorage.getItem('userId'); // Asegúrate de guardar el userId al hacer login
-
-    const dataToSend = {
-      idPublicacion: ofrecidoData.idPublicacion,
-      idOffer: ofrecidoData.idOffer, // Corregido: usar idOffer en lugar de idPublicacion
-      idContratador: parseInt(idContratador), // Agregado: incluir el idContratador
-      fechaReservada: fechaReservada,
-      idEstado: ofrecidoData.idEstado
-    };
-
-    console.log('Datos a enviar:', dataToSend);
-
-    const response = await api.post('/api/Historial/historial', dataToSend, {
+    console.log('Datos de reserva a enviar:', ofrecidoData);
+    
+    const response = await api.post('/api/Historial/historial', {
+      idPublicacion: ofrecidoData.idOffer, // Asegúrate de que este ID sea correcto
+      idOffer: ofrecidoData.idOffer,
+      fechaReservada: ofrecidoData.fechaReservada,
+      idEstado: 1 // Estado inicial
+    }, {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-      },
+        'Content-Type': 'application/json',
+      }
     });
 
-    if (response.status === 201 || response.status === 200) { // Agregado status 200
-      return response.data;
-    } else {
-      throw new Error(response.data.message || 'Error en la respuesta del servidor');
-    }
+    console.log('Respuesta del servidor:', response.data);
+    return response.data;
   } catch (error) {
-    console.error('Error en el post createReserva:', error);
-    if (error.response) {
-      console.error('Error en la respuesta:', error.response.data);
-      console.error('Código de estado:', error.response.status);
-    }
+    console.error('Error completo:', error.response || error);
     throw error;
   }
 };
