@@ -21,11 +21,8 @@ export const getLikedRecomendations = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
     if (!token) {
-      console.log('No hay token disponible');
       return [];
     }
-
-    console.log('Intentando obtener favoritos con token:', token);
     const response = await favsApi.get('/favoritos', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -34,15 +31,12 @@ export const getLikedRecomendations = async () => {
     });
 
     if (response.status === 404) {
-      console.log('No se encontraron favoritos');
       return [];
     }
 
-    console.log('Respuesta de favoritos:', response.data);
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     if (error.response?.status === 404) {
-      console.log('No se encontraron favoritos');
       return [];
     }
     console.error('Error al obtener favoritos:', {
@@ -68,7 +62,6 @@ export const likeRecomendation = async (recomendationId) => {
       }
     });
 
-    console.log('Respuesta al dar like:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error al dar like:', {

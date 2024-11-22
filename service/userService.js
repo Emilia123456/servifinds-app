@@ -16,9 +16,6 @@ export const login = async (email, password) => {
     });
 
     AsyncStorage.setItem('token', response.data.token);
-    
-    console.log(response.data);
-
     return response.data;  
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -29,7 +26,6 @@ export const login = async (email, password) => {
 
 
 export const register = async (email, nombre, apellido, direccion, password, genero, foto, fecha) => {
-  console.log("hola")
   try {
     const response = await userApi.post('/users/register', {
       email: email, 

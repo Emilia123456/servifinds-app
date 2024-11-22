@@ -11,8 +11,6 @@ const ofrecidosApi = axios.create({
 export const searchOffers = async (params = {}) => {
   try {
     const token = await AsyncStorage.getItem('token');
-    console.log('Token usado:', token);
-
     const url = '/Ofrecimientos/filtros';
     const config = {
       headers: {

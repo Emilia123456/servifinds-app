@@ -20,27 +20,11 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
     // Valor por defecto si no es válido
     return '0.0';
   };
-
-  // Debug: Imprimir los datos recibidos
-  console.log('Recomendaciones recibidas:', recomendations.map(r => ({
-    id: r.id,
-    titulo: r.titulo,
-    promedio: r.promedio_calificacion,
-    tipo: typeof r.promedio_calificacion
-  })));
-
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {recomendations.map((offer, index) => {
-          // Debug: Imprimir el promedio de cada oferta
-          console.log(`Oferta ${index}:`, {
-            id: offer.id,
-            promedio: offer.promedio_calificacion,
-            tipo: typeof offer.promedio_calificacion
-          });
-
           return (
             <TouchableOpacity
               key={index}

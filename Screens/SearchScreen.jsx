@@ -24,7 +24,6 @@ export default function SearchScreen({ navigation }) {
       try {
         // Cargar categorías
         const categoriesData = await getCategories();
-        console.log('Categorías recibidas:', categoriesData);
         setCategories(categoriesData || []);
 
         // Cargar ofertas

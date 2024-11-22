@@ -36,7 +36,6 @@ export default function DetailScreen({ route }) {
   
     try {
       const result = await createReserva(ofrecidoData);
-      console.log('Reserva guardada:', result); // Mensaje de éxito
       alert('Reserva guardada exitosamente');
     } catch (error) {
       console.error('Error al guardar la reserva:', error); // Mensaje de error
