@@ -18,17 +18,30 @@ export default function SearchScreen({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [categOffers, setCategOffers] = useState([]); 
   const [likedRecommendations, setLikedRecommendations] = useState([]);
+  const BASE_URL = 'https://diverse-tightly-mongoose.ngrok-free.app';
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Cargar categorías
         const categoriesData = await getCategories();
-        setCategories(categoriesData || []);
+        console.log('Categorías recibidas:', categoriesData); // Debug log
+        
+        if (Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+        } else if (categoriesData?.data) {
+          setCategories(categoriesData.data);
+        } else {
+          console.error('Formato de categorías inesperado:', categoriesData);
+        }
 
-        // Cargar ofertas
-        const offersData = await searchOffers();
-        setCategOffers(offersData || []);
+        const offersData = await searchOffers({
+          mayorPromedio: "1"
+        });
+        
+        if (offersData) {
+          const processedOffers = processOffers(offersData);
+          setCategOffers(processedOffers);
+        }
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
@@ -37,18 +50,50 @@ export default function SearchScreen({ navigation }) {
     loadData();
   }, []);
 
-  const handleCategoryPress = (nombCateg) => {
-    const fetchByCategory = async () => {
-      try {
-        const response = await getByCategories(nombCateg);
-        //setCategOffers(response || []);
-        setCategOffers([]);
-        //setLikedRecommendations(new Array((response || []).length).fill(false));
-      } catch (error) {
-        console.error('Error fetching byCategories:', error);
+  const processOffers = (offers) => {
+    // Verificar que offers sea un array válido
+    if (!Array.isArray(offers)) {
+      console.log('No hay ofertas para procesar');
+      return [];
+    }
+
+    // Crear un objeto para almacenar ofertas únicas
+    const uniqueOffers = {};
+
+    offers.forEach(offer => {
+      if (!offer || !offer.id) return; // Skip si la oferta no es válida
+
+      if (!uniqueOffers[offer.id]) {
+        // Primera vez que vemos esta oferta
+        uniqueOffers[offer.id] = {
+          ...offer,
+          fotos: offer.foto ? [offer.foto] : []
+        };
+      } else if (offer.foto && !uniqueOffers[offer.id].fotos.includes(offer.foto)) {
+        // Agregar nueva foto si no existe
+        uniqueOffers[offer.id].fotos.push(offer.foto);
       }
-    };
-    fetchByCategory();
+    });
+
+    return Object.values(uniqueOffers);
+  };
+
+  const handleCategoryPress = async (categoryName) => {
+    try {
+      const response = await searchOffers({
+        categoria: categoryName
+      });
+      
+      if (response) {
+        const uniqueOffers = processOffers(response);
+        setCategOffers(uniqueOffers);
+      } else {
+        setCategOffers([]);
+      }
+    } catch (error) {
+      console.error('Error al buscar ofertas por categoría:', error);
+      setCategOffers([]);
+    }
   };
 
   const handleLike = (index) => {
@@ -58,8 +103,8 @@ export default function SearchScreen({ navigation }) {
   };
 
   return (
-    <>
-      <ScrollView style={styles.container}>
+    <View style={styles.mainContainer}>
+      <View style={styles.searchSection}>
         <View style={styles.header}>
           <TextInput
             value={search}
@@ -71,87 +116,109 @@ export default function SearchScreen({ navigation }) {
         </View>
         
         <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-          {categories.length > 0 ? (
-            categories.map((category, index) => (
-              <TouchableOpacity key={index} style={styles.category} onPress={() => handleCategoryPress(category.nombre)}>
+            {console.log('Estado actual de categories:', categories)} {/* Debug log */}
+            {categories && categories.length > 0 ? (
+              categories.map((category, index) => (
+              <TouchableOpacity key={category.id || index} style={styles.categoryItem} onPress={() => handleCategoryPress(category.nombre)}>
                 <Image
-                  source={{ uri: 'https://diverse-tightly-mongoose.ngrok-free.app' + category.imageURL }}
+                  source={{ uri: `${BASE_URL}${category.imageURL}` }}
                   style={styles.filterImage}
+                  onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
                 />
                 <Text style={styles.filterText}>{category.nombre}</Text>
               </TouchableOpacity>
             ))
           ) : (
-            <Text>No hay categorías disponibles</Text>
+            <Text style={styles.loadingText}>Cargando categorías...</Text>
           )}
         </ScrollView>
-      </ScrollView>
+      </View>
       
-      {categOffers.length > 0 ? (
-        <RecommendationsComponent 
-          recomendations={categOffers}
-          navigation={navigation}
-        />
-      ) : (
-        <Text>No hay ofrecimientos disponibles</Text>
-      )}
-    </>
+      <ScrollView style={styles.offersContainer}>
+        <View style={styles.recommendationsSection}>
+          {categOffers.length > 0 && (
+            <RecommendationsComponent 
+              recomendations={categOffers}
+              navigation={navigation}
+            />
+          )}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: '#fff',
   },
+  searchSection: {
+    backgroundColor: '#fff',
+    paddingTop: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   header: {
     padding: 16,
-    marginTop: 50,
   },
   searchInput: {
-    width: width - 32,
     padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
     color: '#1B2E35',
+    fontSize: 16,
+    paddingLeft: 20,
   },
   filterContainer: {
-    flexDirection: 'row',
     paddingHorizontal: 16,
+    paddingBottom: 16,
+    marginTop: 8,
   },
-  category: {
+  categoryItem: {
     alignItems: 'center',
     marginRight: 16,
+    backgroundColor: '#ffffff',
+    padding: 12,
+    borderRadius: 12,
+    width: 90,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 3,
   },
   filterImage: {
-    width: 25,
-    height: 25,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     marginBottom: 8,
   },
   filterText: {
-    paddingVertical: 4,
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
     color: '#1B2E35',
   },
-  recommendationImage: {
-    width: '100%',
-    height: 100,
-    resizeMode: 'cover',
-  },
-  recommendationText: {
+  loadingText: {
     padding: 10,
+    color: '#666',
   },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  offersContainer: {
+    flex: 1,
   },
-  ratingText: {
-    marginRight: 8,
-    fontSize: 14,
-    color: '#1B2E35',
-  },
-  recommendationTitle: {
-    fontSize: 16,
-    color: '#1B2E35',
-  },
+  recommendationsSection: {
+    flex: 1,
+  }
 });

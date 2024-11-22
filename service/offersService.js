@@ -54,6 +54,7 @@ export const getCategories = async () => {
   }
 };
 
+/*
 export const getByCategories = async (categoryId) => {
   try {
     const token = await AsyncStorage.getItem('token');
@@ -69,3 +70,4 @@ export const getByCategories = async (categoryId) => {
     return [];
   }
 };
+*/

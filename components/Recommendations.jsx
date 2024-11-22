@@ -1,59 +1,53 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeRecomendation } from '../service/favsService';
-const RecommendationsComponent = ({ recomendations = [], navigation }) => {
-  const [likedRecommendations, setLikedRecommendations] = useState({});
 
-  // Función mejorada para manejar el rating
-  const formatRating = (rating) => {
-    // Si es string, convertir a número
-    if (typeof rating === 'string') {
-      rating = parseFloat(rating);
-    }
-    
-    // Verificar si es un número válido
-    if (typeof rating === 'number' && !isNaN(rating)) {
-      return rating.toFixed(1);
-    }
-    
-    // Valor por defecto si no es válido
-    return '0.0';
-  };
+const RecommendationsComponent = ({ recomendations = [], navigation }) => {
+  // Verificar que recomendations sea un array válido
+  if (!Array.isArray(recomendations)) {
+    console.log('Recomendaciones no es un array:', recomendations);
+    return null;
+  }
+
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
-      <ScrollView vertical showsHorizontalScrollIndicator={false}>
+      <View style={styles.recommendationsGrid}>
         {recomendations.map((offer, index) => {
+          // Verificar que offer sea un objeto válido
+          if (!offer || typeof offer !== 'object') return null;
+
           return (
             <TouchableOpacity
-              key={index}
+              key={offer.id || index}
               style={styles.recommendation}
               onPress={() => navigation.navigate('Detail', {
                 idOffer: offer.id,
                 title: offer.titulo || 'Sin título',
                 description: offer.descripcion || 'Sin descripción',
-                imageUri: offer.foto || 'https://via.placeholder.com/150',
+                imageUri: offer.foto || offer.fotos?.[0], // Intentar usar foto o la primera foto del array
                 rating: parseFloat(offer.promedio_calificacion) || 0,
               })}
             >
-              <Image 
-                source={{ uri: offer.foto || 'https://via.placeholder.com/150' }} 
-                style={styles.recommendationImage}
-              />
+              <View style={styles.imageContainer}>
+                <Image 
+                  source={{ 
+                    uri: offer.foto || offer.fotos?.[0] || 'https://via.placeholder.com/150'
+                  }} 
+                  style={styles.recommendationImage}
+                />
+              </View>
+              
               <View style={styles.recommendationText}>
                 <View style={styles.rating}>
                   <Text style={styles.ratingText}>
-                    {formatRating(offer.promedio_calificacion)}
+                    {(parseFloat(offer.promedio_calificacion) || 0).toFixed(1)}
                   </Text>
-                  <TouchableOpacity 
-                    onPress={() => handleLike(offer.id)}
-                    style={styles.likeButton}
-                  >
+                  <TouchableOpacity style={styles.likeButton}>
                     <Icon 
-                      name={likedRecommendations[offer.id] ? 'heart' : 'heart-o'} 
+                      name={'heart-o'} 
                       size={20} 
-                      color={likedRecommendations[offer.id] ? '#e74c3c' : '#7f8c8d'} 
+                      color={'#7f8c8d'} 
                     />
                   </TouchableOpacity>
                 </View>
@@ -67,38 +61,51 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   recommendationsContainer: {
-    padding: 16,
+    flex: 1,
+    paddingHorizontal: 16,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
     color: '#1B2E35',
   },
+  recommendationsGrid: {
+    flexDirection: 'column',
+  },
   recommendation: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
-    marginRight: 16,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    width: 250,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 3,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#f5f5f5',
   },
   recommendationImage: {
     width: '100%',
-    height: 150,
-    borderRadius: 6,
-    marginBottom: 8,
+    height: '100%',
+    resizeMode: 'cover',
   },
   recommendationText: {
-    padding: 8,
+    padding: 16,
   },
   rating: {
     flexDirection: 'row',
@@ -107,23 +114,34 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   ratingText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#555',
+    color: '#1B2E35',
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   recommendationTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    color: '#1B2E35',
+    marginBottom: 8,
   },
   recommendationDescription: {
     fontSize: 14,
     color: '#666',
+    lineHeight: 20,
   },
   likeButton: {
     padding: 8,
-  }
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default RecommendationsComponent;
