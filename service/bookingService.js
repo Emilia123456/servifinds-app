@@ -64,31 +64,45 @@ ofrecidoData = {
 */
 export const createReserva = async (ofrecidoData) => {
   const token = await AsyncStorage.getItem('token');
-
-  const fecha = ofrecidoData.fechaReservada; // Asegúrate de que esto sea "DD/MM"
-  const [dia, mes] = fecha.split('-');
-  const año = new Date().getFullYear(); // O el año que necesites
-  const fechaReservada = new Date(`${año}-${mes}-${dia}T00:00:00`).toISOString();
-
-  // Actualiza ofrecidoData
-  ofrecidoData.fechaReservada = fechaReservada;
-
+  
   try {
-    const response = await api.post(`/api/Historial/historial`, ofrecidoData, {
+    // Convertimos la fecha a formato YYYY-MM-DD
+    const fechaOriginal = ofrecidoData.fechaReservada;
+    const fecha = new Date(fechaOriginal);
+    const fechaReservada = fecha.toISOString().split('T')[0];
+
+    // Obtenemos el idContratador del token decodificado o del AsyncStorage
+    const idContratador = await AsyncStorage.getItem('userId'); // Asegúrate de guardar el userId al hacer login
+
+    const dataToSend = {
+      idPublicacion: ofrecidoData.idPublicacion,
+      idOffer: ofrecidoData.idOffer, // Corregido: usar idOffer en lugar de idPublicacion
+      idContratador: parseInt(idContratador), // Agregado: incluir el idContratador
+      fechaReservada: fechaReservada,
+      idEstado: ofrecidoData.idEstado
+    };
+
+    console.log('Datos a enviar:', dataToSend);
+
+    const response = await api.post('/api/Historial/historial', dataToSend, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
 
-    const data = response.data;
-    return data;
+    if (response.status === 201 || response.status === 200) { // Agregado status 200
+      return response.data;
+    } else {
+      throw new Error(response.data.message || 'Error en la respuesta del servidor');
+    }
   } catch (error) {
     console.error('Error en el post createReserva:', error);
     if (error.response) {
       console.error('Error en la respuesta:', error.response.data);
       console.error('Código de estado:', error.response.status);
     }
+    throw error;
   }
 };
 
