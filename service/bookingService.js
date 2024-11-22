@@ -30,27 +30,27 @@ export const getPublicacion = async (idPublicacion) => {
 
 
 export const fetchOfrecidosPorFecha = async (fecha) => {
-    const token = await AsyncStorage.getItem('token');
+  const token = await AsyncStorage.getItem('token');
 
-    try {
-        const response = await api.get(`/api/Historial/historial`, {
-            params: { fecha },
-            headers: {
-                Authorization: `Bearer ${token}`, 
-            },
-        });
-        return response.data;
-    } catch (error) {
-      if (error.response) {
-        console.error('Error en la respuesta:', error.response.data);
-        console.error('Código de estado:', error.response.status);
-        console.error('Headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Error en la solicitud:', error.request);
-      } else {
-        console.error('Error:', error.message);
-      }
-    }    
+  try {
+    console.log('Fetching data for date:', fecha); // Debug log
+    const response = await api.get('/api/Historial/historial', {
+      params: { fecha },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log('Response data:', response.data); // Debug log
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    console.error('Error completo:', error);
+    if (error.response) {
+      console.error('Error en la respuesta:', error.response.data);
+      console.error('Código de estado:', error.response.status);
+    }
+    return [];
+  }
 };
 
 /*

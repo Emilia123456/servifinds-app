@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { login } from '../service/userService.js';  
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('maiukuper@gmail.com');
@@ -8,9 +9,11 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      const result = await login(email, password);
+      const response = await login(email, password);
+      const token = await AsyncStorage.getItem('token');
+      console.log('Token guardado:', token ? 'presente' : 'ausente');
       
-      if (result.success) {  
+      if (response.success) {  
         navigation.navigate('Main');
         navigation.reset({
           index: 0,

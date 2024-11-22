@@ -68,17 +68,23 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.actionText}>Publicar nuevo trabajo</Text>
         </TouchableOpacity>
         <Modal 
-          yyeeeejaaa 
+          visible={modalVisible}
           animationType="slide"
           transparent={true}
           onRequestClose={closeModal}>
-          <View>
-            <Text> Va a ser el form de publicar trabajos yeeja </Text>
-            <TouchableOpacity onPress={closeModal}>
-            <Text> Close </Text>
-            </TouchableOpacity>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Publicar nuevo trabajo</Text>
+              {/* Aquí irá el formulario */}
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={closeModal}
+              >
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          </Modal>
+        </Modal>
       </View>
 
       {/* Información adicional */}
@@ -238,5 +244,34 @@ const styles = StyleSheet.create({
   recommendationSubtitle: {
     fontSize: 12,
     color: '#666',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '90%',
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  closeButton: {
+    backgroundColor: '#446C64',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

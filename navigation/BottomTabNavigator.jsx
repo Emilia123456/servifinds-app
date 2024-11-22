@@ -57,7 +57,13 @@ function BookingStackScreen() {
 function FavoriteStackScreen() {
   return (
     <FavoriteStack.Navigator screenOptions={{ headerShown: false }}>
-      <FavoriteStack.Screen name="Favoritos" component={FavoriteScreen} />
+      <FavoriteStack.Screen 
+        name="FavoritesMain" 
+        component={FavoriteScreen} 
+        options={{
+          title: 'Favoritos'
+        }}
+      />
       <FavoriteStack.Screen name="Detail" component={DetailScreen} />
     </FavoriteStack.Navigator>
   );
@@ -89,7 +95,7 @@ export default function BottomTabNavigator() {
               case 'Reservas':
                 iconSource = require('../assets/lineas-de-calendario.png');
                 break;
-              case 'Favoritos':
+              case 'FavoritesTab':
                 iconSource = require('../assets/corazon.png');
                 break;
               case 'Perfil':
@@ -115,7 +121,14 @@ export default function BottomTabNavigator() {
         <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
         <Tab.Screen name="Búsqueda" component={SearchStackScreen} options={{ headerShown: false }} />
         <Tab.Screen name="Reservas" component={BookingStackScreen} options={{ headerShown: false }} />
-        <Tab.Screen name="Favoritos" component={FavoriteStackScreen} options={{ headerShown: false }} />
+        <Tab.Screen 
+          name="FavoritesTab" 
+          component={FavoriteStackScreen} 
+          options={{
+            tabBarLabel: 'Favoritos',
+            headerShown: false
+          }}
+        />
         <Tab.Screen name="Perfil" component={ProfileStackScreen} options={{ headerShown: false }} />
       </Tab.Navigator>
     </View>

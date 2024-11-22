@@ -1,17 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  View, 
-  Text, 
-  Image, 
-  ScrollView, 
-  StyleSheet, 
-  TouchableOpacity, 
-  RefreshControl 
-} from 'react-native';
 
 const favsApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api/Favoritos',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,29 +12,46 @@ export const getLikedRecomendations = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
     if (!token) {
+      console.log('No hay token disponible');
       return [];
     }
-    const response = await favsApi.get('/favoritos', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }
+
+    console.log('Token format check:', {
+      length: token.length,
+      startsWithBearer: token.startsWith('Bearer '),
+      sample: token.substring(0, 20) + '...'
     });
 
-    if (response.status === 404) {
-      return [];
-    }
+    const headers = {
+      'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    console.log('Headers enviados:', headers);
+
+    const response = await favsApi.get('/favoritos', { headers });
+
+    console.log('Respuesta del servidor:', {
+      status: response.status,
+      data: response.data,
+      headers: response.headers
+    });
 
     return Array.isArray(response.data) ? response.data : [];
+
   } catch (error) {
-    if (error.response?.status === 404) {
-      return [];
-    }
-    console.error('Error al obtener favoritos:', {
+    console.error('Error en getFavoritos:', {
       message: error.message,
       status: error.response?.status,
-      data: error.response?.data
+      data: error.response?.data,
+      headers: error.config?.headers
     });
+
+    if (error.response?.status === 401) {
+      console.log('Token inválido o expirado');
+      await AsyncStorage.removeItem('token');
+    }
+
     return [];
   }
 };
@@ -55,19 +63,30 @@ export const likeRecomendation = async (recomendationId) => {
       throw new Error('No hay token disponible');
     }
 
-    const response = await favsApi.post(`/favoritos/${recomendationId}`, null, {
+    console.log('Intentando dar like al ofrecido ID:', recomendationId);
+
+    const response = await favsApi.patch(`/likes/${recomendationId}`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       }
     });
 
+    console.log('Respuesta del servidor al dar like:', {
+      status: response.status,
+      data: response.data,
+      ofrecidoId: recomendationId
+    });
+
     return response.data;
   } catch (error) {
-    console.error('Error al dar like:', {
+    console.error('Error detallado al dar like:', {
+      ofrecidoId: recomendationId,
       message: error.message,
       status: error.response?.status,
-      data: error.response?.data
+      data: error.response?.data,
+      url: error.config?.url,
+      body: error.config?.data
     });
     throw error;
   }

@@ -1,21 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { likeRecomendation } from '../service/favsService';
 
 const RecommendationsComponent = ({ recomendations = [], navigation }) => {
-  // Verificar que recomendations sea un array válido
-  if (!Array.isArray(recomendations)) {
-    console.log('Recomendaciones no es un array:', recomendations);
-    return null;
-  }
+  const [likedOffers, setLikedOffers] = useState(new Set());
+
+  const handleLike = async (offerId) => {
+    try {
+      console.log('Intentando dar like al ofrecido:', offerId);
+      await likeRecomendation(offerId);
+      
+      // Toggle del estado local
+      setLikedOffers(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(offerId)) {
+          newSet.delete(offerId);
+        } else {
+          newSet.add(offerId);
+        }
+        return newSet;
+      });
+      
+    } catch (error) {
+      console.error('Error al dar like:', error);
+    }
+  };
 
   return (
     <View style={styles.recommendationsContainer}>
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
       <View style={styles.recommendationsGrid}>
         {recomendations.map((offer, index) => {
-          // Verificar que offer sea un objeto válido
           if (!offer || typeof offer !== 'object') return null;
+          
+          const isLiked = likedOffers.has(offer.id);
 
           return (
             <TouchableOpacity
@@ -25,7 +44,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                 idOffer: offer.id,
                 title: offer.titulo || 'Sin título',
                 description: offer.descripcion || 'Sin descripción',
-                imageUri: offer.foto || offer.fotos?.[0], // Intentar usar foto o la primera foto del array
+                imageUri: offer.foto || offer.fotos?.[0],
                 rating: parseFloat(offer.promedio_calificacion) || 0,
               })}
             >
@@ -43,11 +62,17 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                   <Text style={styles.ratingText}>
                     {(parseFloat(offer.promedio_calificacion) || 0).toFixed(1)}
                   </Text>
-                  <TouchableOpacity style={styles.likeButton}>
+                  <TouchableOpacity 
+                    style={[styles.likeButton, isLiked && styles.likedButton]}
+                    onPress={(e) => {
+                      e.stopPropagation(); // Evita que se active la navegación
+                      handleLike(offer.id);
+                    }}
+                  >
                     <Icon 
-                      name={'heart-o'} 
+                      name={isLiked ? 'heart' : 'heart-o'} 
                       size={20} 
-                      color={'#7f8c8d'} 
+                      color={isLiked ? '#e74c3c' : '#7f8c8d'} 
                     />
                   </TouchableOpacity>
                 </View>
@@ -142,6 +167,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  likedButton: {
+    backgroundColor: '#ffe6e6', // Un fondo rosado suave para cuando está liked
+  }
 });
 
 export default RecommendationsComponent;

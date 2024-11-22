@@ -7,7 +7,7 @@ import { fetchOfrecidosPorFecha } from '../service/bookingService';
 
 const BookingScreen = () => {
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
   const [ofrecidos, setOfrecidos] = useState([]);
   const [animation] = useState(new Animated.Value(0));
 
@@ -33,9 +33,15 @@ const BookingScreen = () => {
     outputRange: [0, 1],
   });
 
+  useEffect(() => {
+    fetchOfrecidos(selectedDate);
+  }, []);
+
   const fetchOfrecidos = async (fecha) => {
     try {
+      console.log('Fetching ofertas for date:', fecha);
       const data = await fetchOfrecidosPorFecha(fecha);
+      console.log('Received data:', data);
       setOfrecidos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching ofrecidos:', error);
@@ -43,48 +49,61 @@ const BookingScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedDate) {
-      fetchOfrecidos(selectedDate);
-    }
-  }, [selectedDate]);
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Selecciona una fecha</Text>
-      <View style={styles.weekContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {daysOfWeek.map((day) => (
-            <TouchableOpacity
-              key={day.dateString}
-              onPress={() => setSelectedDate(day.dateString)}
-              style={[
-                styles.dayButton,
-                selectedDate === day.dateString && styles.selectedDayButton,
-              ]}
-            >
-              <Text
+    <View style={styles.safeArea}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Selecciona una fecha</Text>
+        <View style={styles.weekContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {daysOfWeek.map((day) => (
+              <TouchableOpacity
+                key={day.dateString}
+                onPress={() => setSelectedDate(day.dateString)}
                 style={[
-                  styles.dayText,
-                  selectedDate === day.dateString && styles.selectedDayText,
+                  styles.dayButton,
+                  selectedDate === day.dateString && styles.selectedDayButton,
                 ]}
               >
-                {day.weekday}
-              </Text>
-              <Text
-                style={[
-                  styles.dayNumber,
-                  selectedDate === day.dateString && styles.selectedDayText,
-                ]}
-              >
-                {day.day}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text style={[styles.dayText, selectedDate === day.dateString && styles.selectedDayText]}>
+                  {day.weekday}
+                </Text>
+                <Text style={[styles.dayNumber, selectedDate === day.dateString && styles.selectedDayText]}>
+                  {day.day}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <TouchableOpacity style={styles.openButton} onPress={toggleCalendar}>
+            <Icon name="add" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.content}>
+        <Text style={styles.subtitle}>Pendientes del {selectedDate || 'Today'}</Text>
+        <ScrollView style={styles.taskList}>
+          {Array.isArray(ofrecidos) && ofrecidos.length > 0 ? (
+            ofrecidos.map((ofrecido) => (
+              <View key={ofrecido.id} style={styles.taskCard}>
+                <View style={styles.taskHeader}>
+                  <View style={styles.taskImages}>
+                    <Icon name="people-circle" size={24} color="#555" />
+                  </View>
+                  <View>
+                    <Text style={styles.taskTitle}>{ofrecido.titulo}</Text>
+                    <Text style={styles.taskDescription}>{ofrecido.descripcion}</Text>
+                  </View>
+                </View>
+                <View style={styles.taskFooter}>
+                  <Text style={styles.taskTime}>Price: {ofrecido.precio}</Text>
+                  <Text style={styles.taskRating}>Rating: {ofrecido.promedio_calificacion}</Text>
+                </View>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noTasksText}>No hay ninguna tarea para esta fecha</Text>
+          )}
         </ScrollView>
-        <TouchableOpacity style={styles.openButton} onPress={toggleCalendar}>
-          <Icon name="add" size={30} color="white" />
-        </TouchableOpacity>
       </View>
 
       <Modal transparent visible={showCalendar} animationType="none">
@@ -118,32 +137,6 @@ const BookingScreen = () => {
           </Animated.View>
         </View>
       </Modal>
-
-      <Text style={styles.title}>Pendientes del {selectedDate || 'Today'}</Text>
-
-      <ScrollView>
-        {Array.isArray(ofrecidos) && ofrecidos.length > 0 ? (
-          ofrecidos.map((ofrecido) => (
-            <View key={ofrecido.id} style={styles.taskCard}>
-              <View style={styles.taskHeader}>
-                <View style={styles.taskImages}>
-                  <Icon name="people-circle" size={24} color="#555" />
-                </View>
-                <View>
-                  <Text style={styles.taskTitle}>{ofrecido.titulo}</Text>
-                  <Text style={styles.taskDescription}>{ofrecido.descripcion}</Text>
-                </View>
-              </View>
-              <View style={styles.taskFooter}>
-                <Text style={styles.taskTime}>Price: {ofrecido.precio}</Text>
-                <Text style={styles.taskRating}>Rating: {ofrecido.promedio_calificacion}</Text>
-              </View>
-            </View>
-          ))
-        ) : (
-          <Text>No hay ninguna tarea para esta fecha</Text>
-        )}
-      </ScrollView>
     </View>
   );
 };
@@ -163,30 +156,51 @@ const getRemainingDaysOfCurrentWeek = () => {
   return days;
 };
 
-// Define los estilos aquí (sin cambios)
-
-
-// Define los estilos aquí (sin cambios)
-
-
-
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    paddingTop: 50,
+  },
+  header: {
+    paddingHorizontal: 20,
+    backgroundColor: '#f5f5f5',
+    zIndex: 1,
+  },
+  content: {
+    flex: 1,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
+    marginBottom: 15,
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
     marginVertical: 15,
+  },
+  taskList: {
+    flex: 1,
+  },
+  weekContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  noTasksText: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 20,
   },
   taskCard: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
-    marginVertical: 10,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
@@ -220,11 +234,6 @@ const styles = StyleSheet.create({
   taskRating: {
     fontSize: 12,
     color: '#999',
-  },
-  weekContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
   },
   dayButton: {
     paddingVertical: 10,
