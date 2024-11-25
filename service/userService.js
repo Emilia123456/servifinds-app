@@ -81,3 +81,24 @@ export const getUserId = async () => {
     throw error;
   }
 };
+
+export const getUserProfile = async () => {
+  try {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      throw new Error('No hay token disponible');
+    }
+
+    const response = await userApi.get('/users/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener perfil del usuario:', error);
+    throw error;
+  }
+};

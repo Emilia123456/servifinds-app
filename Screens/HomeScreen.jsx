@@ -5,6 +5,9 @@ import { searchOffers } from '../service/offersService.js';
 import FilterComponent from '../components/Filter.jsx';
 import RecommendationsComponent from '../components/Recommendations.jsx';
 import HamburgerMenu from '../components/HamburguerMenu.jsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { getUserProfile } from '../service/userService';
 
 const { width } = Dimensions.get('window');
 
@@ -14,7 +17,24 @@ export default function HomeScreen({ navigation }) {
   const [recomendations, setRecomendations] = useState([]);
   const [isMenuVisible, setMenuVisible] = useState(false);
   const shownIds = new Set(); 
+  const [userName, setUserName] = useState('Usuario');
 
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const userData = await getUserProfile();
+        if (userData && userData.nombre) {
+          const nombreCompleto = `${userData.nombre} ${userData.apellido}`;
+          setUserName(nombreCompleto);
+        }
+      } catch (error) {
+        console.error('Error al obtener datos del usuario:', error);
+        setUserName('Usuario');
+      }
+    };
+
+    getUserData();
+  }, []);
 
   useEffect(() => {
     const fetchRecomendations = async () => {
@@ -64,7 +84,7 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container} >
       <View style={styles.header}>
         <View style={styles.leftHeader}>
-          <Text style={styles.logo}>Hola Usuario!</Text>
+          <Text style={styles.logo}>¡Hola {userName}!</Text>
           <Text style={styles.subtitle}>¿Qué servicio contratarás hoy?</Text>
         </View>
         
@@ -94,7 +114,7 @@ export default function HomeScreen({ navigation }) {
         
       </View>
   
-      <FilterComponent selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />
+
 
       <RecommendationsComponent
         navigation={navigation}
