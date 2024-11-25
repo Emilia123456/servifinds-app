@@ -35,13 +35,6 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Imagen de portada */}
-      <View style={styles.coverContainer}>
-        <Image 
-          source={userProfile.foto ? { uri: userProfile.foto } : require('../assets/jardineria-recomendaciones.jpg')} 
-          style={styles.coverImage} 
-        />
-      </View>
 
       {/* Imagen del usuario */}
       <View style={styles.profileContainer}>
@@ -100,76 +93,67 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  coverContainer: {
-    height: 200,
-    backgroundColor: '#f0f0f0',
-  },
-  coverImage: {
-    width: '100%',
-    height: '100%',
+    backgroundColor: '#f4f4f4', // Fondo claro general
   },
   profileContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginTop: -60, 
+    marginTop: 40, // Separación superior
     marginBottom: 20,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: '#fff',
-    marginRight: 16,
-  },
-  profileInfo: {
-    flex: 1,
-    alignItems: 'flex-start',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: '#446C64', // Borde del avatar
+    backgroundColor: '#e0e0e0', // Fondo gris si no hay imagen
   },
   profileName: {
-    fontSize: 22, 
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 70,
-    marginBottom: 0,
+    marginTop: 10,
   },
-  profileStatus: {
+  profileEmail: {
     fontSize: 14,
-    color: '#446C64',
+    color: '#666',
+    marginTop: 5,
   },
   actionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 16,
+    marginTop: 30,
+    paddingHorizontal: 20,
   },
   actionButton: {
+    flex: 1,
     backgroundColor: '#446C64',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: 12,
+    marginHorizontal: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
   actionText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   infoContainer: {
-    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    borderRadius: 5,
+    padding: 15,
     marginBottom: 20,
-  },
-  infoItem: {
-    marginBottom: 10,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1B2E35',
+    marginBottom: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#777',
+    color: '#555',
   },
   modalContainer: {
     flex: 1,
@@ -178,16 +162,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
     width: '90%',
-    maxHeight: '80%',
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#1B2E35',
     marginBottom: 15,
+    textAlign: 'center',
   },
   closeButton: {
     backgroundColor: '#446C64',
