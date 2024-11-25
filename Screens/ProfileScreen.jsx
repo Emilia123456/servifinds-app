@@ -1,61 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { getUserProfile } from '../service/userService';
 
 export default function ProfileScreen({ navigation }) {
-  const [likedRecommendations, setLikedRecommendations] = useState({}); // Estado para manejar los likes en trabajos realizados
+  const [likedRecommendations, setLikedRecommendations] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    direccion: '',
+    foto: '',
+    FechaNacimiento: '',
+  });
 
-  const openModal = () => {
-    setModalVisible(true);
-  }
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profileData = await getUserProfile();
+        if (profileData) {
+          setUserProfile(profileData);
+        }
+      } catch (error) {
+        console.error('Error al obtener el perfil:', error);
+      }
+    };
 
-  
-  const closeModal = () => {
-    setModalVisible(false);
-  }
-  const userProfile = {
-    name: 'Jaboris Wells',
-    status: 'Mantenimiento de jardines',
-    mutualFriends: 8,
-    coverImageUri: require('../assets/jardineria-recomendaciones.jpg'), 
-    imageUri: require('../assets/jardineria-recomendaciones.jpg'),
-  };
+    fetchUserProfile();
+  }, []);
 
-  const recommendations = [
-    {
-      title: 'Jardinería en hogar',
-      description: 'Mantenimiento de jardines',
-      imageUri: require('../assets/jardineria-recomendaciones.jpg'),
-    },
-    {
-      title: 'Servicio de plomería',
-      description: 'Reparación de cañerías',
-      imageUri: require('../assets/plomeria-recomendaciones.jpg'),
-    },
-  ];
-
-  const handleLike = (index) => {
-    setLikedRecommendations((prev) => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
-  };
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
 
   return (
     <ScrollView style={styles.container}>
       {/* Imagen de portada */}
       <View style={styles.coverContainer}>
-        <Image source={userProfile.coverImageUri} style={styles.coverImage} />
+        <Image 
+          source={userProfile.foto ? { uri: userProfile.foto } : require('../assets/jardineria-recomendaciones.jpg')} 
+          style={styles.coverImage} 
+        />
       </View>
 
       {/* Imagen del usuario */}
       <View style={styles.profileContainer}>
-        <Image source={userProfile.imageUri} style={styles.profileImage} />
+        <Image 
+          source={userProfile.foto ? { uri: userProfile.foto } : require('../assets/jardineria-recomendaciones.jpg')} 
+          style={styles.profileImage} 
+        />
         <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>{userProfile.name}</Text>
-          <Text style={styles.profileUsername}>{userProfile.username}</Text>
-          <Text style={styles.profileStatus}>{userProfile.status}</Text>
+          <Text style={styles.profileName}>{`${userProfile.nombre} ${userProfile.apellido}`}</Text>
+          <Text style={styles.profileEmail}>{userProfile.email}</Text>
+          <Text style={styles.profileStatus}>{userProfile.direccion}</Text>
         </View>
       </View>
 
@@ -67,60 +64,34 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity style={styles.actionButton} onPress={openModal}>
           <Text style={styles.actionText}>Publicar nuevo trabajo</Text>
         </TouchableOpacity>
-        <Modal 
-          visible={modalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={closeModal}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Publicar nuevo trabajo</Text>
-              {/* Aquí irá el formulario */}
-              <TouchableOpacity 
-                style={styles.closeButton}
-                onPress={closeModal}
-              >
-                <Text style={styles.closeButtonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
       </View>
+
+      {/* Modal */}
+      <Modal 
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Publicar nuevo trabajo</Text>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={closeModal}
+            >
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Información adicional */}
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
-          <Text style={styles.infoTitle}>Trabajos realizados</Text>
-          <Text style={styles.infoText}>{userProfile.mutualFriends} proyectos completados</Text>
+          <Text style={styles.infoTitle}>Información Personal</Text>
+          <Text style={styles.infoText}>Fecha de Nacimiento: {new Date(userProfile.FechaNacimiento).toLocaleDateString()}</Text>
+          <Text style={styles.infoText}>Dirección: {userProfile.direccion}</Text>
         </View>
-      </View>
-
-      {/* Trabajos realizados */}
-      <View style={styles.recommendationsContainer}>
-        <Text style={styles.sectionTitle}>Ofrecidos</Text>
-        {recommendations.map((recommendation, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.recommendation}
-            onPress={() => navigation.navigate('Detail', {
-              title: recommendation.title,
-              description: recommendation.description,
-              imageUri: recommendation.imageUri,
-            })}
-          >
-            <Image source={recommendation.imageUri} style={styles.recommendationImage} />
-            <View style={styles.recommendationText}>
-              <View style={styles.rating}>
-                <Text style={styles.ratingText}>4.9 (234)</Text>
-                <TouchableOpacity onPress={() => handleLike(index)}>
-                  <Icon name={likedRecommendations[index] ? 'heart' : 'heart-o'} size={20} color={likedRecommendations[index] ? '#e74c3c' : '#7f8c8d'} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.recommendationTitle}>{recommendation.title}</Text>
-              <Text style={styles.recommendationSubtitle}>{recommendation.description}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
       </View>
     </ScrollView>
   );
@@ -199,51 +170,6 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 14,
     color: '#777',
-  },
-  recommendationsContainer: {
-    padding: 16,
-    marginTop: 0,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    color: '#1B2E35',
-    marginBottom: 9,
-    fontWeight: 'bold',
-  },
-  recommendation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    backgroundColor: '#f9f9f9',
-    padding: 8,
-    borderRadius: 8,
-  },
-  recommendationImage: {
-    width: 140,
-    height: 90,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  recommendationText: {
-    flex: 1,
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  ratingText: {
-    fontSize: 14,
-    color: '#7f8c8d',
-  },
-  recommendationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  recommendationSubtitle: {
-    fontSize: 12,
-    color: '#666',
   },
   modalContainer: {
     flex: 1,
