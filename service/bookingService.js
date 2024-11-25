@@ -66,8 +66,6 @@ export const createReserva = async (ofrecidoData) => {
   if (!token) throw new Error('No hay token disponible');
 
   try {
-    console.log('Datos de reserva a enviar:', ofrecidoData);
-    
     const response = await api.post('/api/Historial/historial', {
       idPublicacion: ofrecidoData.idPublicacion,
       fechaReservada: ofrecidoData.fechaReservada,
@@ -79,10 +77,8 @@ export const createReserva = async (ofrecidoData) => {
       }
     });
 
-    console.log('Respuesta del servidor al crear reserva:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error al crear reserva:', error);
     throw error;
   }
 };
@@ -103,8 +99,6 @@ export const getDetallesReserva = async (idPublicacion) => {
     const token = await AsyncStorage.getItem('token');
     if (!token) throw new Error('No hay token disponible');
 
-    console.log('Obteniendo detalles para publicación:', idPublicacion);
-
     const response = await api.get('/api/Ofrecimientos/filtros', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -114,8 +108,6 @@ export const getDetallesReserva = async (idPublicacion) => {
         idPublicacion: idPublicacion
       }
     });
-
-    console.log('Respuesta detalles del ofrecido:', response.data);
     
     const ofrecido = Array.isArray(response.data) 
       ? response.data.find(o => o.id === idPublicacion)
@@ -123,7 +115,6 @@ export const getDetallesReserva = async (idPublicacion) => {
 
     return ofrecido;
   } catch (error) {
-    console.error('Error al obtener detalles del ofrecido:', error);
     return null;
   }
 };

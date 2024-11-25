@@ -41,31 +41,20 @@ const BookingScreen = () => {
   const fetchOfrecidos = async (fecha) => {
     try {
       const data = await fetchOfrecidosPorFecha(fecha);
-      console.log('Reservas recibidas:', data);
       setOfrecidos(Array.isArray(data) ? data : []);
       
       const detalles = {};
       for (const reserva of data) {
-        console.log('Procesando reserva:', {
-          id: reserva.id,
-          idPublicacion: reserva.idPublicacion
-        });
-        
         if (reserva.idPublicacion) {
           const detalle = await getDetallesReserva(reserva.idPublicacion);
           if (detalle) {
             detalles[reserva.id] = detalle;
-            console.log('Detalles encontrados para reserva:', {
-              reservaId: reserva.id,
-              titulo: detalle.titulo
-            });
           }
         }
       }
       
       setOfrecidosDetalles(detalles);
     } catch (error) {
-      console.error('Error fetching ofrecidos:', error);
       setOfrecidos([]);
     }
   };
