@@ -30,45 +30,22 @@ export const getPublicacion = async (idPublicacion) => {
 
 
 export const fetchOfrecidosPorFecha = async (fecha) => {
-  const token = await AsyncStorage.getItem('token');
-
   try {
-    const fechaObj = new Date(fecha);
-    const fechaFormateada = fechaObj.toISOString().split('T')[0];
-    
-    // Primero obtenemos las reservas
-    const historialResponse = await api.get('/api/Historial/historial', {
-      params: { fecha: fechaFormateada },
+    const token = await AsyncStorage.getItem('token');
+    if (!token) throw new Error('No hay token disponible');
+
+    const response = await api.get('/api/Historial/historial', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
+      },
+      params: {
+        fecha: fecha
       }
     });
 
-    // Si hay reservas, obtenemos los detalles de cada ofrecido
-    if (Array.isArray(historialResponse.data) && historialResponse.data.length > 0) {
-      const reservasConDetalles = await Promise.all(
-        historialResponse.data.map(async (reserva) => {
-          try {
-            const ofrecidoResponse = await api.get(`/api/Ofrecimientos/${reserva.idPublicacion}`, {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-              }
-            });
-            return {
-              ...reserva,
-              ofrecido: ofrecidoResponse.data
-            };
-          } catch (error) {
-            console.error(`Error al obtener detalles del ofrecido ${reserva.idPublicacion}:`, error);
-            return reserva;
-          }
-        })
-      );
-      return reservasConDetalles;
-    }
-    
-    return [];
+    console.log('Respuesta de reservas:', response.data);
+    return response.data;
   } catch (error) {
     console.error('Error al obtener reservas:', error);
     return [];
@@ -92,10 +69,9 @@ export const createReserva = async (ofrecidoData) => {
     console.log('Datos de reserva a enviar:', ofrecidoData);
     
     const response = await api.post('/api/Historial/historial', {
-      idPublicacion: ofrecidoData.idOffer, // Asegúrate de que este ID sea correcto
-      idOffer: ofrecidoData.idOffer,
+      idPublicacion: ofrecidoData.idPublicacion,
       fechaReservada: ofrecidoData.fechaReservada,
-      idEstado: 1 // Estado inicial
+      idEstado: 1
     }, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -103,10 +79,10 @@ export const createReserva = async (ofrecidoData) => {
       }
     });
 
-    console.log('Respuesta del servidor:', response.data);
+    console.log('Respuesta del servidor al crear reserva:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error completo:', error.response || error);
+    console.error('Error al crear reserva:', error);
     throw error;
   }
 };
@@ -118,6 +94,36 @@ export const createOfrecido = async (ofrecidoData) => {
     return response.data;
   } catch (error) {
     console.error('Error al crear el ofrecido:', error);
+    return null;
+  }
+};
+
+export const getDetallesReserva = async (idPublicacion) => {
+  try {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) throw new Error('No hay token disponible');
+
+    console.log('Obteniendo detalles para publicación:', idPublicacion);
+
+    const response = await api.get('/api/Ofrecimientos/filtros', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        idPublicacion: idPublicacion
+      }
+    });
+
+    console.log('Respuesta detalles del ofrecido:', response.data);
+    
+    const ofrecido = Array.isArray(response.data) 
+      ? response.data.find(o => o.id === idPublicacion)
+      : response.data;
+
+    return ofrecido;
+  } catch (error) {
+    console.error('Error al obtener detalles del ofrecido:', error);
     return null;
   }
 };
