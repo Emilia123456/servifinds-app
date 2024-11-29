@@ -16,13 +16,8 @@ export const login = async (email, password) => {
     });
 
     const token = response.data.token;
-    console.log('Token recibido:', token ? 'presente' : 'ausente');
-    
     if (token) {
       await AsyncStorage.setItem('token', token);
-      // Verificar que se guardó correctamente
-      const storedToken = await AsyncStorage.getItem('token');
-      console.log('Token almacenado correctamente:', storedToken === token);
     }
 
     return response.data;  
@@ -42,21 +37,24 @@ export const register = async (email, nombre, apellido, direccion, password, gen
       email: email, 
       nombre: nombre,
       apellido: apellido, 
-      direccion: direccion, 
+      direccion: direccion || '',
       contrasena: password,
       idGenero: genero, 
-      foto: foto, 
+      foto: foto || '',
       FechaNacimiento: fecha
     });
 
-    // Verificar si la respuesta es exitosa
     if (response.status === 201) {
       return response.data;  
     } else {
       throw new Error('Error en el registro: ' + response.statusText);
     }
   } catch (error) {
-    console.error('Error al registrar el usuario:', error);
+    console.error('Error al registrar el usuario:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
     throw error;  
   }
 };

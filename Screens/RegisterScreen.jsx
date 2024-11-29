@@ -1,46 +1,80 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Importar el DateTimePicker
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Importar un ícono para mostrar/ocultar contraseña
-import { register } from '../service/userService.js';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { register, login } from '../service/userService.js'; // Asegúrate de importar ambas funciones
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secondPassword, setSecondPassword] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
+  const [direccion, setDireccion] = useState('');
   const [fecha, setFecha] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); 
-  const [showSecondPassword, setShowSecondPassword] = useState(false); // Estado para la repetición de la contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSecondPassword, setShowSecondPassword] = useState(false);
 
   const handleRegister = async () => {
-    if (password !== secondPassword) {
+    if (password.trim() !== secondPassword.trim()) {
       Alert.alert("Las contraseñas no coinciden");
-    } else {
-      try {
-        console.log(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
-        const result = await register(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
-        console.log(result);
-        if (result>0) {
+      return;
+    }
+    if (!email.trim() || !nombre.trim() || !apellido.trim() || !password.trim()) {
+      Alert.alert("Por favor, completa todos los campos requeridos.");
+      return;
+    }
+
+    const requestData = {
+      email: email.trim(),
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      direccion: direccion.trim(),
+      contrasena: password.trim(),
+      idGenero: 1, // Valor predeterminado
+      foto: '', // Opcional
+      FechaNacimiento: fecha.toISOString().split('T')[0], // Formato 'YYYY-MM-DD'
+    };
+
+    try {
+      console.log("Datos a enviar:", requestData);
+      const result = await register(
+        requestData.email,
+        requestData.nombre,
+        requestData.apellido,
+        requestData.direccion,
+        requestData.contrasena,
+        requestData.idGenero,
+        requestData.foto,
+        requestData.FechaNacimiento
+      );
+      if (result && result.success) {
+        // Al registrar correctamente, iniciar sesión con las mismas credenciales
+        const loginResult = await login(email.trim(), password.trim());
+        
+        if (loginResult && loginResult.token) {
+          // Guardar el token en AsyncStorage o realizar la navegación
           navigation.navigate('Main');
           navigation.reset({
             index: 0,
             routes: [{ name: 'Main' }],
           });
         } else {
-          Alert.alert("Error", "No se pudo registrar, el usuario ya existe"); //porque el result te lo devolvio como -1
+          Alert.alert("Error", "No se pudo iniciar sesión automáticamente.");
         }
-      } catch (error) {
-        Alert.alert("Error", "Hubo un problema al registrarse.");
+      } else {
+        Alert.alert("Error", "No se pudo registrar, el usuario ya existe.");
       }
+    } catch (error) {
+      Alert.alert("Error", "Hubo un problema al registrarse. Por favor, inténtalo de nuevo.");
+      console.error("Error de registro:", error);
     }
   };
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || fecha;
-    setShowDatePicker(false); // Ocultar el DatePicker después de seleccionar la fecha
+    setShowDatePicker(false);
     setFecha(currentDate);
   };
 
@@ -57,7 +91,7 @@ export default function LoginScreen({ navigation }) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Nombre"
@@ -76,13 +110,22 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
       />
 
+      <TextInput
+        style={styles.input}
+        placeholder="Dirección (opcional)"
+        placeholderTextColor="#777"
+        value={direccion}
+        onChangeText={setDireccion}
+        autoCapitalize="none"
+      />
+
       <View style={styles.dateContainer}>
         <TextInput
           style={styles.dateInput}
           placeholder="Fecha de nacimiento"
           placeholderTextColor="#777"
           value={fecha ? fecha.toLocaleDateString() : ''}
-          editable={false} // No editable para que solo se cambie con el DatePicker
+          editable={false}
         />
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Icon name="event" size={24} color="#777" />
@@ -105,7 +148,7 @@ export default function LoginScreen({ navigation }) {
           placeholderTextColor="#777"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry={!showPassword} // Mostrar u ocultar la contraseña
+          secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Icon name={showPassword ? "visibility-off" : "visibility"} size={24} color="#777" />
@@ -119,7 +162,7 @@ export default function LoginScreen({ navigation }) {
           placeholderTextColor="#777"
           value={secondPassword}
           onChangeText={setSecondPassword}
-          secureTextEntry={!showSecondPassword} // Mostrar u ocultar la repetición de contraseña
+          secureTextEntry={!showSecondPassword}
         />
         <TouchableOpacity onPress={() => setShowSecondPassword(!showSecondPassword)}>
           <Icon name={showSecondPassword ? "visibility-off" : "visibility"} size={24} color="#777" />
