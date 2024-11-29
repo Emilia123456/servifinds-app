@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,14 +15,40 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createReserva } from '../service/bookingService';
 
 export default function DetailScreen({ route }) {
-  const {idOffer, seller, title, description, price, imageUri, rating} = route.params;
+  const {idOffer, seller, title, description, price, imageUrl, rating} = route.params;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
+  const BASE_URL = 'https://diverse-tightly-mongoose.ngrok-free.app';
 
   const [modalVisible, setModalVisible] = useState(false);
   const [fecha, setFecha] = useState('2024-11-02');
+  const [token, setToken] = useState(null);
 
-  const tok = AsyncStorage.getItem('token');
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const tokenData = await AsyncStorage.getItem('token');
+        console.log('Token raw:', tokenData);
+        
+        if(tokenData) {
+          if (typeof tokenData === 'object') {
+            setToken(tokenData);
+          } else {
+            try {
+              const parsedToken = JSON.parse(tokenData);
+              setToken(parsedToken);
+            } catch (parseError) {
+              console.error('Error parseando el token:', parseError);
+              setToken({ token: tokenData });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error al obtener el token:', error);
+      }
+    };
+    getToken();
+  }, []);
 
   const handleHire = async () => {
     setModalVisible(false);
@@ -56,8 +82,10 @@ export default function DetailScreen({ route }) {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Image
-          source={imageUri}
+          source={{ uri: `${BASE_URL}${imageUrl}` }}
           style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]}
+          onError={(e) => console.log('Error cargando imagen principal:', e.nativeEvent.error)}
+    
         />
 
         <View style={styles.detailsContainer}>
@@ -66,16 +94,22 @@ export default function DetailScreen({ route }) {
           <Text style={styles.productDescription}>{price}</Text>
           <Text style={styles.productDescription}>{rating}</Text>
           <View style={styles.sellerContainer}>
-            <Image source={{ uri: '../assets/propaganda.png' }} style={styles.sellerImage} />
+            <Image 
+              source={{ uri: `${BASE_URL}${seller?.imageUrl}` }}
+              onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
+              style={styles.sellerImage} 
+            />
             <View style={styles.sellerDetails}>
-              <Text style={styles.sellerName}>{tok.nombre} {tok.apellido} </Text>
+              <Text style={styles.sellerName}>
+                {token?.nombre} {token?.apellido}
+              </Text>
               <Text style={styles.sellerDescription}>Hola, soy el vendedor</Text>
             </View>
           </View>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.messageButton}>
-              <Text style={styles.buttonText}>Mensaje</Text>
+              <Text style={styles.buttonText}>Mensaje</Text> 
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.hireButton}

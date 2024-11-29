@@ -36,7 +36,6 @@ export const login = async (email, password) => {
   }
 };
 
-
 export const register = async (email, nombre, apellido, direccion, password, genero, foto, fecha) => {
   try {
     const response = await userApi.post('/users/register', {
@@ -48,15 +47,16 @@ export const register = async (email, nombre, apellido, direccion, password, gen
       idGenero: genero, 
       foto: foto, 
       FechaNacimiento: fecha
-
-
     });
-    //if (response.satatu = 201)
 
-    return response.data;  
+    // Verificar si la respuesta es exitosa
+    if (response.status === 201) {
+      return response.data;  
+    } else {
+      throw new Error('Error en el registro: ' + response.statusText);
+    }
   } catch (error) {
-    console.error('Error fetching data:', error);
-    console.error(error);
+    console.error('Error al registrar el usuario:', error);
     throw error;  
   }
 };

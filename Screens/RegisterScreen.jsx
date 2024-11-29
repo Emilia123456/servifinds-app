@@ -20,7 +20,9 @@ export default function LoginScreen({ navigation }) {
       Alert.alert("Las contraseñas no coinciden");
     } else {
       try {
+        console.log(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
         const result = await register(email, nombre, apellido, '', password, '1', '', fecha.toISOString());
+        console.log(result);
         if (result>0) {
           navigation.navigate('Main');
           navigation.reset({
