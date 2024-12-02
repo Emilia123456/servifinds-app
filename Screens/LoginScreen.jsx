@@ -11,7 +11,7 @@ export default function LoginScreen({ navigation }) {
     try {
       const response = await login(email, password);
       const token = await AsyncStorage.getItem('token');
-      console.log('Token guardado:', token ? 'presente' : 'ausente');
+      //console.log('Token guardado:', token ? 'presente' : 'ausente');
       
       if (response.success) {  
         navigation.navigate('Main');

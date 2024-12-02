@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { likeRecomendation } from '../service/favsService';
 
@@ -9,7 +9,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const handleLike = async (offerId) => {
     try {
       await likeRecomendation(offerId);
-      setLikedOffers(prev => {
+      setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
         return newSet;
@@ -20,141 +20,119 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Recomendaciones para ti</Text>
-      <View style={styles.grid}>
-        {recomendations.map((offer, index) => {
+      {recomendations.length > 0 ? (
+        recomendations.map((offer, index) => {
           if (!offer || typeof offer !== 'object') return null;
           const isLiked = likedOffers.has(offer.id);
 
           return (
             <TouchableOpacity
-              key={offer.id || index}
-              style={styles.card}
-              onPress={() => navigation.navigate('Detail', {
-                idOffer: offer.id,
-                title: offer.titulo || 'Sin título',
-                description: offer.descripcion || 'Sin descripción',
-                imageUri: offer.foto || offer.fotos?.[0],
-                rating: parseFloat(offer.promedio_calificacion) || 0,
-              })}
+              key={`recommendation-${offer.id || index}`}
+              style={styles.recommendationItem}
+              onPress={() =>
+                navigation.navigate('Detail', {
+                  idOffer: offer.id,
+                  title: offer.titulo || 'Sin título',
+                  description: offer.descripcion || 'Sin descripción',
+                  imageUri: offer.foto || offer.fotos?.[0],
+                  rating: parseFloat(offer.promedio_calificacion) || 0,
+                })
+              }
             >
-              <Image 
-                source={{ uri: offer.foto || offer.fotos?.[0] || 'https://via.placeholder.com/150' }} 
-                style={styles.image}
+              <Image
+                source={{
+                  uri: offer.foto || offer.fotos?.[0] || 'https://via.placeholder.com/150',
+                }}
+                style={styles.itemImage}
               />
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle} numberOfLines={1}>
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle} numberOfLines={1}>
                   {offer.titulo || 'Sin título'}
                 </Text>
-                <Text style={styles.description} numberOfLines={2}>
+                <Text style={styles.itemDescription} numberOfLines={2}>
                   {offer.descripcion || 'Sin descripción'}
                 </Text>
                 <View style={styles.footer}>
-                  <View style={styles.ratingContainer}>
-                    <Icon name="star" size={16} color="#FFD700" />
-                    <Text style={styles.rating}>
-                      {(parseFloat(offer.promedio_calificacion) || 0).toFixed(1)}
-                    </Text>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.likeButton}
+                  <Text style={styles.itemRating}>
+                    {`Calificación: ${(parseFloat(offer.promedio_calificacion) || 0).toFixed(1)}`}
+                  </Text>
+                  <TouchableOpacity
                     onPress={(e) => {
                       e.stopPropagation();
                       handleLike(offer.id);
                     }}
                   >
-                    <Icon 
-                      name={isLiked ? 'heart' : 'heart-o'} 
-                      size={18} 
-                      color={isLiked ? '#e74c3c' : '#7f8c8d'} 
+                    <Icon
+                      name={isLiked ? 'heart' : 'heart-o'}
+                      size={18}
+                      color={isLiked ? '#1B2E35' : '#7f8c8d'}
                     />
                   </TouchableOpacity>
                 </View>
               </View>
             </TouchableOpacity>
           );
-        })}
-      </View>
-    </View>
+        })
+      ) : (
+        <Text style={styles.emptyMessage}>No hay recomendaciones disponibles</Text>
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 16,
+    padding: 16,
     color: '#1B2E35',
+    marginTop: 50,
   },
-  grid: {
-    flexDirection: 'column',
-  },
-  card: {
-    width: '100%',
-    height: 140,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-    overflow: 'hidden',
+  recommendationItem: {
     flexDirection: 'row',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
-  image: {
+  itemImage: {
     width: 100,
-    height: '100%',
+    height: 100,
+    borderRadius: 8,
+    marginRight: 16,
   },
-  cardContent: {
+  itemContent: {
     flex: 1,
-    padding: 12,
     justifyContent: 'space-between',
   },
-  cardTitle: {
+  itemTitle: {
     fontSize: 16,
-    fontWeight: '600',
     color: '#1B2E35',
-    marginBottom: 4,
+    marginBottom: 8,
   },
-  description: {
-    fontSize: 13,
+  itemDescription: {
+    fontSize: 14,
     color: '#666',
     marginBottom: 8,
-    lineHeight: 18,
-    flex: 1,
+  },
+  itemRating: {
+    fontSize: 14,
+    color: '#446C64',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 'auto',
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  rating: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginLeft: 4,
-    color: '#1B2E35',
-  },
-  likeButton: {
-    padding: 6,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+  emptyMessage: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#666',
+    marginTop: 32,
   },
 });
 
