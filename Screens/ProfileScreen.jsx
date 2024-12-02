@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { getUserProfile, updateUserProfile} from '../service/userService'; 
 import * as ImagePicker from 'expo-image-picker'; 
 
@@ -40,22 +39,23 @@ export default function ProfileScreen({ navigation }) {
       alert('Se necesitan permisos para acceder a la galería');
       return;
     }
-
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
     });
-
+  
     if (!result.canceled) {
-      const selectedImageUri = result.assets[0].uri;
+      const selectedImageUri = result.assets[0].uri; 
       try {
-        const response = await updateUserProfile(selectedImageUri);
+        console.log(userProfile.email, selectedImageUri);
+        const response = await updateUserProfile(userProfile.email, selectedImageUri); 
         if (response.success) {
           setUserProfile((prevState) => ({
             ...prevState,
-            foto: selectedImageUri,
+            foto: selectedImageUri, 
           }));
         } else {
           alert('Error al cambiar la foto');

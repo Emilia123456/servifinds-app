@@ -79,38 +79,28 @@ export const getUserProfile = async () => {
   }
 };
 
-export const updateUserProfile = async (imageUri) => {
+export const updateUserProfile = async (email, imageUri) => {
+  console.log(imageUri)
   try {
     const token = await AsyncStorage.getItem('token');
     if (!token) {
       throw new Error('No hay token disponible');
     }
 
-    if (!imageUri) {
-      throw new Error('La URI de la imagen no es válida');
-    }
+    const response = await userApi.put('/users/profile/picture',
+      { email: email,
+        foto: imageUri }, 
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    const formData = new FormData();
-    formData.append('foto', {
-      uri: imageUri,
-      type: 'image/jpeg', // Adjust the MIME type based on the image type
-      name: 'profile-pic.jpg', // Optional: you can dynamically use the filename here
-    });
-
-    console.log('Sending profile picture to server with FormData: ', formData);
-
-    const response = await userApi.put('/users/profile/picture', formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('Server response:', response.data);
-    return response.data;  
-
+    return response.data;
   } catch (error) {
-    console.error('Error al actualizar la foto de perfil:', error.response ? error.response.data : error.message);
+    console.error('Error al actualizar la foto de perfil:', error);
     throw error;
   }
 };
