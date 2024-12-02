@@ -85,32 +85,29 @@ export default function DetailScreen({ route }) {
           source={{ uri: `${BASE_URL}${imageUrl}` }}
           style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]}
           onError={(e) => console.log('Error cargando imagen principal:', e.nativeEvent.error)}
-    
         />
-
+  
         <View style={styles.detailsContainer}>
           <Text style={styles.productName}>{title}</Text>
           <Text style={styles.productDescription}>{description}</Text>
           <Text style={styles.productDescription}>{price}</Text>
           <Text style={styles.productDescription}>{rating}</Text>
+          
           <View style={styles.sellerContainer}>
             <Image 
-              source={{ uri: `${BASE_URL}${seller?.imageUrl}` }}
+              source={{ uri: `${BASE_URL}${imageUrl}` }}
               onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
               style={styles.sellerImage} 
             />
             <View style={styles.sellerDetails}>
               <Text style={styles.sellerName}>
-                {token?.nombre} {token?.apellido}
+                {token?.nombre} {token?.apellido} {/* /*esto no funciona*/ }
               </Text>
               <Text style={styles.sellerDescription}>Hola, soy el vendedor</Text>
             </View>
           </View>
-
+  
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.messageButton}>
-              <Text style={styles.buttonText}>Mensaje</Text> 
-            </TouchableOpacity>
             <TouchableOpacity
               style={styles.hireButton}
               onPress={() => setModalVisible(true)}
@@ -119,20 +116,8 @@ export default function DetailScreen({ route }) {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.commentsSection}>
-          <Text style={styles.commentsTitle}>Comentarios</Text>
-          <View style={styles.comment}>
-            <Text style={styles.commentUser}>John Doe</Text>
-            <Text style={styles.commentText}>Excelente servicio</Text>
-          </View>
-          <View style={styles.comment}>
-            <Text style={styles.commentUser}>Jane Smith</Text>
-            <Text style={styles.commentText}>Muy recomendado</Text>
-          </View>
-        </View>
-      </View>
-
+      </View> {/* Cerrando el View principal */}
+  
       <Modal
         animationType="slide"
         transparent={true}
@@ -162,7 +147,7 @@ export default function DetailScreen({ route }) {
     </ScrollView>
   );
 }
-
+  
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,

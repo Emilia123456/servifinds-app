@@ -96,6 +96,24 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
+  const handleSearch = async (search) => {
+    try {
+      const response = await searchOffers({
+        categoria: categoryName
+      });
+      
+      if (response) {
+        const uniqueOffers = processOffers(response);
+        setCategOffers(uniqueOffers);
+      } else {
+        setCategOffers([]);
+      }
+    } catch (error) {
+      console.error('Error al buscar ofertas por categoría:', error);
+      setCategOffers([]);
+    }
+  };
+
   const handleLike = (index) => {
     const updatedLikes = [...likedRecommendations];
     updatedLikes[index] = !updatedLikes[index];
@@ -112,6 +130,7 @@ export default function SearchScreen({ navigation }) {
             placeholderTextColor="#777"
             onChangeText={text => setSearch(text)}
             style={styles.searchInput}
+            onPress={() => handleSearch(search)}
           />
         </View>
         
