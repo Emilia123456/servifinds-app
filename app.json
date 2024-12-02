@@ -2,6 +2,7 @@
   "expo": {
     "name": "servifinds-app",
     "slug": "servifinds-app",
+    "newArchEnabled": true,
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/LogoServifinds.png",

@@ -5,20 +5,23 @@ import { getLikedRecomendations } from '../service/favsService';
 const FavoriteScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    loadFavorites();
-  }, [favorites]);
-
+useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadFavorites();
+    });
+    return unsubscribe;
+  }, [navigation]);
+  
   const loadFavorites = async () => {
     try {
       const data = await getLikedRecomendations();
-      // Filtrar duplicados por ID
-      const uniqueFavorites = Array.from(new Map(data.map(item => [item.id, item])).values());
+      const uniqueFavorites = Array.from(new Map(data.map((item) => [item.id, item])).values());
       setFavorites(uniqueFavorites);
     } catch (error) {
       console.error('Error loading favorites:', error);
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>

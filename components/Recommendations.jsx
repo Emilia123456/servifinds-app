@@ -6,6 +6,20 @@ import { likeRecomendation } from '../service/favsService';
 const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const [likedOffers, setLikedOffers] = useState(new Set());
 
+  useEffect(() => {
+    // Cargar datos iniciales si se requiere sincronización desde el servidor.
+    const loadInitialLikes = async () => {
+      try {
+        const likedData = await getLikedRecomendations(); // Devuelve las recomendaciones likeadas
+        const likedIds = new Set(likedData.map((offer) => offer.id));
+        setLikedOffers(likedIds);
+      } catch (error) {
+        console.error('Error cargando los likes iniciales:', error);
+      }
+    };
+    loadInitialLikes();
+  }, []);
+
   const handleLike = async (offerId) => {
     try {
       await likeRecomendation(offerId);
@@ -30,7 +44,10 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
           return (
             <TouchableOpacity
               key={`recommendation-${offer.id || index}`}
-              style={styles.recommendationItem}
+              style={[
+                styles.recommendationItem,
+                isLiked && { backgroundColor: '#f5f5f5' }, // Opcional: Cambiar color si está likeado
+              ]}
               onPress={() =>
                 navigation.navigate('Detail', {
                   idOffer: offer.id,
@@ -67,7 +84,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                     <Icon
                       name={isLiked ? 'heart' : 'heart-o'}
                       size={18}
-                      color={isLiked ? '#1B2E35' : '#7f8c8d'}
+                      color={isLiked ? '#E63946' : '#7f8c8d'}
                     />
                   </TouchableOpacity>
                 </View>
@@ -81,6 +98,9 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
     </ScrollView>
   );
 };
+
+
+
 
 const styles = StyleSheet.create({
   container: {
