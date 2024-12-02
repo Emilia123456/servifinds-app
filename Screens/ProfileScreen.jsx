@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { getUserProfile } from '../service/userService';
+import { getUserProfile, updateUserProfile} from '../service/userService'; 
+import * as ImagePicker from 'expo-image-picker'; 
 
 export default function ProfileScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({});
@@ -33,15 +34,53 @@ export default function ProfileScreen({ navigation }) {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
+  const handleChangeProfilePicture = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Se necesitan permisos para acceder a la galería');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const selectedImageUri = result.assets[0].uri;
+      try {
+        const response = await updateUserProfile(selectedImageUri);
+        if (response.success) {
+          setUserProfile((prevState) => ({
+            ...prevState,
+            foto: selectedImageUri,
+          }));
+        } else {
+          alert('Error al cambiar la foto');
+        }
+      } catch (error) {
+        console.error('Error al actualizar la foto de perfil:', error);
+        alert('Hubo un error al actualizar la foto');
+      }
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
-
-      {/* Imagen del usuario */}
       <View style={styles.profileContainer}>
-        <Image 
-          source={userProfile.foto ? { uri: userProfile.foto } : require('../assets/jardineria-recomendaciones.jpg')} 
-          style={styles.profileImage} 
+        <Image
+          source={
+            userProfile.foto
+              ? { uri: userProfile.foto }
+              : require('../assets/usuario.png') 
+          }
+          style={styles.profileImage}
         />
+        <TouchableOpacity onPress={handleChangeProfilePicture} style={styles.changePictureButton}>
+          <Text style={styles.changePictureButtonText}>Cambiar Foto</Text>
+        </TouchableOpacity>
         <View style={styles.profileInfo}>
           <Text style={styles.profileName}>{`${userProfile.nombre} ${userProfile.apellido}`}</Text>
           <Text style={styles.profileEmail}>{userProfile.email}</Text>
@@ -49,7 +88,6 @@ export default function ProfileScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Botones de acciones */}
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.actionButton}>
           <Text style={styles.actionText}>Editar</Text>
@@ -59,26 +97,17 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Modal */}
-      <Modal 
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={closeModal}>
+      <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Publicar nuevo trabajo</Text>
-            <TouchableOpacity 
-              style={styles.closeButton}
-              onPress={closeModal}
-            >
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
               <Text style={styles.closeButtonText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Información adicional */}
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Text style={styles.infoTitle}>Información Personal</Text>
@@ -89,15 +118,14 @@ export default function ProfileScreen({ navigation }) {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4', // Fondo claro general
+    backgroundColor: '#f4f4f4', 
   },
   profileContainer: {
     alignItems: 'center',
-    marginTop: 40, // Separación superior
+    marginTop: 40, 
     marginBottom: 20,
   },
   profileImage: {
@@ -105,8 +133,19 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: '#446C64', // Borde del avatar
-    backgroundColor: '#e0e0e0', // Fondo gris si no hay imagen
+    borderColor: '#446C64', 
+    backgroundColor: '#e0e0e0', 
+  },
+  changePictureButton: {
+    marginTop: 10,
+    backgroundColor: '#446C64',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  changePictureButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   profileName: {
     fontSize: 20,
@@ -117,6 +156,11 @@ const styles = StyleSheet.create({
   profileEmail: {
     fontSize: 14,
     color: '#666',
+    marginTop: 5,
+  },
+  profileStatus: {
+    fontSize: 14,
+    color: '#888',
     marginTop: 5,
   },
   actionsContainer: {

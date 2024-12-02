@@ -1,0 +1,4 @@
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Necesitamos acceder a tu galería de fotos para que puedas elegir una imagen de perfil.</string>
+<key>NSCameraUsageDescription</key>
+<string>Necesitamos acceder a tu cámara para que puedas tomar una foto de perfil.</string>

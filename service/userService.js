@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+
 const userApi = axios.create({
   baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
 export const login = async (email, password) => {
   try {
     const response = await userApi.post('/users/login', {
@@ -30,7 +30,6 @@ export const login = async (email, password) => {
     throw error; 
   }
 };
-
 export const register = async (email, nombre, apellido, direccion, password, genero, foto, fecha) => {
   try {
     const response = await userApi.post('/users/register', {
@@ -59,27 +58,6 @@ export const register = async (email, nombre, apellido, direccion, password, gen
   }
 };
 
-export const getUserId = async () => {
-  try {
-    const token = await AsyncStorage.getItem('token');
-    if (!token) {
-      throw new Error('No hay token disponible');
-    }
-
-    const response = await userApi.get('/users/profile', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }
-    });
-
-    return response.data.id;
-  } catch (error) {
-    console.error('Error al obtener ID del usuario:', error);
-    throw error;
-  }
-};
-
 export const getUserProfile = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
@@ -97,6 +75,42 @@ export const getUserProfile = async () => {
     return response.data;
   } catch (error) {
     console.error('Error al obtener perfil del usuario:', error);
+    throw error;
+  }
+};
+
+export const updateUserProfile = async (imageUri) => {
+  try {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      throw new Error('No hay token disponible');
+    }
+
+    if (!imageUri) {
+      throw new Error('La URI de la imagen no es válida');
+    }
+
+    const formData = new FormData();
+    formData.append('foto', {
+      uri: imageUri,
+      type: 'image/jpeg', // Adjust the MIME type based on the image type
+      name: 'profile-pic.jpg', // Optional: you can dynamically use the filename here
+    });
+
+    console.log('Sending profile picture to server with FormData: ', formData);
+
+    const response = await userApi.put('/users/profile/picture', formData, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log('Server response:', response.data);
+    return response.data;  
+
+  } catch (error) {
+    console.error('Error al actualizar la foto de perfil:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
