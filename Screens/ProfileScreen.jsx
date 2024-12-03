@@ -1,19 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Modal, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { getUserProfile, updateUserProfile} from '../service/userService'; 
-import * as ImagePicker from 'expo-image-picker'; 
+import React, { useState, useEffect } from "react";
+import {
+  Image,
+  View,
+  Text,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { getUserProfile, updateUserProfile } from "../service/userService";
+import * as ImagePicker from "expo-image-picker";
+import { getCategories } from "../service/offersService";
+import { SelectList } from "react-native-dropdown-select-list";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfileScreen({ navigation }) {
   const [likedRecommendations, setLikedRecommendations] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [userProfile, setUserProfile] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    direccion: '',
-    foto: '',
-    FechaNacimiento: '',
+    nombre: "",
+    apellido: "",
+    email: "",
+    direccion: "",
+    foto: "",
+    FechaNacimiento: "",
   });
+
+  const [newJob, setNewJob] = useState({
+    titulo: "",
+    descripcion: "",
+    precio: "",
+    categoria: "",
+    tags: "",
+  });
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const categoriesData = await getCategories();
+        if (Array.isArray(categoriesData)) {
+          const formattedCategories = categoriesData.map((category) => ({
+            key: category.id,
+            value: category.nombre,
+          }));
+          setCategories(formattedCategories);
+        } else if (categoriesData?.data) {
+          const formattedCategories = categoriesData.data.map((category) => ({
+            key: category.id,
+            value: category.nombre,
+          }));
+          setCategories(formattedCategories);
+        } else {
+          console.error("Formato de categorías inesperado:", categoriesData);
+        }
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    };
+
+    loadData();
+  }, []);
+  const API_URL = "https://diverse-tightly-mongoose.ngrok-free.app";
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -23,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
           setUserProfile(profileData);
         }
       } catch (error) {
-        console.error('Error al obtener el perfil:', error);
+        console.error("Error al obtener el perfil:", error);
       }
     };
 
@@ -33,36 +83,86 @@ export default function ProfileScreen({ navigation }) {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const handleChangeProfilePicture = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Se necesitan permisos para acceder a la galería');
+  const handleInputChange = (name, value) => {
+    setNewJob({ ...newJob, [name]: value });
+  };
+
+  const handlePublishJob = async () => {
+    if (!newJob.descripcion || !newJob.precio || !newJob.idcategoria || !newJob.titulo) {
+      alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
   
+    try {
+      const token = await AsyncStorage.getItem("token");
+  
+      if (!token) {
+        alert("No se encontró un token de autenticación. Por favor, inicia sesión.");
+        return;
+      }
+  
+      const response = await fetch(`${API_URL}/api/Ofrecimientos/ofrecidos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          titulo: newJob.titulo,  // Solo enviar el título, descripción, precio, etc.
+          descripcion: newJob.descripcion,
+          precio: parseFloat(newJob.precio),
+          idcategoria: newJob.idcategoria,
+          tags: newJob.tags,  // Los tags como string
+        }),
+      });
+  
+      if (response.ok) {
+        alert("Trabajo publicado con éxito.");
+        setNewJob({ titulo: "", descripcion: "", precio: "", idcategoria: "", tags: "" });
+        closeModal();
+      } else {
+        const errorData = await response.json();
+        console.error("Error al publicar trabajo:", errorData);
+        alert(`Error al publicar: ${errorData.errors.map((e) => e.msg).join(", ")}`);
+      }
+    } catch (error) {
+      console.error("Error al enviar datos al servidor:", error);
+      alert("No se pudo conectar al servidor. Inténtalo más tarde.");
+    }
+  };
+
+  const handleChangeProfilePicture = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Se necesitan permisos para acceder a la galería");
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
     });
-  
+
     if (!result.canceled) {
-      const selectedImageUri = result.assets[0].uri; 
+      const selectedImageUri = result.assets[0].uri;
       try {
-        console.log(userProfile.email, selectedImageUri);
-        const response = await updateUserProfile(userProfile.email, selectedImageUri); 
+        const response = await updateUserProfile(
+          userProfile.email,
+          selectedImageUri
+        );
         if (response.success) {
           setUserProfile((prevState) => ({
             ...prevState,
-            foto: selectedImageUri, 
+            foto: selectedImageUri,
           }));
         } else {
-          alert('Error al cambiar la foto');
+          alert("Error al cambiar la foto");
         }
       } catch (error) {
-        console.error('Error al actualizar la foto de perfil:', error);
-        alert('Hubo un error al actualizar la foto');
+        console.error("Error al actualizar la foto de perfil:", error);
+        alert("Hubo un error al actualizar la foto");
       }
     }
   };
@@ -74,15 +174,20 @@ export default function ProfileScreen({ navigation }) {
           source={
             userProfile.foto
               ? { uri: userProfile.foto }
-              : require('../assets/usuario.png') 
+              : require("../assets/usuario.png")
           }
           style={styles.profileImage}
         />
-        <TouchableOpacity onPress={handleChangeProfilePicture} style={styles.changePictureButton}>
+        <TouchableOpacity
+          onPress={handleChangeProfilePicture}
+          style={styles.changePictureButton}
+        >
           <Text style={styles.changePictureButtonText}>Cambiar Foto</Text>
         </TouchableOpacity>
         <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>{`${userProfile.nombre} ${userProfile.apellido}`}</Text>
+          <Text
+            style={styles.profileName}
+          >{`${userProfile.nombre} ${userProfile.apellido}`}</Text>
           <Text style={styles.profileEmail}>{userProfile.email}</Text>
           <Text style={styles.profileStatus}>{userProfile.direccion}</Text>
         </View>
@@ -97,10 +202,71 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={closeModal}>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Publicar nuevo trabajo</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Título del trabajo"
+              placeholderTextColor="#888"
+              value={newJob.titulo}
+              onChangeText={(value) => setNewJob({ ...newJob, titulo: value })}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Descripción del trabajo"
+              placeholderTextColor="#888"
+              value={newJob.descripcion}
+              onChangeText={(value) => handleInputChange("descripcion", value)}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Precio"
+              placeholderTextColor="#888"
+              value={newJob.precio}
+              keyboardType="numeric"
+              onChangeText={(value) =>
+                handleInputChange("precio", value.replace(/[^0-9.]/g, ""))
+              }
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Tags (separados por comas)"
+              placeholderTextColor="#888"
+              value={newJob.tags}
+              onChangeText={(value) => setNewJob({ ...newJob, tags: value })}
+            />
+
+            <SelectList
+              setSelected={(val) => {
+                const selectedCategory = categories.find(
+                  (category) => category.value === val
+                );
+                if (selectedCategory) {
+                  setNewJob({ ...newJob, idcategoria: selectedCategory.key });
+                }
+              }}
+              data={categories}
+              save="value"
+              placeholder="Selecciona una categoría"
+            />
+
+            <TouchableOpacity
+              style={styles.publishButton}
+              onPress={handlePublishJob}
+            >
+              <Text style={styles.publishButtonText}>Publicar</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
               <Text style={styles.closeButtonText}>Cerrar</Text>
             </TouchableOpacity>
@@ -111,8 +277,13 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Text style={styles.infoTitle}>Información Personal</Text>
-          <Text style={styles.infoText}>Fecha de Nacimiento: {new Date(userProfile.FechaNacimiento).toLocaleDateString()}</Text>
-          <Text style={styles.infoText}>Dirección: {userProfile.direccion}</Text>
+          <Text style={styles.infoText}>
+            Fecha de Nacimiento:{" "}
+            {new Date(userProfile.FechaNacimiento).toLocaleDateString()}
+          </Text>
+          <Text style={styles.infoText}>
+            Dirección: {userProfile.direccion}
+          </Text>
         </View>
       </View>
     </ScrollView>
@@ -121,11 +292,11 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4', 
+    backgroundColor: "#f4f4f4",
   },
   profileContainer: {
-    alignItems: 'center',
-    marginTop: 40, 
+    alignItems: "center",
+    marginTop: 40,
     marginBottom: 20,
   },
   profileImage: {
@@ -133,57 +304,65 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: '#446C64', 
-    backgroundColor: '#e0e0e0', 
+    borderColor: "#446C64",
+    backgroundColor: "#e0e0e0",
+  },
+  input: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: 15,
+    padding: 5,
+    fontSize: 16,
   },
   changePictureButton: {
     marginTop: 10,
-    backgroundColor: '#446C64',
+    backgroundColor: "#446C64",
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 5,
   },
   changePictureButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   profileName: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginTop: 10,
   },
   profileEmail: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 5,
   },
   profileStatus: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
     marginTop: 5,
   },
   actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginTop: 30,
     paddingHorizontal: 20,
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#446C64',
+    backgroundColor: "#446C64",
     paddingVertical: 12,
     marginHorizontal: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   actionText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 14,
   },
   infoContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginHorizontal: 20,
     borderRadius: 5,
     padding: 15,
@@ -191,42 +370,74 @@ const styles = StyleSheet.create({
   },
   infoTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1B2E35',
+    fontWeight: "bold",
+    color: "#1B2E35",
     marginBottom: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: '90%',
+    width: "90%",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1B2E35',
+    fontWeight: "bold",
+    color: "#1B2E35",
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   closeButton: {
-    backgroundColor: '#446C64',
+    backgroundColor: "#446C64",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 15,
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+  },
+  selectBox: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+  },
+  selectDropdown: {
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  selectInput: {
+    fontSize: 16,
+    color: "#333",
+  },
+  publishButton: {
+    backgroundColor: "#446C64",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 15,
+  },
+  publishButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

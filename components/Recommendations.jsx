@@ -22,7 +22,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   const handleLike = async (offerId) => {
     try {
-      await getLikedRecomendations(offerId);
+      await getLikedRecomendati-ons(offerId);
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
