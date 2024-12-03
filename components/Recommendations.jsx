@@ -8,13 +8,12 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const [likedOffers, setLikedOffers] = useState(new Set());
 
   useEffect(() => {
-    // Cargar datos iniciales si se requiere sincronización desde el servidor.
     const loadInitialLikes = async () => {
       try {
-        const likedData = await getLikedRecomendations(); // Devuelve las recomendaciones likeadas
+        const likedData = await getLikedRecomendations();
         const likedIds = new Set(likedData.map((offer) => offer.id));
         setLikedOffers(likedIds);
-      } catch (error) { 
+      } catch (error) {
         console.error('Error cargando los likes iniciales:', error);
       }
     };
@@ -24,7 +23,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const handleLike = async (offerId) => {
     try {
       await getLikedRecomendations(offerId);
-      await likeRecomendation(offerId); // Usar la función específica para like
+      await likeRecomendation(offerId);
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
@@ -34,7 +33,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
       console.error('Error al dar like:', error);
     }
   };
-  
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Recomendaciones para ti</Text>
@@ -48,14 +47,13 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
               key={`recommendation-${offer.id || index}`}
               style={[
                 styles.recommendationItem,
-                isLiked && { backgroundColor: '#f5f5f5' }, // Opcional: Cambiar color si está likeado
+                isLiked && { backgroundColor: '#f5f5f5' }, // Color si está likeado
               ]}
               onPress={() =>
                 navigation.navigate('Detail', {
                   idOffer: offer.id,
                   seller: {
-                    id: offer.idProveedor, // asegurarte de pasar el ID correcto
-                    // otras propiedades del vendedor si es necesario
+                    id: offer.idProveedor,
                   },
                   title: offer.titulo || 'Sin título',
                   description: offer.descripcion || 'Sin descripción',
@@ -63,12 +61,10 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                   rating: parseFloat(offer.promedio_calificacion) || 0,
                 })
               }
-              
-              
             >
               <Image
                 source={{
-                  uri: offer.foto || offer.fotos?.[0] || 'https://via.placeholder.com/150',
+                  uri: offer.foto || offer.fotos?.[0] || 'https://via.placeholder.com/300',
                 }}
                 style={styles.itemImage}
               />
@@ -91,7 +87,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                   >
                     <Icon
                       name={isLiked ? 'heart' : 'heart-o'}
-                      size={18}
+                      size={20}
                       color={isLiked ? '#E63946' : '#7f8c8d'}
                     />
                   </TouchableOpacity>
@@ -107,31 +103,34 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 20,
-    padding: 16,
+    fontSize: 18,
     color: '#1B2E35',
-    marginTop: 50,
+    marginTop: 10,
+    marginBottom: 16,
+    paddingHorizontal: 16,
   },
   recommendationItem: {
     flexDirection: 'row',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    margin:15,
+    borderRadius: 20,
+    marginVertical: 6,
+    backgroundColor: '#f7f7f7', // Fondo blanco
   },
   itemImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+    width: 120, // Hacemos la imagen más grande
+    height: 120,
+    borderRadius: 12,
     marginRight: 16,
+    resizeMode: 'cover', // Asegura que la imagen se recorte correctamente
+    borderColor: '#e0e0e0', // Añadimos un borde suave
+    borderWidth: 1, // Borde delgado para un look más profesional
   },
   itemContent: {
     flex: 1,
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 16,
     color: '#1B2E35',
-    marginBottom: 8,
+    marginBottom: 0,
   },
   itemDescription: {
     fontSize: 14,

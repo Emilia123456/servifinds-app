@@ -151,6 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
     height: 80, // Hace más grande el contenedor del tabBar
     borderTopWidth: 0,
+    borderTopEndRadius:40,
+    borderTopStartRadius:40,
     elevation: 0,
     paddingBottom: 10, // Más espacio abajo
   },
