@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { getCategories, searchOffers, getByCategories, getRecomendations } from '../service/offersService'; 
 import RecommendationsComponent from '../components/Recommendations';
 
@@ -24,8 +23,6 @@ export default function SearchScreen({ navigation }) {
     const loadData = async () => {
       try {
         const categoriesData = await getCategories();
-        console.log('Categorías recibidas:', categoriesData); // Debug log
-        
         if (Array.isArray(categoriesData)) {
           setCategories(categoriesData);
         } else if (categoriesData?.data) {
@@ -37,7 +34,7 @@ export default function SearchScreen({ navigation }) {
         const offersData = await searchOffers({
           mayorPromedio: "1"
         });
-        
+
         if (offersData) {
           const processedOffers = processOffers(offersData);
           setCategOffers(processedOffers);
@@ -50,27 +47,33 @@ export default function SearchScreen({ navigation }) {
     loadData();
   }, []);
 
+  useEffect(() => {
+    // Si hay texto en el campo de búsqueda, realiza la búsqueda
+    if (search) {
+      handleSearch(search);
+    } else {
+      // Si el campo está vacío, no hacer nada o mostrar todas las ofertas
+      setCategOffers([]);
+    }
+  }, [search]);  // Dependemos de 'search' para que se ejecute cada vez que cambie el texto
+
   const processOffers = (offers) => {
-    // Verificar que offers sea un array válido
     if (!Array.isArray(offers)) {
       console.log('No hay ofertas para procesar');
       return [];
     }
 
-    // Crear un objeto para almacenar ofertas únicas
     const uniqueOffers = {};
 
     offers.forEach(offer => {
-      if (!offer || !offer.id) return; // Skip si la oferta no es válida
+      if (!offer || !offer.id) return;
 
       if (!uniqueOffers[offer.id]) {
-        // Primera vez que vemos esta oferta
         uniqueOffers[offer.id] = {
           ...offer,
           fotos: offer.foto ? [offer.foto] : []
         };
       } else if (offer.foto && !uniqueOffers[offer.id].fotos.includes(offer.foto)) {
-        // Agregar nueva foto si no existe
         uniqueOffers[offer.id].fotos.push(offer.foto);
       }
     });
@@ -83,7 +86,7 @@ export default function SearchScreen({ navigation }) {
       const response = await searchOffers({
         categoria: categoryName
       });
-      
+
       if (response) {
         const uniqueOffers = processOffers(response);
         setCategOffers(uniqueOffers);
@@ -96,20 +99,20 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
-  const handleSearch = async (search) => {
+  const handleSearch = async (searchText) => {
     try {
       const response = await searchOffers({
-        categoria: categoryName
+        busqueda: searchText
       });
-      
+
       if (response) {
         const uniqueOffers = processOffers(response);
-        setCategOffers(uniqueOffers);
+        setCategOffers(uniqueOffers); // Actualizamos las ofertas
       } else {
         setCategOffers([]);
       }
     } catch (error) {
-      console.error('Error al buscar ofertas por categoría:', error);
+      console.error('Error al buscar ofertas:', error);
       setCategOffers([]);
     }
   };
@@ -128,28 +131,26 @@ export default function SearchScreen({ navigation }) {
             value={search}
             placeholder="Buscar"
             placeholderTextColor="#777"
-            onChangeText={text => setSearch(text)}
+            onChangeText={text => setSearch(text)}  // Cambiar el texto actual de búsqueda
             style={styles.searchInput}
-            onPress={() => handleSearch(search)}
           />
         </View>
         
         <ScrollView horizontal style={styles.filterContainer} showsHorizontalScrollIndicator={false}>
-            {console.log('Estado actual de categories:', categories)} {/* Debug log */}
             {categories && categories.length > 0 ? (
               categories.map((category, index) => (
-              <TouchableOpacity key={category.id || index} style={styles.categoryItem} onPress={() => handleCategoryPress(category.nombre)}>
-                <Image
-                  source={{ uri: `${BASE_URL}${category.imageURL}` }}
-                  style={styles.filterImage}
-                  onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
-                />
-                <Text style={styles.filterText}>{category.nombre}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={styles.loadingText}>Cargando categorías...</Text>
-          )}
+                <TouchableOpacity key={category.id || index} style={styles.categoryItem} onPress={() => handleCategoryPress(category.nombre)}>
+                  <Image
+                    source={{ uri: `${BASE_URL}${category.imageURL}` }}
+                    style={styles.filterImage}
+                    onError={(e) => console.log('Error cargando imagen:', e.nativeEvent.error)}
+                  />
+                  <Text style={styles.filterText}>{category.nombre}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.loadingText}>Cargando categorías...</Text>
+            )}
         </ScrollView>
       </View>
       

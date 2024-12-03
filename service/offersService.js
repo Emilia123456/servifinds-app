@@ -9,8 +9,6 @@ const ofrecidosApi = axios.create({
 });
 
 
-
-
 export const searchOffers = async (params = {}) => {
   try {
     const token = await AsyncStorage.getItem('token');
