@@ -23,11 +23,8 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   const handleLike = async (offerId) => {
     try {
-<<<<<<< HEAD
-      await getLikedRecomendati-ons(offerId);
-=======
+      await getLikedRecomendations(offerId);
       await likeRecomendation(offerId); // Usar la función específica para like
->>>>>>> 034fdd206da12f56fb55f6280956d140f92bcc06
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
