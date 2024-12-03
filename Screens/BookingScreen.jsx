@@ -124,10 +124,7 @@ const BookingScreen = () => {
                   </>
                 )}
                 <View style={styles.statusContainer}>
-                  <Text style={[
-                    styles.statusText,
-                    { color: ofrecido.idEstado === 1 ? '#FFA500' : '#4CAF50' }
-                  ]}>
+                  <Text style={[styles.statusText, { color: ofrecido.idEstado === 1 ? '#FFA500' : '#4CAF50' }]}>
                     {ofrecido.idEstado === 1 ? '⏳ Pendiente' : '✓ Completado'}
                   </Text>
                 </View>
@@ -143,6 +140,40 @@ const BookingScreen = () => {
           </View>
         )}
       </ScrollView>
+
+      {/* Modal for Calendar */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showCalendar}
+        onRequestClose={toggleCalendar}
+      >
+        <View style={styles.modalBackground}>
+          <Animated.View
+            style={[
+              styles.calendarContainer,
+              {
+                transform: [{ scale: animatedScale }],
+                opacity: animatedOpacity,
+              },
+            ]}
+          >
+            <Calendar
+              current={selectedDate}
+              onDayPress={(day) => {
+                setSelectedDate(day.dateString);
+                toggleCalendar();
+              }}
+              markedDates={{
+                [selectedDate]: { selected: true, selectedColor: '#007AFF' },
+              }}
+            />
+            <TouchableOpacity style={styles.closeButton} onPress={toggleCalendar}>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -5,7 +5,6 @@ import { searchOffers } from '../service/offersService.js';
 import SearchScreen from '../screens/SearchScreen.jsx';
 import FilterComponent from '../components/Filter.jsx';
 import RecommendationsComponent from '../components/Recommendations.jsx';
-import HamburgerMenu from '../components/HamburguerMenu.jsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { getUserProfile } from '../service/userService';
