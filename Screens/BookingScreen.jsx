@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Animated, Easing, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Animated,
+  Easing,
+  ScrollView,
+} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,6 +19,8 @@ const BookingScreen = () => {
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
   const [ofrecidos, setOfrecidos] = useState([]);
   const [ofrecidosDetalles, setOfrecidosDetalles] = useState({});
+  const [cancelModalVisible, setCancelModalVisible] = useState(false);
+  const [cancelingId, setCancelingId] = useState(null);
   const [animation] = useState(new Animated.Value(0));
 
   const daysOfWeek = getRemainingDaysOfCurrentWeek();
@@ -42,7 +53,7 @@ const BookingScreen = () => {
     try {
       const data = await fetchOfrecidosPorFecha(fecha);
       setOfrecidos(Array.isArray(data) ? data : []);
-      
+
       const detalles = {};
       for (const reserva of data) {
         if (reserva.idPublicacion) {
@@ -52,15 +63,38 @@ const BookingScreen = () => {
           }
         }
       }
-      
+
       setOfrecidosDetalles(detalles);
     } catch (error) {
       setOfrecidos([]);
     }
   };
 
+  const handleCancel = (id) => {
+    setCancelModalVisible(true);
+    setCancelingId(id);
+  };
+
+  const confirmCancel = () => {
+    setOfrecidos((prev) =>
+      prev.map((item) =>
+        item.id === cancelingId ? { ...item, estado: 'Cancelado' } : item
+      )
+    );
+    setCancelModalVisible(false);
+    setCancelingId(null);
+  };
+
+  const renderEstado = (fecha, estado) => {
+    const today = moment().format('YYYY-MM-DD');
+    if (estado === 'Cancelado') return '❌ Cancelado';
+    if (moment(fecha).isBefore(today)) return '✅ Completado';
+    return '⏳ Pendiente';
+  };
+
   return (
     <View style={styles.safeArea}>
+      {/* Header con la barra de días de la semana */}
       <View style={styles.header}>
         <Text style={styles.title}>Selecciona una fecha</Text>
         <View style={styles.weekContainer}>
@@ -77,21 +111,32 @@ const BookingScreen = () => {
                   selectedDate === day.dateString && styles.selectedDayButton,
                 ]}
               >
-                <Text style={[styles.dayText, selectedDate === day.dateString && styles.selectedDayText]}>
+                <Text
+                  style={[
+                    styles.dayText,
+                    selectedDate === day.dateString && styles.selectedDayText,
+                  ]}
+                >
                   {day.weekday}
                 </Text>
-                <Text style={[styles.dayNumber, selectedDate === day.dateString && styles.selectedDayText]}>
+                <Text
+                  style={[
+                    styles.dayNumber,
+                    selectedDate === day.dateString && styles.selectedDayText,
+                  ]}
+                >
                   {day.day}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
           <TouchableOpacity style={styles.openButton} onPress={toggleCalendar}>
-            <Icon name="add" size={30} color="white" />
+            <Icon name="calendar" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
 
+      {/* Lista de ofrecidos */}
       <ScrollView style={styles.ofrecidosContainer}>
         {ofrecidos.length > 0 ? (
           ofrecidos.map((ofrecido) => {
@@ -118,16 +163,22 @@ const BookingScreen = () => {
                     <View style={styles.ofrecidoInfo}>
                       <Icon name="person-outline" size={16} color="#666" />
                       <Text style={styles.ofrecidoDetails}>
-                        Proveedor: {detalle.nombreProveedor || 'Proveedor no especificado'}
+                        Proveedor: {detalle.nombreProveedor || 'No especificado'}
                       </Text>
                     </View>
                   </>
                 )}
                 <View style={styles.statusContainer}>
-                  <Text style={[styles.statusText, { color: ofrecido.idEstado === 1 ? '#FFA500' : '#4CAF50' }]}>
-                    {ofrecido.idEstado === 1 ? '⏳ Pendiente' : '✓ Completado'}
+                  <Text style={styles.statusText}>
+                    {renderEstado(ofrecido.fechaReservada, ofrecido.estado)}
                   </Text>
                 </View>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => handleCancel(ofrecido.id)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancelar</Text>
+                </TouchableOpacity>
               </View>
             );
           })
@@ -141,37 +192,30 @@ const BookingScreen = () => {
         )}
       </ScrollView>
 
-      {/* Modal for Calendar */}
+      {/* Modal para cancelar */}
       <Modal
-        animationType="fade"
-        transparent={true}
-        visible={showCalendar}
-        onRequestClose={toggleCalendar}
+        transparent
+        visible={cancelModalVisible}
+        onRequestClose={() => setCancelModalVisible(false)}
       >
         <View style={styles.modalBackground}>
-          <Animated.View
-            style={[
-              styles.calendarContainer,
-              {
-                transform: [{ scale: animatedScale }],
-                opacity: animatedOpacity,
-              },
-            ]}
-          >
-            <Calendar
-              current={selectedDate}
-              onDayPress={(day) => {
-                setSelectedDate(day.dateString);
-                toggleCalendar();
-              }}
-              markedDates={{
-                [selectedDate]: { selected: true, selectedColor: '#007AFF' },
-              }}
-            />
-            <TouchableOpacity style={styles.closeButton} onPress={toggleCalendar}>
-              <Text style={styles.closeButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </Animated.View>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>¿Seguro que quieres cancelar?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButtonConfirm}
+                onPress={confirmCancel}
+              >
+                <Text style={styles.modalButtonText}>Sí</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButtonCancel}
+                onPress={() => setCancelModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </View>

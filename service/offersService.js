@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ofrecidosApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api', 
+  baseURL: 'http://yuke.ddns.net:3101/api', 
   headers: {
     'Content-Type': 'application/json',
   },

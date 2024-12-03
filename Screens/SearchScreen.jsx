@@ -206,23 +206,12 @@ const styles = StyleSheet.create({
   categoryItem: {
     alignItems: 'center',
     marginRight: 16,
-    backgroundColor: '#ffffff',
     padding: 12,
-    borderRadius: 12,
     width: 90,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 3,
   },
   filterImage: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: 30,
+    height: 30,
     marginBottom: 8,
   },
   filterText: {

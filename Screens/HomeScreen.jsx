@@ -88,9 +88,6 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.subtitle}>¿Qué servicio contratarás hoy?</Text>
         </View>
         
-        <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={styles.notificationContainer}>
-          <Image source={require('../assets/notificacion.png')} style={styles.notificationIcon} />
-        </TouchableOpacity>
       </View>
       <View style={styles.propagandaContainer}>
         <View style={styles.promoOverlay}>
@@ -159,23 +156,25 @@ const styles = StyleSheet.create({
     
   },
   subtitle: {
-    fontSize: 14,
-    color: '#8a8888',
+    fontSize: 20,
+    color: '#1B2E35',
     textAlign: 'left',
-    padding: 5,
+    padding: 10,
+    flexDirection: 'column',
+    marginTop: -10,
     fontWeight: 'normal',
   },
   logo: {
     fontSize: 24,
     color: '#1B2E35',
     textAlign: 'left',
-    padding: 5,
+    padding: 10,
     flexDirection: 'column',
     marginTop: 10,
     fontWeight: 'normal',
   },
   propagandaContainer: {
-    marginVertical: 15,
+
     alignItems: 'center',
   },
   imageWrapper: {
@@ -187,6 +186,7 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 30,
     elevation: 4,
+    padding:5,
   },
     promoOverlay: {
       position: 'absolute',

@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const favsApi = axios.create({
-  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api/Favoritos',
+  baseURL: 'http://yuke.ddns.net:3101/api/Favoritos',
   headers: {
     'Content-Type': 'application/json',
   },

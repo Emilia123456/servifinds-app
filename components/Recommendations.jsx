@@ -88,7 +88,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
                     <Icon
                       name={isLiked ? 'heart' : 'heart-o'}
                       size={20}
-                      color={isLiked ? '#E63946' : '#7f8c8d'}
+                      color={isLiked ? '#1B2E35' : '#1B2E35'}
                     />
                   </TouchableOpacity>
                 </View>
@@ -109,28 +109,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#1B2E35',
-    marginTop: 10,
-    marginBottom: 16,
-    paddingHorizontal: 16,
+    textAlign: 'left',
+    padding: 30,
+    paddingBottom:10,
+    flexDirection: 'column',
+    fontWeight: 'normal',
   },
   recommendationItem: {
     flexDirection: 'row',
     padding: 16,
-    margin:15,
-    borderRadius: 20,
+    marginHorizontal: 16,
     marginVertical: 6,
-    backgroundColor: '#FaFaFa', // Fondo blanco
+    borderRadius: 12,
+    backgroundColor: '#f8f9fa',
+
   },
   itemImage: {
-    width: 120, // Hacemos la imagen más grande
-    height: 120,
-    borderRadius: 12,
+    width: 140,
+    height: 100,
+    borderRadius: 8,
     marginRight: 16,
-    resizeMode: 'cover', // Asegura que la imagen se recorte correctamente
-    borderColor: '#e0e0e0', // Añadimos un borde suave
-    borderWidth: 1, // Borde delgado para un look más profesional
+    resizeMode: 'cover',
   },
   itemContent: {
     flex: 1,
@@ -138,28 +139,31 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 16,
-    color: '#1B2E35',
-    marginBottom: 0,
+    color: '#000',
+    marginBottom: 4,
   },
   itemDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#4a4a4a',
     marginBottom: 8,
   },
   itemRating: {
     fontSize: 14,
+    fontWeight: '500',
     color: '#446C64',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 8,
   },
   emptyMessage: {
     textAlign: 'center',
     fontSize: 16,
     color: '#666',
     marginTop: 32,
+    fontStyle: 'italic',
   },
 });
 
