@@ -13,12 +13,13 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createReserva } from '../service/bookingService';
+import { getSellerInfo } from '../service/userService';
 
 export default function DetailScreen({ route }) {
-  const { idOffer, seller, title, description, imageUri, rating } = route.params; 
+  const { idOffer, seller, title, description, imageUri, rating } = route.params;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
-  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [fecha, setFecha] = useState(() => {
     const today = new Date();
@@ -26,28 +27,25 @@ export default function DetailScreen({ route }) {
     tomorrow.setDate(today.getDate() + 1);
     return tomorrow.toISOString().split('T')[0];
   });
-  const [token, setToken] = useState(null);
+  const [sellerInfo, setSellerInfo] = useState(null);
 
-  // Fetch the token from AsyncStorage
+  // Obtener información del vendedor
   useEffect(() => {
-    const getToken = async () => {
+    const fetchSellerInfo = async () => {
       try {
-        const tokenData = await AsyncStorage.getItem('token');
-        if (tokenData) {
-          const parsedToken = typeof tokenData === 'string' ? JSON.parse(tokenData) : tokenData;
-          setToken(parsedToken);
-        }
+        const sellerData = await getSellerInfo(seller.id); 
+        console.log(sellerData); // Verifica los datos obtenidos
+        setSellerInfo(sellerData);
       } catch (error) {
-        console.error('Error al obtener el token:', error);
+        console.error('Error al obtener la información del vendedor:', error.message);
       }
     };
-    getToken();
-  }, []);
-
-  // Handle the "hire" button press
+  
+    if (seller && seller.id) fetchSellerInfo();
+  }, [seller]);
+  
   const handleHire = async () => {
     setModalVisible(false);
-
     const ofrecidoData = {
       idPublicacion: idOffer,
       idOffer: idOffer,
@@ -57,13 +55,9 @@ export default function DetailScreen({ route }) {
 
     try {
       const result = await createReserva(ofrecidoData);
-      if (result) {
-        alert('Reserva guardada exitosamente');
-      } else {
-        alert('No se pudo guardar la reserva');
-      }
+      alert(result ? 'Reserva guardada exitosamente' : 'No se pudo guardar la reserva');
     } catch (error) {
-      console.error('Error al guardar la reserva:', error);
+      console.error('Error al guardar la reserva:', error.message);
       alert('Hubo un problema al guardar la reserva. Inténtalo nuevamente.');
     }
   };
@@ -72,31 +66,31 @@ export default function DetailScreen({ route }) {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Image
-          source={{ uri: `${imageUri}` }}
+          source={{ uri: imageUri }}
           style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]}
           onError={(e) => console.log('Error cargando imagen principal:', e.nativeEvent.error)}
         />
-        
         <Text style={styles.productName}>{title}</Text>
         <Text style={styles.productDescription}>{description}</Text>
-        <Text style={styles.productDescription}>{rating}</Text>
+        <Text style={styles.productDescription}>⭐ {rating || 'Sin calificación'}</Text>
 
-        <View style={styles.sellerContainer}>
-          <Image 
-            source={{ uri: `${seller?.imageUri || ''}` }} // Use seller's image if available
-            onError={(e) => console.log('Error cargando imagen del vendedor:', e.nativeEvent.error)}
-            style={styles.sellerImage} 
-          />
-            {/*
-            ESTARÍA BUENO ARRGELAR ESTO, QUE SE MUESTRE BIEN
-
-              <View style={styles.sellerDetails}>
-                <Text style={styles.sellerName}>
-                  {token?.nombre} {token?.apellido}
-                </Text>
-              </View>
-          */}
-        </View>
+        {sellerInfo && (
+          <View style={styles.sellerContainer}>
+            <Image
+              source={{ uri: sellerInfo.imageUri || 'https://via.placeholder.com/50' }}
+              onError={(e) => console.log('Error cargando imagen del vendedor:', e.nativeEvent.error)}
+              style={styles.sellerImage}
+            />
+            <View style={styles.sellerDetails}>
+              <Text style={styles.sellerName}>
+                {sellerInfo.nombre || 'Nombre no disponible'} {sellerInfo.apellido || ''}
+              </Text>
+              <Text style={styles.sellerDescription}>
+                {sellerInfo.contacto || 'Información de contacto no disponible'}
+              </Text>
+            </View>
+          </View>
+        )}
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -108,7 +102,6 @@ export default function DetailScreen({ route }) {
         </View>
       </View>
 
-      {/* Modal para contratar*/}
       <Modal
         animationType="slide"
         transparent={true}
@@ -138,7 +131,6 @@ export default function DetailScreen({ route }) {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,

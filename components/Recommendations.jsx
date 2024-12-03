@@ -14,7 +14,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
         const likedData = await getLikedRecomendations(); // Devuelve las recomendaciones likeadas
         const likedIds = new Set(likedData.map((offer) => offer.id));
         setLikedOffers(likedIds);
-      } catch (error) {
+      } catch (error) { 
         console.error('Error cargando los likes iniciales:', error);
       }
     };
@@ -53,7 +53,10 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
               onPress={() =>
                 navigation.navigate('Detail', {
                   idOffer: offer.id,
-                  idProveedor: offer.idProveedor,
+                  seller: {
+                    id: offer.idProveedor, // asegurarte de pasar el ID correcto
+                    // otras propiedades del vendedor si es necesario
+                  },
                   title: offer.titulo || 'Sin título',
                   description: offer.descripcion || 'Sin descripción',
                   imageUri: offer.foto || offer.fotos?.[0],
