@@ -51,12 +51,15 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
               onPress={() =>
                 navigation.navigate('Detail', {
                   idOffer: offer.id,
+                  idProveedor: offer.idProveedor,
                   title: offer.titulo || 'Sin título',
                   description: offer.descripcion || 'Sin descripción',
                   imageUri: offer.foto || offer.fotos?.[0],
                   rating: parseFloat(offer.promedio_calificacion) || 0,
                 })
               }
+              
+              
             >
               <Image
                 source={{
