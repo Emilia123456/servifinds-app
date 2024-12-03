@@ -52,7 +52,7 @@ export const getCategories = async () => {
       status: error.response?.status
     });
     return [];
-  }
+  } 
 };
 
 /*
