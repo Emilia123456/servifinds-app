@@ -16,7 +16,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfileScreen({ navigation }) {
-  const [likedRecommendations, setLikedRecommendations] = useState({});
+  const [Trabajos, setTrabajos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [userProfile, setUserProfile] = useState({
     nombre: "",
@@ -88,19 +88,26 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handlePublishJob = async () => {
-    if (!newJob.descripcion || !newJob.precio || !newJob.idcategoria || !newJob.titulo) {
+    if (
+      !newJob.descripcion ||
+      !newJob.precio ||
+      !newJob.idcategoria ||
+      !newJob.titulo
+    ) {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
-  
+
     try {
       const token = await AsyncStorage.getItem("token");
-  
+
       if (!token) {
-        alert("No se encontró un token de autenticación. Por favor, inicia sesión.");
+        alert(
+          "No se encontró un token de autenticación. Por favor, inicia sesión."
+        );
         return;
       }
-  
+
       const response = await fetch(`${API_URL}/api/Ofrecimientos/ofrecidos`, {
         method: "POST",
         headers: {
@@ -108,22 +115,30 @@ export default function ProfileScreen({ navigation }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          titulo: newJob.titulo,  // Solo enviar el título, descripción, precio, etc.
+          titulo: newJob.titulo,
           descripcion: newJob.descripcion,
           precio: parseFloat(newJob.precio),
           idcategoria: newJob.idcategoria,
-          tags: newJob.tags,  // Los tags como string
+          tags: newJob.tags,
         }),
       });
-  
+
       if (response.ok) {
         alert("Trabajo publicado con éxito.");
-        setNewJob({ titulo: "", descripcion: "", precio: "", idcategoria: "", tags: "" });
+        setNewJob({
+          titulo: "",
+          descripcion: "",
+          precio: "",
+          idcategoria: "",
+          tags: "",
+        });
         closeModal();
       } else {
         const errorData = await response.json();
         console.error("Error al publicar trabajo:", errorData);
-        alert(`Error al publicar: ${errorData.errors.map((e) => e.msg).join(", ")}`);
+        alert(
+          `Error al publicar: ${errorData.errors.map((e) => e.msg).join(", ")}`
+        );
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -166,6 +181,58 @@ export default function ProfileScreen({ navigation }) {
       }
     }
   };
+
+  const getUserJobs = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        alert(
+          "No se encontró un token de autenticación. Por favor, inicia sesión."
+        );
+        return;
+      }
+      const response = await fetch(`${API_URL}/api/Ofrecimientos/id`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        return data;
+      } else {
+        console.error("La respuesta no es un array:", data);
+        alert("Error al obtener los trabajos");
+      }
+    } catch (error) {
+      console.error("Error al obtener los trabajos:", error);
+      alert("No se pudo conectar al servidor. Inténtalo más tarde.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profileData = await getUserProfile();
+        if (profileData) {
+          setUserProfile(profileData);
+        }
+  
+        const jobsData = await getUserJobs();
+        if (Array.isArray(jobsData)) {
+          setTrabajos(jobsData); 
+        } else {
+          setTrabajos([]); 
+        }
+      } catch (error) {
+        console.error("Error al obtener el perfil y los trabajos:", error);
+        setTrabajos([]);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -284,6 +351,26 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.infoText}>
             Dirección: {userProfile.direccion}
           </Text>
+        </View>
+      </View>
+
+      <View style={styles.infoContainer}>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoTitle}>Mis Trabajos</Text>
+          {Array.isArray(Trabajos) && Trabajos.length === 0 ? (
+            <Text style={styles.infoText}>
+              No has publicado ningún trabajo.
+            </Text>
+          ) : (
+            Array.isArray(Trabajos) &&
+            Trabajos.map((job, index) => (
+              <View key={index} style={styles.jobCard}>
+                <Text style={styles.jobTitle}>{job.titulo}</Text>
+                <Text style={styles.jobDescription}>{job.descripcion}</Text>
+                <Text style={styles.jobPrice}>${job.precio}</Text>
+              </View>
+            ))
+          )}
         </View>
       </View>
     </ScrollView>
@@ -439,5 +526,30 @@ const styles = StyleSheet.create({
   publishButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  jobCard: {
+    backgroundColor: "#fff",
+    marginBottom: 15,
+    padding: 15,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  jobTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  jobDescription: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 5,
+  },
+  jobPrice: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
   },
 });
