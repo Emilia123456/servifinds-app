@@ -32,6 +32,7 @@ function HomeStackScreen() {
       />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
       <HomeStack.Screen name="Categoría" component={CategoryScreen} />
+      <HomeStack.Screen name="Search" component={SearchScreen} />
     </HomeStack.Navigator>
   );
 }

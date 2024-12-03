@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getLikedRecomendations } from '../service/favsService';
+import { likeRecomendation } from '../service/favsService';
 
 const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const [likedOffers, setLikedOffers] = useState(new Set());
@@ -22,7 +23,11 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   const handleLike = async (offerId) => {
     try {
+<<<<<<< HEAD
       await getLikedRecomendati-ons(offerId);
+=======
+      await likeRecomendation(offerId); // Usar la función específica para like
+>>>>>>> 034fdd206da12f56fb55f6280956d140f92bcc06
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
@@ -32,7 +37,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
       console.error('Error al dar like:', error);
     }
   };
-
+  
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Recomendaciones para ti</Text>
