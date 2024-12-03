@@ -9,7 +9,7 @@ import TopOverlay from '../components/TopOverlay';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/DetailScreen';
-import CategoryScreen from '../screens/CategoryScreen';
+
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -31,7 +31,6 @@ function HomeStackScreen() {
         }} 
       />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
-      <HomeStack.Screen name="Categoría" component={CategoryScreen} />
       <HomeStack.Screen name="Search" component={SearchScreen} />
     </HomeStack.Navigator>
   );
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     height: 80, // Hace más grande el contenedor del tabBar
     borderTopWidth: 0,
     borderTopEndRadius:40,
-    borderTopStartRadius:40,
+    borderTopStartRadius:20,
     elevation: 0,
     paddingBottom: 10, // Más espacio abajo
   },

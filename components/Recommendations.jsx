@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     margin:15,
     borderRadius: 20,
     marginVertical: 6,
-    backgroundColor: '#f7f7f7', // Fondo blanco
+    backgroundColor: '#FaFaFa', // Fondo blanco
   },
   itemImage: {
     width: 120, // Hacemos la imagen más grande
