@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeRecomendation } from '../service/favsService';
+import { getLikedRecomendations } from '../service/favsService';
 
 const RecommendationsComponent = ({ recomendations = [], navigation }) => {
   const [likedOffers, setLikedOffers] = useState(new Set());
@@ -22,7 +22,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   const handleLike = async (offerId) => {
     try {
-      await likeRecomendation(offerId);
+      await getLikedRecomendations(offerId);
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
         newSet.has(offerId) ? newSet.delete(offerId) : newSet.add(offerId);
