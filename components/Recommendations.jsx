@@ -23,6 +23,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   const handleLike = async (offerId) => {
     try {
+      await getLikedRecomendations(offerId);
       await likeRecomendation(offerId); // Usar la función específica para like
       setLikedOffers((prev) => {
         const newSet = new Set(prev);
