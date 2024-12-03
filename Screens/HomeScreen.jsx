@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Animated, BackHandler } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
 import { searchOffers } from '../service/offersService.js';
+import SearchScreen from '../screens/SearchScreen.jsx';
 import FilterComponent from '../components/Filter.jsx';
 import RecommendationsComponent from '../components/Recommendations.jsx';
 import HamburgerMenu from '../components/HamburguerMenu.jsx';
@@ -96,7 +97,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.promoOverlay}>
         <Text style={styles.promoTitle}>Ofertas</Text>
           <Text style={styles.promoText}>¡Descubre servicios únicos en tu zona!</Text>
-          <TouchableOpacity style={styles.promoButton} onPress={() => navigation.navigate('OffersScreen')}>
+          <TouchableOpacity style={styles.promoButton} onPress={() => navigation.navigate('Search')} >
             <Text style={styles.promoButtonText}>Explorar</Text>
           </TouchableOpacity>
         </View>
