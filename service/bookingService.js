@@ -34,17 +34,13 @@ export const fetchOfrecidosPorFecha = async (fecha) => {
     const token = await AsyncStorage.getItem('token');
     if (!token) throw new Error('No hay token disponible');
 
-    const response = await api.get('/api/Historial/historial', {
+    const url = `/api/Historial/historial?fecha=${fecha}`;
+    const response = await api.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      params: {
-        fecha: fecha
-      }
     });
-
-    console.log('Respuesta de reservas:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error al obtener reservas:', error);
@@ -52,19 +48,10 @@ export const fetchOfrecidosPorFecha = async (fecha) => {
   }
 };
 
-/*
 
-ofrecidoData = {
-      idPublicacion: idOffer,
-      fechaReservada: fecha,
-      idEstado: 1,
-      idOffer: idOffer,  
-    };
-*/
 export const createReserva = async (ofrecidoData) => {
   const token = await AsyncStorage.getItem('token');
   if (!token) throw new Error('No hay token disponible');
-
   try {
     const response = await api.post('/api/Historial/historial', {
       idPublicacion: ofrecidoData.idPublicacion,

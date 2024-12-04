@@ -12,7 +12,6 @@ export const getLikedRecomendations = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
     if (!token) {
-      console.log('No hay token disponible');
       return [];
     }
 
@@ -26,9 +25,6 @@ export const getLikedRecomendations = async () => {
       'Authorization': token.startsWith('Bearer ') ? token : `Bearer ${token}`,
       'Content-Type': 'application/json',
     };
-
-    console.log('Headers enviados:', headers);
-
     const response = await favsApi.get('/favoritos', { headers });
 
     console.log('Respuesta del servidor:', {
@@ -48,7 +44,6 @@ export const getLikedRecomendations = async () => {
     });
 
     if (error.response?.status === 401) {
-      console.log('Token inválido o expirado');
       await AsyncStorage.removeItem('token');
     }
 
@@ -62,8 +57,6 @@ export const likeRecomendation = async (recomendationId) => {
     if (!token) {
       throw new Error('No hay token disponible');
     }
-
-    console.log('Intentando dar like al ofrecido ID:', recomendationId);
 
     const response = await favsApi.patch(`/likes/${recomendationId}`, {}, {
       headers: {

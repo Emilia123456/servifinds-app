@@ -38,7 +38,6 @@ export default function RegisterScreen({ navigation }) {
     };
 
     try {
-      console.log("Datos a enviar:", requestData);
       const result = await register(
         requestData.email,
         requestData.nombre,

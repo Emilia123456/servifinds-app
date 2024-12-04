@@ -80,7 +80,6 @@ export const getUserProfile = async () => {
 };
 
 export const updateUserProfile = async (email, imageUri) => {
-  console.log(imageUri)
   try {
     const token = await AsyncStorage.getItem('token');
     if (!token) {

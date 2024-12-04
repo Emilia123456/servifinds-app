@@ -16,12 +16,43 @@ import { createReserva } from '../service/bookingService';
 import { getSellerInfo } from '../service/userService';
 
 export default function DetailScreen({ route, navigation }) {
-  const { idOffer, seller, title, description, imageUri, rating } = route.params;
+  const { idPublicacion, idOffer, seller, title, description, imageUri, rating } = route.params;
   const screenWidth = Dimensions.get('window').width;
 
   const [liked, setLiked] = useState(false); // Estado para el botón de like
 
   const toggleLike = () => setLiked(!liked);
+  useEffect(() => {
+    const fetchSellerInfo = async () => {
+      try {
+        const sellerData = await getSellerInfo(seller.id); 
+        console.log(sellerData); // Verifica los datos obtenidos
+        setSellerInfo(sellerData);
+      } catch (error) {
+        console.error('Error al obtener la información del vendedor:', error.message);
+      }
+    };
+  
+    if (seller && seller.id) fetchSellerInfo();
+  }, [seller]);
+  
+  const handleHire = async () => {
+    setModalVisible(false);
+    const ofrecidoData = {
+      idPublicacion: idPublicacion,
+      idOffer: idOffer,
+      fechaReservada: fecha,
+      idEstado: 1,
+    };
+
+    try {
+      const result = await createReserva(ofrecidoData);
+      alert(result ? 'Reserva guardada exitosamente' : 'No se pudo guardar la reserva');
+    } catch (error) {
+      console.error('Error al guardar la reserva:', error.message);
+      alert('Hubo un problema al guardar la reserva. Inténtalo nuevamente.');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
