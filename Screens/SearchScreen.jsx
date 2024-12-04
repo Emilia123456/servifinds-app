@@ -175,15 +175,6 @@ const styles = StyleSheet.create({
   searchSection: {
     backgroundColor: '#fff',
     paddingTop: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   header: {
@@ -202,6 +193,7 @@ const styles = StyleSheet.create({
   categoryItem: {
     alignItems: 'center',
     width: 90,
+    borderColor:'#fff',
   },
   filterImage: {
     width: 30,
@@ -220,7 +212,7 @@ const styles = StyleSheet.create({
   },
   offersContainer: {
     flex: 1,
-    marginTop:-12,
+   
   },
   recommendationsSection: {
     flex: 1,
