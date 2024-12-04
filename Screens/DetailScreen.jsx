@@ -79,7 +79,7 @@ export default function DetailScreen({ route }) {
               <Text style={styles.sellerName}>
                 {sellerInfo.nombre || 'Nombre no disponible'} {sellerInfo.apellido || ''}
               </Text>
-              <Text style={styles.sellerContact}>{sellerInfo.contacto || 'Sin contacto'}</Text>
+              <Text style={styles.sellerContact}>{sellerInfo.email || 'Sin contacto'}</Text>
             </View>
           </View>
         )}
