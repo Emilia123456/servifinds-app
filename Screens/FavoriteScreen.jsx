@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 30,
     paddingBottom: 10,
+    marginTop:40,
     fontWeight: 'normal',
   },
   recommendationItem: {

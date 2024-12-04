@@ -12,6 +12,7 @@ import {
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import { fetchOfrecidosPorFecha, getDetallesReserva } from '../service/bookingService';
 
 const BookingScreen = () => {
@@ -62,6 +63,7 @@ const BookingScreen = () => {
             detalles[reserva.id] = detalle;
           }
         }
+        console.log(detalles[reserva.id].idProveedor);
       }
 
       setOfrecidosDetalles(detalles);
@@ -160,12 +162,12 @@ const BookingScreen = () => {
                         ${detalle.precio || 'No especificado'}
                       </Text>
                     </View>
-                    <View style={styles.ofrecidoInfo}>
+                    {/* <View style={styles.ofrecidoInfo}>
                       <Icon name="person-outline" size={16} color="#666" />
                       <Text style={styles.ofrecidoDetails}>
                         Proveedor: {detalle.nombreProveedor || 'No especificado'}
                       </Text>
-                    </View>
+                    </View> */}
                   </>
                 )}
                 <View style={styles.statusContainer}>
@@ -344,6 +346,49 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  modalContainer: {
+    backgroundColor: '#fff', // Fondo blanco
+    borderRadius: 16,       // Bordes redondeados
+    padding: 24,            // Espaciado interno
+    alignItems: 'center',   // Alinear contenido al centro
+    shadowColor: '#000',    // Sombra para iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,           // Sombra para Android
+    width: '80%',           // Ancho del modal
+  },
+  modalText: {
+    fontSize: 18,           // Texto más grande
+    fontWeight: 'bold',     // Resaltar texto
+    color: '#333',          // Texto oscuro
+    textAlign: 'center',    // Centrar texto
+    marginBottom: 16,       // Separación inferior
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 16,                // Espaciado entre botones
+    marginTop: 16,          // Separación superior
+  },
+  modalButtonConfirm: {
+    backgroundColor: '#1B2E35', // Color principal
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalButtonCancel: {
+    backgroundColor: '#ccc', // Color de cancelación
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalButtonText: {
+    color: '#fff',          // Texto blanco
+    fontSize: 16,           // Tamaño de texto
+    fontWeight: 'bold',     // Resaltar texto
+    textAlign: 'center',
+  },
+  
   calendarContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
