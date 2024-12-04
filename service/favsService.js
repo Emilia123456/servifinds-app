@@ -46,6 +46,9 @@ export const getLikedRecomendations = async () => {
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('token');
     }
+    if (error.response?.status === 404) {
+      console.log("no hay favs todavia")
+    }
 
     return [];
   }
@@ -84,5 +87,3 @@ export const likeRecomendation = async (recomendationId) => {
     throw error;
   }
 };
-
-

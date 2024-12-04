@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { getLikedRecomendations } from '../service/favsService';
+import { getLikedRecomendations, likeRecomendation } from '../service/favsService'; 
 
 const FavoriteScreen = ({ navigation }) => {
   const [favorites, setFavorites] = useState([]);
-
-  // Aseguramos que el corazón se coloree correctamente
-  const [likedItems, setLikedItems] = useState({}); // Guardamos el estado de "liked" para cada item
+  const [likedItems, setLikedItems] = useState({});
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -22,9 +20,8 @@ const FavoriteScreen = ({ navigation }) => {
       const uniqueFavorites = Array.from(new Map(data.map((item) => [item.id, item])).values());
       setFavorites(uniqueFavorites);
 
-      // Inicializamos el estado de likedItems a true (suponiendo que todos son "liked" al principio)
       const initialLikedState = uniqueFavorites.reduce((acc, item) => {
-        acc[item.id] = true; // Si está en favoritos, lo consideramos "liked"
+        acc[item.id] = true; 
         return acc;
       }, {});
       setLikedItems(initialLikedState);
@@ -33,16 +30,20 @@ const FavoriteScreen = ({ navigation }) => {
     }
   };
 
-  // Función para manejar el "deslike"
-  const handleDislike = (favoriteId) => {
-    // Cambiamos el estado de likedItems para reflejar el cambio
-    setLikedItems((prevState) => ({
-      ...prevState,
-      [favoriteId]: !prevState[favoriteId], // Si es true lo cambiamos a false y viceversa
-    }));
+  const handleToggleLike = async (favoriteId) => {
+    try {
+      const response = await likeRecomendation(favoriteId);
+      setLikedItems((prevState) => ({
+        ...prevState,
+        [favoriteId]: !prevState[favoriteId], 
+      }));
+      if (!likedItems[favoriteId]) {
+        setFavorites(favorites.filter((favorite) => favorite.id !== favoriteId));
+      }
 
-    // Eliminamos el ítem de la lista de favoritos (frontend solamente)
-    setFavorites(favorites.filter((favorite) => favorite.id !== favoriteId));
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
   };
 
   return (
@@ -78,11 +79,11 @@ const FavoriteScreen = ({ navigation }) => {
                 <Text style={styles.itemRating}>
                   {`Calificación: ${(parseFloat(favorite.promedio_calificacion) || 0).toFixed(1)}`}
                 </Text>
-                <TouchableOpacity onPress={() => handleDislike(favorite.id)}>
+                <TouchableOpacity onPress={() => handleToggleLike(favorite.id)}>
                   <Icon
-                    name="heart"
+                    name={likedItems[favorite.id] ? 'heart' : 'heart-o'} 
                     size={20}
-                    color={likedItems[favorite.id] ? '#FF0000' : '#1B2E35'} // Rojo si "liked", gris si "disliked"
+                    color={likedItems[favorite.id] ? '#FF0000' : '#1B2E35'} 
                   />
                 </TouchableOpacity>
               </View>
