@@ -16,7 +16,7 @@ import { createReserva } from '../service/bookingService';
 import { getSellerInfo } from '../service/userService';
 
 export default function DetailScreen({ route }) {
-  const { idOffer, seller, title, description, imageUri, rating } = route.params;
+  const { idPublicacion, idOffer, seller, title, description, imageUri, rating } = route.params;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
@@ -29,7 +29,6 @@ export default function DetailScreen({ route }) {
   });
   const [sellerInfo, setSellerInfo] = useState(null);
 
-  // Obtener información del vendedor
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
@@ -47,7 +46,7 @@ export default function DetailScreen({ route }) {
   const handleHire = async () => {
     setModalVisible(false);
     const ofrecidoData = {
-      idPublicacion: idOffer,
+      idPublicacion: idPublicacion,
       idOffer: idOffer,
       fechaReservada: fecha,
       idEstado: 1,

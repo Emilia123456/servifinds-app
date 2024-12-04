@@ -59,7 +59,6 @@ export default function SearchScreen({ navigation }) {
 
   const processOffers = (offers) => {
     if (!Array.isArray(offers)) {
-      console.log('No hay ofertas para procesar');
       return [];
     }
 
