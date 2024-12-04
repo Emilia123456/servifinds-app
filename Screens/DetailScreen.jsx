@@ -29,7 +29,6 @@ export default function DetailScreen({ route }) {
   });
   const [sellerInfo, setSellerInfo] = useState(null);
 
-  // Obtener información del vendedor
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
@@ -77,7 +76,7 @@ export default function DetailScreen({ route }) {
         {sellerInfo && (
           <View style={styles.sellerContainer}>
             <Image
-              source={{ uri: sellerInfo.imageUri || 'https://via.placeholder.com/50' }}
+              source={{ uri: sellerInfo.foto || 'https://via.placeholder.com/50' }}
               onError={(e) => console.log('Error cargando imagen del vendedor:', e.nativeEvent.error)}
               style={styles.sellerImage}
             />
