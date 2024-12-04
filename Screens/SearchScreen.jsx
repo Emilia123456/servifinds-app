@@ -196,25 +196,20 @@ const styles = StyleSheet.create({
     color: '#1B2E35',
     fontSize: 16,
     paddingLeft: 20,
+    marginBottom:20,
   },
-  filterContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    marginTop: 8,
-  },
+
   categoryItem: {
     alignItems: 'center',
-    marginRight: 16,
-    padding: 12,
     width: 90,
   },
   filterImage: {
     width: 30,
     height: 30,
-    marginBottom: 8,
+    
   },
   filterText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
     textAlign: 'center',
     color: '#1B2E35',
@@ -225,6 +220,7 @@ const styles = StyleSheet.create({
   },
   offersContainer: {
     flex: 1,
+    marginTop:-12,
   },
   recommendationsSection: {
     flex: 1,
