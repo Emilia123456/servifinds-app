@@ -240,12 +240,12 @@ const getRemainingDaysOfCurrentWeek = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     paddingTop: 50,
   },
   header: {
     paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     zIndex: 1,
   },
   content: {
@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1B2E35',
     marginBottom: 15,
   },
   subtitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1B2E35',
     marginVertical: 15,
   },
   taskList: {
@@ -274,19 +274,14 @@ const styles = StyleSheet.create({
   },
   noTasksText: {
     textAlign: 'center',
-    color: '#666',
+    color: '#1B2E35',
     marginTop: 20,
   },
   taskCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 5,
-    elevation: 2,
   },
   taskHeader: {
     flexDirection: 'row',
@@ -320,7 +315,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginHorizontal: 5,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -329,7 +324,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   selectedDayButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#1B2E35',
   },
   dayText: {
     fontSize: 14,
@@ -343,7 +338,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   openButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#1B2E35',
     borderRadius: 50,
     padding: 10,
     marginLeft: 10,
@@ -365,7 +360,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButtonText: {
-    color: '#007AFF',
+    color: '#1B2E35',
     fontSize: 16,
   },
   ofrecidosContainer: {
@@ -378,10 +373,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   ofrecidoTitle: {
     fontSize: 18,
