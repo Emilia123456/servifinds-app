@@ -104,18 +104,11 @@ export const updateUserProfile = async (email, imageUri) => {
   }
 };
 
-export const getSellerInfo = async (sellerId) => {
+export const getSellerInfo = async (id) => {
   try {
-    const token = await AsyncStorage.getItem('token');
-    if (!token) throw new Error('No hay token disponible.');
-
-    const response = await userApi.get(`/sellers/${sellerId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response.data; // Asume que devuelve { id, nombre, apellido, contacto, imageUri }
+    const response = await userApi.post('/users/profileById', { id });
+    console.log("post llamada", response);
+    return response.data;
   } catch (error) {
     console.error('Error al obtener información del vendedor:', error.message);
     throw error;
