@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 const userApi = axios.create({
-  baseURL: 'http://yuke.ddns.net:3101/api',
+  baseURL: 'https://diverse-tightly-mongoose.ngrok-free.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
