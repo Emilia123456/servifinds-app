@@ -317,11 +317,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     backgroundColor: '#f5f5f5',
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 5,
-    elevation: 2,
   },
   selectedDayButton: {
     backgroundColor: '#1B2E35',
@@ -394,8 +389,6 @@ const styles = StyleSheet.create({
   statusContainer: {
     marginTop: 8,
     paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
   },
   statusText: {
     fontSize: 14,

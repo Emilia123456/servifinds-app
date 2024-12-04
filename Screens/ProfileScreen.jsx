@@ -261,9 +261,7 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionText}>Editar</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity style={styles.actionButton} onPress={openModal}>
           <Text style={styles.actionText}>Publicar nuevo trabajo</Text>
         </TouchableOpacity>

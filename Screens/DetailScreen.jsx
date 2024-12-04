@@ -9,7 +9,6 @@ import {
   ScrollView,
   Modal,
   TextInput,
-  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createReserva } from '../service/bookingService';
@@ -18,7 +17,6 @@ import { getSellerInfo } from '../service/userService';
 export default function DetailScreen({ route }) {
   const { idOffer, seller, title, description, imageUri, rating } = route.params;
   const screenWidth = Dimensions.get('window').width;
-  const screenHeight = Dimensions.get('window').height;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [fecha, setFecha] = useState(() => {
@@ -32,17 +30,16 @@ export default function DetailScreen({ route }) {
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
-        const sellerData = await getSellerInfo(seller.id); 
-        console.log(sellerData);
+        const sellerData = await getSellerInfo(seller.id);
         setSellerInfo(sellerData);
       } catch (error) {
         console.error('Error al obtener la información del vendedor:', error.message);
       }
     };
-  
+
     if (seller && seller.id) fetchSellerInfo();
   }, [seller]);
-  
+
   const handleHire = async () => {
     setModalVisible(false);
     const ofrecidoData = {
@@ -66,63 +63,47 @@ export default function DetailScreen({ route }) {
       <View style={styles.container}>
         <Image
           source={{ uri: imageUri }}
-          style={[styles.productImage, { width: screenWidth - 40, height: screenHeight * 0.4 }]}
-          onError={(e) => console.log('Error cargando imagen principal:', e.nativeEvent.error)}
+          style={styles.productImage}
         />
         <Text style={styles.productName}>{title}</Text>
         <Text style={styles.productDescription}>{description}</Text>
-        <Text style={styles.productDescription}>⭐ {rating || 'Sin calificación'}</Text>
+        <Text style={styles.productRating}>Calificación: {rating || 'Sin calificación'}</Text>
 
         {sellerInfo && (
           <View style={styles.sellerContainer}>
             <Image
               source={{ uri: sellerInfo.foto || 'https://via.placeholder.com/50' }}
-              onError={(e) => console.log('Error cargando imagen del vendedor:', e.nativeEvent.error)}
               style={styles.sellerImage}
             />
-            <View style={styles.sellerDetails}>
+            <View>
               <Text style={styles.sellerName}>
                 {sellerInfo.nombre || 'Nombre no disponible'} {sellerInfo.apellido || ''}
               </Text>
-              <Text style={styles.sellerDescription}>
-                {sellerInfo.contacto || 'Información de contacto no disponible'}
-              </Text>
+              <Text style={styles.sellerContact}>{sellerInfo.contacto || 'Sin contacto'}</Text>
             </View>
           </View>
         )}
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.hireButton}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.buttonText}>Contratar</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.hireButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText}>Contratar</Text>
+        </TouchableOpacity>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Contratar</Text>
+            <Text style={styles.modalTitle}>Confirmar Contratación</Text>
             <TextInput
               style={styles.input}
               placeholder="Fecha"
-              placeholderTextColor="#888"
               value={fecha}
               onChangeText={setFecha}
             />
-            <Button title="Confirmar" onPress={handleHire} />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Cerrar</Text>
+            <TouchableOpacity style={styles.confirmButton} onPress={handleHire}>
+              <Text style={styles.buttonText}>Confirmar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.buttonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -130,73 +111,68 @@ export default function DetailScreen({ route }) {
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    backgroundColor: '#fff',
   },
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    paddingBottom: 20,
+    padding: 20,
   },
   productImage: {
-    resizeMode: 'cover',
+    width: '100%',
+    height: 250,
     borderRadius: 15,
-    marginVertical: 20,
+    marginBottom: 20,
+    marginTop: 40,
   },
   productName: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 10,
-    textAlign: 'center',
   },
   productDescription: {
     fontSize: 16,
-    color: '#555',
-    textAlign: 'center',
+    color: '#666',
+    marginBottom: 10,
+  },
+  productRating: {
+    fontSize: 14,
+    color: '#888',
     marginBottom: 20,
-    lineHeight: 22,
   },
   sellerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 15,
   },
   sellerImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 12,
-  },
-  sellerDetails: {
-    flex: 1,
+    marginRight: 10,
   },
   sellerName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
-  sellerDescription: {
+  sellerContact: {
     fontSize: 14,
-    color: '#666',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 20,
+    color: '#888',
   },
   hireButton: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    backgroundColor: '#446C64',
+    backgroundColor: '#1B2E35',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FFF',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -204,36 +180,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
-    backgroundColor: 'white',
+    width: '80%',
+    backgroundColor: '#fff',
     borderRadius: 15,
     padding: 20,
-    width: '80%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 6,
-    elevation: 6,
+    elevation: 5,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 15,
-    paddingLeft: 10,
+    borderColor: '#ddd',
     borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+  },
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   closeButton: {
-    marginTop: 10,
-    backgroundColor: '#E8EAF6',
+    backgroundColor: '#f44336',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
