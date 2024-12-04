@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
       </View>
   
 
-
+      <Text style={styles.title}>Recomendaciones para ti</Text>
       <RecommendationsComponent
         navigation={navigation}
         recomendations={recomendations}
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#1B2E35',
     textAlign: 'left',
     padding: 10,
@@ -185,7 +185,6 @@ const styles = StyleSheet.create({
     width: width - 40,
     height: 180,
     borderRadius: 30,
-    elevation: 4,
     padding:5,
   },
     promoOverlay: {
@@ -223,6 +222,15 @@ const styles = StyleSheet.create({
     imageWrapper: {
       width: width,
       alignItems: 'center',
+    },
+    title: {
+      fontSize: 20,
+      color: '#1B2E35',
+      textAlign: 'left',
+      padding: 30,
+      paddingBottom:10,
+      flexDirection: 'column',
+      fontWeight: 'normal',
     },
 
   });

@@ -36,7 +36,7 @@ const RecommendationsComponent = ({ recomendations = [], navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Recomendaciones para ti</Text>
+      
       {recomendations.length > 0 ? (
         recomendations.map((offer, index) => {
           if (!offer || typeof offer !== 'object') return null;
