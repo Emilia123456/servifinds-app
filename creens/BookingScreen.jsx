@@ -5,8 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
-  Animated,
-  Easing,
   ScrollView,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
@@ -22,29 +20,8 @@ const BookingScreen = () => {
   const [ofrecidosDetalles, setOfrecidosDetalles] = useState({});
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [cancelingId, setCancelingId] = useState(null);
-  const [animation] = useState(new Animated.Value(0));
 
   const daysOfWeek = getRemainingDaysOfCurrentWeek();
-
-  const toggleCalendar = () => {
-    setShowCalendar(!showCalendar);
-    Animated.timing(animation, {
-      toValue: showCalendar ? 0 : 1,
-      duration: 300,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const animatedScale = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.9, 1],
-  });
-
-  const animatedOpacity = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
 
   useEffect(() => {
     fetchOfrecidos(selectedDate);
@@ -63,9 +40,7 @@ const BookingScreen = () => {
             detalles[reserva.id] = detalle;
           }
         }
-        console.log(detalles[reserva.id].idProveedor);
       }
-
       setOfrecidosDetalles(detalles);
     } catch (error) {
       setOfrecidos([]);
@@ -106,7 +81,6 @@ const BookingScreen = () => {
                 key={day.dateString}
                 onPress={() => {
                   setSelectedDate(day.dateString);
-                  fetchOfrecidos(day.dateString);
                 }}
                 style={[
                   styles.dayButton,
@@ -132,11 +106,26 @@ const BookingScreen = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <TouchableOpacity style={styles.openButton} onPress={toggleCalendar}>
-            <Icon name="calendar" size={24} color="white" />
+          <TouchableOpacity style={styles.openButton} onPress={() => setShowCalendar(!showCalendar)}>
+            <Icon name="calendar-outline" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Mostrar el calendario */}
+      {showCalendar && (
+        <View style={styles.calendarContainer}>
+          <Calendar
+            onDayPress={(day) => {
+              setSelectedDate(day.dateString);
+              setShowCalendar(false);
+            }}
+            markedDates={{
+              [selectedDate]: { selected: true, selectedColor: '#1B2E35' },
+            }}
+          />
+        </View>
+      )}
 
       {/* Lista de ofrecidos */}
       <ScrollView style={styles.ofrecidosContainer}>
@@ -155,20 +144,12 @@ const BookingScreen = () => {
                   </Text>
                 </View>
                 {detalle && (
-                  <>
-                    <View style={styles.ofrecidoInfo}>
-                      <Icon name="pricetag-outline" size={16} color="#666" />
-                      <Text style={styles.ofrecidoDetails}>
-                        ${detalle.precio || 'No especificado'}
-                      </Text>
-                    </View>
-                    {/* <View style={styles.ofrecidoInfo}>
-                      <Icon name="person-outline" size={16} color="#666" />
-                      <Text style={styles.ofrecidoDetails}>
-                        Proveedor: {detalle.nombreProveedor || 'No especificado'}
-                      </Text>
-                    </View> */}
-                  </>
+                  <View style={styles.ofrecidoInfo}>
+                    <Icon name="pricetag-outline" size={16} color="#666" />
+                    <Text style={styles.ofrecidoDetails}>
+                      ${detalle.precio || 'No especificado'}
+                    </Text>
+                  </View>
                 )}
                 <View style={styles.statusContainer}>
                   <Text style={styles.statusText}>
@@ -248,11 +229,6 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     backgroundColor: '#fff',
-    zIndex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
@@ -260,58 +236,10 @@ const styles = StyleSheet.create({
     color: '#1B2E35',
     marginBottom: 15,
   },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1B2E35',
-    marginVertical: 15,
-  },
-  taskList: {
-    flex: 1,
-  },
   weekContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-  },
-  noTasksText: {
-    textAlign: 'center',
-    color: '#1B2E35',
-    marginTop: 20,
-  },
-  taskCard: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-  },
-  taskHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  taskImages: {
-    marginRight: 10,
-  },
-  taskTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  taskDescription: {
-    fontSize: 14,
-    color: '#666',
-  },
-  taskFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  taskTime: {
-    fontSize: 12,
-    color: '#999',
-  },
-  taskRating: {
-    fontSize: 12,
-    color: '#999',
   },
   dayButton: {
     paddingVertical: 10,
@@ -340,68 +268,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 10,
   },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    backgroundColor: '#fff', // Fondo blanco
-    borderRadius: 16,       // Bordes redondeados
-    padding: 24,            // Espaciado interno
-    alignItems: 'center',   // Alinear contenido al centro
-    shadowColor: '#000',    // Sombra para iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,           // Sombra para Android
-    width: '80%',           // Ancho del modal
-  },
-  modalText: {
-    fontSize: 18,           // Texto más grande
-    fontWeight: 'bold',     // Resaltar texto
-    color: '#333',          // Texto oscuro
-    textAlign: 'center',    // Centrar texto
-    marginBottom: 16,       // Separación inferior
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 16,                // Espaciado entre botones
-    marginTop: 16,          // Separación superior
-  },
-  modalButtonConfirm: {
-    backgroundColor: '#1B2E35', // Color principal
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  modalButtonCancel: {
-    backgroundColor: '#ccc', // Color de cancelación
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  modalButtonText: {
-    color: '#fff',          // Texto blanco
-    fontSize: 16,           // Tamaño de texto
-    fontWeight: 'bold',     // Resaltar texto
-    textAlign: 'center',
-  },
-  
   calendarContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-    width: '90%',
-  },
-  closeButton: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#1B2E35',
-    fontSize: 16,
+    margin: 16,
   },
   ofrecidosContainer: {
     flex: 1,
@@ -424,7 +295,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
-    gap: 8,
   },
   ofrecidoDetails: {
     fontSize: 14,
@@ -444,7 +314,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50,
-    gap: 12,
   },
   noOfrecidosText: {
     fontSize: 16,
